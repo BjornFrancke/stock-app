@@ -1,0 +1,19 @@
+{
+  "name": "stock",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Bjorn Francke <bjorn@welcomebob.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "nodemon": "^3.1.0",
+    "ts-node-dev": "^2.0.0"
+  },
+  "scripts": {
+    "dev": "nodemon src/index.ts"
+  },
+  "dependencies": {
+    "express": "^4.19.1",
+    "typescript": "^5.4.3"
+  }
+}
