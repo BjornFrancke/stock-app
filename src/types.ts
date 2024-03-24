@@ -6,3 +6,10 @@ export interface Items {
     canBePurschased?: boolean,
     canBeSold?: boolean
 }
+
+export interface MongoDBCreds {
+    user: string,
+    password: string,
+    path: string,
+    appName: string
+}
