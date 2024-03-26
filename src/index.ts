@@ -3,10 +3,10 @@ import {mongoCreds} from "./creds";
 
 const app = express()
 const port = 3000
-
+app.use(express.json())
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = `mongodb+src://${mongoCreds.user}:${mongoCreds.password}@${mongoCreds.path}/?retryWrites=true&w=majority&appName=${mongoCreds.appName}`
+const uri = `mongodb+srv://${mongoCreds.user}:${mongoCreds.password}@${mongoCreds.path}/?retryWrites=true&w=majority&appName=${mongoCreds.appName}`
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -36,6 +36,11 @@ run().catch(console.dir);
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
+})
+
+app.post('/', (req, res) => {
+    console.log(req.body)
+    res.json(req.body)
 })
 
 app.listen(port, () => {
