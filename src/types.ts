@@ -1,10 +1,7 @@
-export interface Items {
-    id: string,
+export interface Iitems {
     name: string,
     description?: string,
     stock: number,
-    canBePurschased?: boolean,
-    canBeSold?: boolean
 }
 
 export interface MongoDBCreds {
