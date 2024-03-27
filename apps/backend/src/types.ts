@@ -19,3 +19,9 @@ export interface Iaddress {
     city: string,
     country: string
 }
+
+export interface Ibom {
+    name: string,
+    product: ObjectId,
+    components: [{id: ObjectId, amount: number}]
+}
