@@ -3,6 +3,7 @@ import itemRouter from "./routes/items";
 import warehouseRouter from "./routes/warehouses";
 import mongoose from "mongoose";
 import {appPort, DATABASE_URL} from "./config";
+import cors from "cors"
 
 mongoose.connect(DATABASE_URL)
 const database = mongoose.connection
@@ -19,6 +20,8 @@ database.once('connected', () => {
 const app = express()
 const port = appPort
 app.use(express.json())
+app.use(cors())
+
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
