@@ -1,30 +1,57 @@
 import express from "express";
+import {item, Item} from "../../items";
 
 
 const itemRouter = express.Router()
 
 
+itemRouter.route('/findAll')
+    .get(async(req, res) => {
+    try {
+        const data = await Item.find()
+        res.json(data)
+    } catch {
+        res.status(500).send("Internal Server Error");
+    }
+    })
 
-itemRouter.route('/')
-    .get((req, res) => {
-        res.send("Get all items")
-    })
-    .post((req, res) => {
-        res.send("Create item")
+
+itemRouter.route('/delete/:itemId')
+    .delete(async (req, res) => {
+        try {
+            const deletedItem = await Item.findByIdAndDelete(req.params.itemId);
+            res.json(deletedItem)
+        } catch {
+            res.status(500).send("Internal Server Error");
+        }
     })
 
-itemRouter.route('/:itemId')
-    .get((req, res) => {
-    res.send(`Item ID: ${req.params.itemId}`);
-})
-    .post((req, res) => {
-        res.send(`Item ID: ${req.params.itemId}`)
+itemRouter.route('/create')
+    .post(async (req, res) => {
+        try {
+            const newItem = new Item(
+                {
+                    name: req.body.name,
+                    description: req.body.description,
+                    stock: req.body.stock
+                }
+            );
+            const savedItem = await newItem.save();
+            res.json(savedItem);
+        } catch {
+            res.status(500).send("Internal Server Error");
+        }
     })
-.put((req, res) => {
-    res.send(`Updating item with ID: ${req.params.itemId}`);
-})
-.delete((req, res) => {
-    res.send(`Deleting item with ID: ${req.params.itemId}`);
+
+
+itemRouter.route('/findById/:itemId')
+    .get(async (req, res) => {
+    try {
+        const itemData = await Item.findById(req.params.itemId)
+        res.json(itemData)
+    } catch {
+        res.status(500).send("Internal Server Error")
+    }
 })
 
 export default itemRouter
