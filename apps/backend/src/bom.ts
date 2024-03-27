@@ -9,7 +9,7 @@ const bomSchema = new Schema<Ibom, BomModel>({
     components: [{id: ObjectId, amount: Number}]
 })
 
-const Bom: BomModel = model<Ibom, BomModel>("Bom", bomSchema)
+export const Bom: BomModel = model<Ibom, BomModel>("Bom", bomSchema)
 
 const bom: HydratedDocument<Ibom> = new Bom({
     name: "Computer",
