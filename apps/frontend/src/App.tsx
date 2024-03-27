@@ -8,9 +8,7 @@ import Table from '@mui/joy/Table';
 import {Input} from "@mui/joy";
 import Card from '@mui/joy/Card';
 import Chip from "@mui/joy/Chip"
-import {ChipDelete} from "@mui/joy";
-import {Divider} from "@mui/joy";
-
+import {ChipDelete} from "@mui/joy"
 
 const ListAllItems = () => {
     const [items, setItems] = useState([]);
