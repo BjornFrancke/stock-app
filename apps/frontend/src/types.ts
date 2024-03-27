@@ -5,3 +5,9 @@ export interface Iitems {
     stock: number,
 }
 
+export interface Ibom {
+    _id?: string | undefined
+    name: string,
+    product: string,
+    components: [{id: string | undefined, amount: number}]
+}
