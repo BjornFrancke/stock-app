@@ -1,7 +1,9 @@
 import express from "express";
 import itemRouter from "./routes/items";
 import mongoose from "mongoose";
-import {appPort, DATABASE_URL} from "./creds";
+import {appPort, DATABASE_URL} from "./config";
+import {createWarehouse} from "./warehouse";
+import warehouseRouter from "./routes/warehouses";
 
 mongoose.connect(DATABASE_URL)
 const database = mongoose.connection
@@ -29,6 +31,7 @@ app.post('/', (req, res) => {
 })
 
 app.use('/item', itemRouter)
+app.use('/warehouse', warehouseRouter)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

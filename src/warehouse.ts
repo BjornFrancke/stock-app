@@ -10,7 +10,7 @@ const warehouseSchema = new Schema<Iwarehouse, WarehouseModel>({
     items: {type: [ObjectId]}
 })
 
-const Warehouse: WarehouseModel = model<Iwarehouse, WarehouseModel>('Warehouse', warehouseSchema)
+export const Warehouse: WarehouseModel = model<Iwarehouse, WarehouseModel>('Warehouse', warehouseSchema)
 
 const warehouse: HydratedDocument<Iwarehouse> = new Warehouse({
     name: "My warehouse",
