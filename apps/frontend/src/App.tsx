@@ -2,19 +2,22 @@ import './index.css'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Iitems } from "./types.ts";
+import Modal from 'react-modal';
 
-const NewListAllItems = () => {
+const ListAllItems = () => {
     const [items, setItems] = useState([]);
     const [showForm, setShowForm] = useState(false); // control form visibility
     const [newItemName, setNewItemName] = useState(''); // handle new item name
     const [newItemStock, setNewItemStock] = useState(0); // handle new item stock amount
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<Iitems | null>(null) // Details of the clicked item
 
     // Fetch items initially
     useEffect(() => {
         fetchItems();
     }, []);
 
-    // Make the apiCall a separate function so it can be called again after delete
+    // Make the apiCall a separate function, so it can be called again after delete
     const fetchItems = async () => {
         const response = await axios.get('http://localhost:3000/item/findAll');
         setItems(response.data);
@@ -31,6 +34,15 @@ const NewListAllItems = () => {
         // After deleting the item, fetch items again to refresh the list
         fetchItems();
     };
+
+    // Handle showing items details
+    const handleItemClick = (item: Iitems) => {
+        setSelectedItem(item);
+        setIsModalOpen(true)
+    }
+    const handleCloseModal = () => {
+        setIsModalOpen(false)
+    }
 
     // Handle new item submit
     const handleSubmitNewItem = async () => {
@@ -51,12 +63,27 @@ const NewListAllItems = () => {
         <>
             <ul>
                 {items.map((item: Iitems) => (
-                    <li key={item._id}>
+                    <li key={item._id} onClick={() => handleItemClick(item)}>
                         {item.name} - {item.stock}{' '}
                         {item._id && <button onClick={() => handleDelete(item._id)}>Delete</button>}
                     </li>
                 ))}
             </ul>
+            <Modal
+            isOpen={isModalOpen}
+            onRequestClose={handleCloseModal}
+            contentLabel="Item Details"
+            className={"bg-gray-500 w-fit p-12 mx-auto h-fit"}
+            >
+                {selectedItem && (
+                    <div className={""}>
+                        <h2>{selectedItem.name}</h2>
+                        <p>{selectedItem.description}</p>
+                        <p>{selectedItem.stock}</p>
+                    </div>
+                )}
+                <button className={"bg-blue-500 p-2 px-3 rounded-2xl"} onClick={handleCloseModal}> Close</button>
+            </Modal>
             <button onClick={() => setShowForm(true)}>Create Item</button>
             {showForm && <button onClick={() => setShowForm(false)}>Dismiss</button>}
 
@@ -88,7 +115,7 @@ function App() {
         <>
             <h1>Hello</h1>
             <div className={"bg-gray-300 w-fit h-fit p-6"}>
-                <NewListAllItems />
+                <ListAllItems />
             </div>
         </>
     )
