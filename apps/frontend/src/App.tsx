@@ -57,6 +57,7 @@ const ListAllItems = () => {
     // Handle showing items details
     const handleItemClick = (item: Iitems) => {
         setSelectedItem(item);
+        setNewStockValue(item.stock)
         setIsModalOpen(true)
     }
     const handleCloseModal = () => {
