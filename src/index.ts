@@ -1,9 +1,8 @@
 import express from "express";
 import itemRouter from "./routes/items";
+import warehouseRouter from "./routes/warehouses";
 import mongoose from "mongoose";
 import {appPort, DATABASE_URL} from "./config";
-import {createWarehouse} from "./warehouse";
-import warehouseRouter from "./routes/warehouses";
 
 mongoose.connect(DATABASE_URL)
 const database = mongoose.connection
