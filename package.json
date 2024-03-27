@@ -2,8 +2,7 @@
   "name": "stock",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Bjorn Francke <bjorn@welcomebob.com>",
-  "license": "MIT",
+  "author": "Bjorn Francke <bjorn@francke.dev>",
   "devDependencies": {
     "@types/express": "^4.17.21",
     "nodemon": "^3.1.0",
@@ -13,6 +12,7 @@
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.19.1",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.3",
