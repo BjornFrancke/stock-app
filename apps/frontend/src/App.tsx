@@ -114,8 +114,9 @@ const ListAllItems = () => {
                 isOpen={isModalOpen}
                 onRequestClose={handleCloseModal}
                 contentLabel="Item Details"
-                className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36"}
-            >
+                className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
+            > 
+            <Button variant={"solid"} onClick={handleCloseModal}> Close</Button>
                 {selectedItem && (
                     <Table className={"z-30 max-w-[50vw]"}>
                         <tr>
@@ -130,16 +131,17 @@ const ListAllItems = () => {
                             <td>Stock</td>
                             <td>{selectedItem.stock}</td>
                             <td>
-                                <form>
+                                <form className='flex'>
                                     <Input
                                     type="number"
                                     placeholder='item stock'
-                                    size="md"
-                                    variant='soft'
+                                    size="sm"
+                                    color="neutral"
+                                    variant="outlined"
                                     value={newStockValue}
                                     onChange={(e) => setNewStockValue(Number(e.target.value))}
                                     />
-                                    <button type='button' onClick={() => handleStockChange(selectedItem._id)}>Change</button>
+                                    <Button variant='outlined' size="sm" type='button' onClick={() => handleStockChange(selectedItem._id)}>Change</Button>
 
                                 </form>
                             </td>
@@ -150,7 +152,6 @@ const ListAllItems = () => {
                         </tr>
                     </Table>
                 )}
-                <Button variant={"solid"} className={"bg-blue-500 p-2 px-3 rounded-2xl"} onClick={handleCloseModal}> Close</Button>
             </Modal>
             {!showForm && <Button variant="solid" onClick={() => setShowForm(true)}>Create Item</Button>}
             {showForm && <Button variant="solid" onClick={() => setShowForm(false)}>Dismiss</Button>}
@@ -164,12 +165,12 @@ const ListAllItems = () => {
                         size={"sm"}
                         className={"w-fit flex justify-center"}
                     >
-                    <form>
+                    <form className='space-y-6'>
                         <Input
                             type="text"
                             placeholder="Item name"
                             size="md"
-                            variant="soft"
+                            variant="outlined"
                             value={newItemName}
                             onChange={(e) => setNewItemName(e.target.value)}
                         />
@@ -177,7 +178,7 @@ const ListAllItems = () => {
                             type="number"
                             placeholder="Item stock"
                             size="md"
-                            variant="soft"
+                            variant="outlined"
                             value={newItemStock}
                             onChange={(e) => setNewItemStock(Number(e.target.value))}
                         />
