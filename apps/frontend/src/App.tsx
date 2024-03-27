@@ -9,6 +9,7 @@ import {Input} from "@mui/joy";
 import Card from '@mui/joy/Card';
 import Chip from "@mui/joy/Chip"
 import {ChipDelete} from "@mui/joy";
+import {Divider} from "@mui/joy";
 
 
 const ListAllItems = () => {
@@ -18,6 +19,7 @@ const ListAllItems = () => {
     const [newItemStock, setNewItemStock] = useState(0); // handle new item stock amount
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState<Iitems | null>(null) // Details of the clicked item
+    const [newStockValue, setNewStockValue] = useState(0) // handle new stock value
 
     // Fetch items initially
     useEffect(() => {
@@ -29,6 +31,16 @@ const ListAllItems = () => {
         const response = await axios.get('http://localhost:3000/item/findAll');
         setItems(response.data);
     };
+
+    const handleStockChange = async (id: string | undefined) => {
+        if (typeof id === undefined) {
+            console.warn('Cannot set stock of an item without an id')
+            return
+        }
+        await axios.patch(`http://localhost:3000/item/setStock/${id}/${newStockValue}`);
+        setIsModalOpen(false)
+        fetchItems();
+    }
 
     // Item deletion handler
     const handleDelete = async (id: string | undefined) => {
@@ -80,13 +92,14 @@ const ListAllItems = () => {
                 <tbody>
                     {items.map((item: Iitems) => (
                         <tr key={item._id}>
-                            <td onClick={() => handleItemClick(item)}>{item.name}</td>
+                            <td onClick={() => handleItemClick(item)} className={"underline cursor-pointer"}>{item.name}</td>
                             <td>{item.stock}</td>
                             <td>{item._id &&
                                 <Chip
                                 variant="soft"
                                 color="danger"
                                 size="sm"
+                                className={"select-none"}
                                 endDecorator={<ChipDelete onClick={() => handleDelete(item._id)} />}
                                 >
                                     Delete
@@ -100,14 +113,41 @@ const ListAllItems = () => {
                 isOpen={isModalOpen}
                 onRequestClose={handleCloseModal}
                 contentLabel="Item Details"
-                className={"bg-gray-500 w-fit p-12 mx-auto h-fit"}
+                className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36"}
             >
                 {selectedItem && (
-                    <div className={""}>
-                        <h2>{selectedItem.name}</h2>
-                        <p>{selectedItem.description}</p>
-                        <p>{selectedItem.stock}</p>
-                    </div>
+                    <Table className={"z-30 max-w-[50vw]"}>
+                        <tr>
+                            <td>Name</td>
+                            <td>{selectedItem.name}</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>{selectedItem.description}</td>
+                        </tr>
+                        <tr>
+                            <td>Stock</td>
+                            <td>{selectedItem.stock}</td>
+                            <td>
+                                <form>
+                                    <Input
+                                    type="number"
+                                    placeholder='item stock'
+                                    size="md"
+                                    variant='soft'
+                                    value={newStockValue}
+                                    onChange={(e) => setNewStockValue(Number(e.target.value))}
+                                    />
+                                    <button type='button' onClick={() => handleStockChange(selectedItem._id)}>Change</button>
+
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ID</td>
+                            <td>{selectedItem._id}</td>
+                        </tr>
+                    </Table>
                 )}
                 <Button variant={"solid"} className={"bg-blue-500 p-2 px-3 rounded-2xl"} onClick={handleCloseModal}> Close</Button>
             </Modal>
