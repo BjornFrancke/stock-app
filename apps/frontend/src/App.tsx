@@ -3,6 +3,13 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Iitems } from "./types.ts";
 import Modal from 'react-modal';
+import Button from '@mui/joy/Button';
+import Table from '@mui/joy/Table';
+import {Input} from "@mui/joy";
+import Card from '@mui/joy/Card';
+import Chip from "@mui/joy/Chip"
+import {ChipDelete} from "@mui/joy";
+
 
 const ListAllItems = () => {
     const [items, setItems] = useState([]);
@@ -61,19 +68,39 @@ const ListAllItems = () => {
 
     return (
         <>
-            <ul>
-                {items.map((item: Iitems) => (
-                    <li key={item._id} onClick={() => handleItemClick(item)}>
-                        {item.name} - {item.stock}{' '}
-                        {item._id && <button onClick={() => handleDelete(item._id)}>Delete</button>}
-                    </li>
-                ))}
-            </ul>
+
+            <Table className={"max-w-[50%]"}>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {items.map((item: Iitems) => (
+                        <tr key={item._id}>
+                            <td onClick={() => handleItemClick(item)}>{item.name}</td>
+                            <td>{item.stock}</td>
+                            <td>{item._id &&
+                                <Chip
+                                variant="soft"
+                                color="danger"
+                                size="sm"
+                                endDecorator={<ChipDelete onClick={() => handleDelete(item._id)} />}
+                                >
+                                    Delete
+                                </Chip>}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
             <Modal
-            isOpen={isModalOpen}
-            onRequestClose={handleCloseModal}
-            contentLabel="Item Details"
-            className={"bg-gray-500 w-fit p-12 mx-auto h-fit"}
+                isOpen={isModalOpen}
+                onRequestClose={handleCloseModal}
+                contentLabel="Item Details"
+                className={"bg-gray-500 w-fit p-12 mx-auto h-fit"}
             >
                 {selectedItem && (
                     <div className={""}>
@@ -82,28 +109,40 @@ const ListAllItems = () => {
                         <p>{selectedItem.stock}</p>
                     </div>
                 )}
-                <button className={"bg-blue-500 p-2 px-3 rounded-2xl"} onClick={handleCloseModal}> Close</button>
+                <Button variant={"solid"} className={"bg-blue-500 p-2 px-3 rounded-2xl"} onClick={handleCloseModal}> Close</Button>
             </Modal>
-            <button onClick={() => setShowForm(true)}>Create Item</button>
-            {showForm && <button onClick={() => setShowForm(false)}>Dismiss</button>}
+            {!showForm && <Button variant="solid" onClick={() => setShowForm(true)}>Create Item</Button>}
+            {showForm && <Button variant="solid" onClick={() => setShowForm(false)}>Dismiss</Button>}
 
             {
                 showForm && (
+                    <Card
+                        color="neutral"
+                        orientation="vertical"
+                        variant="outlined"
+                        size={"sm"}
+                        className={"w-fit flex justify-center"}
+                    >
                     <form>
-                        <input
+                        <Input
                             type="text"
                             placeholder="Item name"
+                            size="md"
+                            variant="soft"
                             value={newItemName}
                             onChange={(e) => setNewItemName(e.target.value)}
                         />
-                        <input
+                        <Input
                             type="number"
                             placeholder="Item stock"
+                            size="md"
+                            variant="soft"
                             value={newItemStock}
                             onChange={(e) => setNewItemStock(Number(e.target.value))}
                         />
-                        <button type="button" onClick={handleSubmitNewItem}>Create</button>
+                        <Button variant={"solid"} type="button" onClick={handleSubmitNewItem}>Create</Button>
                     </form>
+                    </Card>
                 )
             }
         </>
@@ -114,7 +153,7 @@ function App() {
     return (
         <>
             <h1>Hello</h1>
-            <div className={"bg-gray-300 w-fit h-fit p-6"}>
+            <div className={"w-fit h-fit p-6"}>
                 <ListAllItems />
             </div>
         </>
