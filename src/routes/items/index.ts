@@ -1,5 +1,6 @@
 import express from "express";
-import {item, Item} from "../../items";
+import {Item} from "../../items";
+import {Error} from "mongoose";
 
 
 const itemRouter = express.Router()
@@ -53,5 +54,40 @@ itemRouter.route('/findById/:itemId')
         res.status(500).send("Internal Server Error")
     }
 })
+
+itemRouter.route('/update/:itemId')
+    .patch(async (req, res) => {
+        try{
+            const id = req.params.itemId
+            const updatedData = req.body
+            const options = {new: true}
+
+            const results = await Item.findByIdAndUpdate(
+                id, updatedData, options
+            )
+            res.send(results)
+        } catch (error) {
+            res.status(400).json({ message: error})
+        }
+    })
+
+itemRouter.route('/setStock/:itemId/:newStock')
+    .patch(async (req, res) => {
+        try{
+            const id = req.params.itemId
+            const newStock: number = Number(req.params.newStock)
+            const item = await Item.findById(id);
+            if (item) {
+                item.stock = newStock;
+            } else {
+                throw new Error("Item not found");
+            }
+            const updatedItem = await item.save();
+            res.send(updatedItem);
+
+        } catch {
+            res.status(500).send("Internal Server Error");
+        }
+    })
 
 export default itemRouter
