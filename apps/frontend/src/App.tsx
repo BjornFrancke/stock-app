@@ -1,10 +1,13 @@
 import './index.css'
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import {Iitems} from "./types.ts";
+import { Iitems } from "./types.ts";
 
 const NewListAllItems = () => {
     const [items, setItems] = useState([]);
+    const [showForm, setShowForm] = useState(false); // control form visibility
+    const [newItemName, setNewItemName] = useState(''); // handle new item name
+    const [newItemStock, setNewItemStock] = useState(0); // handle new item stock amount
 
     // Fetch items initially
     useEffect(() => {
@@ -29,29 +32,66 @@ const NewListAllItems = () => {
         fetchItems();
     };
 
+    // Handle new item submit
+    const handleSubmitNewItem = async () => {
+        const itemData = {
+            name: newItemName,
+            stock: newItemStock
+        };
+        await axios.post('http://localhost:3000/item/create', itemData);
+        // After creating new item, fetch items again to refresh the list
+        fetchItems();
+        // Hide form and reset values
+        setShowForm(false);
+        setNewItemName('');
+        setNewItemStock(0);
+    };
+
     return (
-        <ul>
-            {items.map((item: Iitems) => (
-                <li key={item._id}>
-                    {item.name} - {item.stock}{' '}
-                    {item._id && <button onClick={() => handleDelete(item._id)}>Delete</button>}                </li>
-            ))}
-        </ul>
+        <>
+            <ul>
+                {items.map((item: Iitems) => (
+                    <li key={item._id}>
+                        {item.name} - {item.stock}{' '}
+                        {item._id && <button onClick={() => handleDelete(item._id)}>Delete</button>}
+                    </li>
+                ))}
+            </ul>
+            <button onClick={() => setShowForm(true)}>Create Item</button>
+            {showForm && <button onClick={() => setShowForm(false)}>Dismiss</button>}
+
+            {
+                showForm && (
+                    <form>
+                        <input
+                            type="text"
+                            placeholder="Item name"
+                            value={newItemName}
+                            onChange={(e) => setNewItemName(e.target.value)}
+                        />
+                        <input
+                            type="number"
+                            placeholder="Item stock"
+                            value={newItemStock}
+                            onChange={(e) => setNewItemStock(Number(e.target.value))}
+                        />
+                        <button type="button" onClick={handleSubmitNewItem}>Create</button>
+                    </form>
+                )
+            }
+        </>
     );
 };
 
-
-
-    function App() {
-
-        return (
-      <>
-          <h1>hello</h1>
-          <div className={"bg-gray-300 w-fit h-fit p-6"}>
-              <NewListAllItems/>
-          </div>
-      </>
-  )
+function App() {
+    return (
+        <>
+            <h1>Hello</h1>
+            <div className={"bg-gray-300 w-fit h-fit p-6"}>
+                <NewListAllItems />
+            </div>
+        </>
+    )
 }
 
-export default App
+export default App;
