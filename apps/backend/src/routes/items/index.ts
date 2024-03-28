@@ -16,7 +16,7 @@ itemRouter.route('/findAll')
     }
     })
 
-
+//TODO Check if the item is used in a BOM
 itemRouter.route('/delete/:itemId')
     .delete(async (req, res) => {
         try {

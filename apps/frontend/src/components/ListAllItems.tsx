@@ -15,6 +15,7 @@ import {ChipDelete} from "@mui/joy"
 export const ListAllItems = () => {
     const [items, setItems] = useState([]);
     const [showForm, setShowForm] = useState(false); // control form visibility
+    const [showChangeStockForm, setShowChangeStockForm] = useState(false)
     const [newItemName, setNewItemName] = useState(''); // handle new item name
     const [newItemStock, setNewItemStock] = useState(0); // handle new item stock amount
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -39,6 +40,7 @@ export const ListAllItems = () => {
         }
         await axios.patch(`http://localhost:3000/item/setStock/${id}/${newStockValue}`);
         setIsModalOpen(false)
+        setShowChangeStockForm(false)
         fetchItems();
     }
 
@@ -129,22 +131,35 @@ export const ListAllItems = () => {
                         </tr>
                         <tr>
                             <td>Stock</td>
-                            <td>{selectedItem.stock}</td>
-                            <td>
-                                <form className='flex'>
-                                    <Input
-                                    type="number"
-                                    placeholder='item stock'
-                                    size="sm"
-                                    color="neutral"
-                                    variant="outlined"
-                                    value={newStockValue}
-                                    onChange={(e) => setNewStockValue(Number(e.target.value))}
-                                    />
-                                    <Button variant='outlined' size="sm" type='button' onClick={() => handleStockChange(selectedItem._id)}>Change</Button>
+                            {!showChangeStockForm && (
+                            <td>{selectedItem.stock}
+                            <Button variant='outlined' size="sm" type='button' onClick={() => setShowChangeStockForm(true)}>edit</Button>
 
-                                </form>
                             </td>
+                            
+                            )}
+                           
+
+                            {showChangeStockForm && (
+ <td>
+ <form className='flex'>
+     <Input
+     type="number"
+     placeholder='item stock'
+     size="sm"
+     color="neutral"
+     variant="outlined"
+     value={newStockValue}
+     onChange={(e) => setNewStockValue(Number(e.target.value))}
+     />
+     <Button variant='solid' size="sm" type='button' onClick={() => handleStockChange(selectedItem._id)}>Change</Button>
+     <Button variant='outlined' color='danger' size="sm" type='button' onClick={() => setShowChangeStockForm(false)}>Cancel</Button>
+
+
+ </form>
+</td>
+                            )}
+                           
                         </tr>
                         <tr>
                             <td>ID</td>
