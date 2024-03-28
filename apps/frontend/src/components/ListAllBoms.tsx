@@ -151,6 +151,10 @@ useEffect(() => {
             {selectedBom && (
                 <Table className={"z-30 max-w-[50vw]"}>
                     <tr>
+                        <td>BOM ID</td>
+                        <td>{selectedBom._id}</td>
+                    </tr>
+                    <tr>
                         <td>Name</td>
                         <td>{selectedBom.name}</td>
                     </tr>
@@ -159,7 +163,7 @@ useEffect(() => {
                         <td>{selectedBom.product}</td>
                     </tr>
                     <tr>
-                        <td>Components</td>
+                        <td>Components <Button onClick={() => setAddComponentForm(true)}>Add</Button></td>
                         {selectedBom.components && selectedBom.components.map((component, index) => (
                                         <tr key={index}>
                                            <td >{component.id}</td> 
@@ -186,7 +190,6 @@ useEffect(() => {
                                     ))}
                     </tr>
                     <tr>
-                        <td><Button onClick={() => setAddComponentForm(true)}>Add Component</Button></td>
                         {addComponentForm && (
                         <td className="flex">
                             <form>
