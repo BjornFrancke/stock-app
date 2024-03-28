@@ -6,6 +6,9 @@ import Modal from 'react-modal';
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
 import Input from "@mui/joy/Input";
+import { XMarkIcon } from "@heroicons/react/16/solid";
+import IconButton from "@mui/joy/IconButton";
+import FormLabel from "@mui/joy/FormLabel";
 
 
 export const ListAllBoms = () => {
@@ -149,7 +152,7 @@ useEffect(() => {
                                            
                                            ></Input>
                                             <Button variant='outlined' size="sm" type='button' onClick={() => handleComponentAmountChange(selectedBom._id)}>Change</Button>
-                                            <Button variant="outlined" size="sm" typeof="button" onClick={() => setSelectedComponent(null)}>X</Button>
+                                            <IconButton variant="outlined" size="sm" typeof="button" onClick={() => setSelectedComponent(null)}><XMarkIcon className="h-6 w-6 text-blue-500"/></IconButton>
 
                                            </form></td>
                                            }
@@ -169,8 +172,9 @@ useEffect(() => {
             contentLabel="Create BOM"
             className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
             >
+                <h2>Create new BOM</h2>
                 <form>
-                    <h2>Name</h2>
+                    <FormLabel>Name</FormLabel>
                     <Input 
                      type="text"
                      placeholder="Bom name"
@@ -179,7 +183,7 @@ useEffect(() => {
                      value={newBomName}
                      onChange={(e) => setNewBomName(e.target.value)}
                     />
-                    <h2>Product</h2>
+                    <FormLabel>Product</FormLabel>
                     <Input 
                      type="text"
                      placeholder="Bom product"
@@ -188,9 +192,8 @@ useEffect(() => {
                      value={newBomProduct}
                      onChange={(e) => setNewBomProduct(e.target.value)}
                     />
-                                <Button onClick={handleSubmitNewBom}>Create</Button>
                 </form>
-
+                <Button onClick={handleSubmitNewBom}>Create</Button>
             </Modal>
             <Button onClick={handleAddBomClick} className=" max-h-5">Create</Button>
             </div>
