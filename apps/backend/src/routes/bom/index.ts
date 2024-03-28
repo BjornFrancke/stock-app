@@ -58,15 +58,28 @@ bomRouter.route('/addComponent/:bomId')
     }
 })
 
-bomRouter.route('/setComponentAmount/:bomId/:componentId')
+bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
     .patch(async (req, res) => {
         const bomId = req.params.bomId
         const componentId = req.params.componentId
+        const newAmount = Number(req.params.amount); // Assuming amount is passed as a string and needs to be an integer
         try {
             const bom = await Bom.findById(bomId)
+            if (!bom) {
+                return res.status(404).send("BOM not found");
+            }
+            const componentIndex = bom.components.findIndex(c => c.id == componentId);
+            if (componentIndex === -1) {
+                return res.status(404).send("Component not found in BOM");
+            }
+            bom.components[componentIndex].amount = newAmount;
 
-        } catch {
-            res.status(500).send("Internal Server Error")
+            const updatedBom = await bom.save();
+            res.json(updatedBom);
+
+        } catch (error) {
+            console.error("Error updating component amount:", error);
+            res.status(500).send("Internal Server Error");
         }
     })
 

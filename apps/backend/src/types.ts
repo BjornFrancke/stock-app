@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import { Date } from "mongoose";
 
 export interface Iitems {
     name: string,
@@ -23,5 +24,13 @@ export interface Iaddress {
 export interface Ibom {
     name: string,
     product: ObjectId,
-    components: [{id: ObjectId, amount: number}]
+    components: [{id: ObjectId | string, amount: number}]
+}
+
+export interface Iorder {
+    orderNumber: number,
+    items: [{id: ObjectId, amount: number}]
+    createtionDate: Date
+    dueDate: Date,
+    receptian?: string
 }

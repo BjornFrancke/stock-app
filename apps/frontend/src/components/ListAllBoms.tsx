@@ -1,7 +1,7 @@
 import Table from "@mui/joy/Table";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Ibom } from "../types";
+import { Ibom, Icomponent } from "../types";
 import Modal from 'react-modal';
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
@@ -15,6 +15,8 @@ const [isModalOpen, setIsModalOpen] = useState(false)
 const [isCreationModalOpen, setIsCreationModalOpen] = useState(false)
 const [newBomName, setNewBomName] = useState(" ")
 const [newBomProduct, setNewBomProduct] = useState(" ")
+const [selectedComponent, setSelectedComponent] = useState<Icomponent | null> (null)
+const [newComponentAmount, setNewComponentAmount] = useState(0)
 
 
 
@@ -22,6 +24,7 @@ const handleBomClick = (bom: Ibom) => {
     setSelectedBom(bom);
     setIsModalOpen(true)
 }
+
 
 const handleAddBomClick = () => {
     setIsCreationModalOpen(true)
@@ -58,6 +61,21 @@ const handleSubmitNewBom = async () => {
     setNewBomName('');
 };
 
+const handleComponentAmountChange = async (id: string | undefined) => {
+    if (typeof id === undefined) {
+        console.warn('Cannot set stock of an item without an id')
+        return
+    } 
+    
+    await axios.patch(`http://localhost:3000/bom/setComponentAmount/${id}/${selectedComponent?.id}/${newComponentAmount}`);
+    setIsModalOpen(false)
+    fetchBoms();
+    setNewComponentAmount(0)
+    setSelectedBom(null)
+    setSelectedComponent(null)
+
+}
+
 useEffect(() => {
     fetchBoms();
 }, []);
@@ -82,7 +100,7 @@ useEffect(() => {
                 <tbody>
                     {boms.map((bom: Ibom) => (
                         <tr key={bom._id}>
-                            <td onClick={() => handleBomClick(bom)}>{bom.name}</td>
+                            <td onClick={() => handleBomClick(bom)} className=" underline cursor-pointer select-none">{bom.name}</td>
                             <td>{bom.product}</td>
                             <td>{bom._id && 
                             <Button
@@ -117,9 +135,26 @@ useEffect(() => {
                         <td>Components</td>
                         {selectedBom.components && selectedBom.components.map((component, index) => (
                                         <tr key={index}>
-                                           <td>{component.id}</td> 
+                                           <td onClick={() => setSelectedComponent(component)}>{component.id}</td> 
                                            <td className=" text-gray-400"><Chip variant="outlined">{component.amount}</Chip></td>
+                                           {selectedComponent?.id === component.id &&
+                                           <td><form><Input 
+                                           type="number" 
+                                           placeholder="Value"
+                                           size="md"
+                                           variant="outlined"
+                                           value={newComponentAmount} 
+                                           onChange={(e) => setNewComponentAmount(Number(e.target.value))}
+                                        
+                                           
+                                           ></Input>
+                                            <Button variant='outlined' size="sm" type='button' onClick={() => handleComponentAmountChange(selectedBom._id)}>Change</Button>
+
+                                           </form></td>
+                                           }
+                                           
                                            </tr>
+
                                     ))}
                     </tr>
 
@@ -156,7 +191,7 @@ useEffect(() => {
                 </form>
 
             </Modal>
-            <Button onClick={handleAddBomClick}>Create</Button>
+            <Button onClick={handleAddBomClick} className=" max-h-5">Create</Button>
             </div>
         </>
     )
