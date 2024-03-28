@@ -31,6 +31,7 @@ useEffect(() => {
 
     return(
         <>
+            <div className="flex w-screen justify-center mt-12">
                 <Table className={"max-w-[50%]"}>
                 <caption>BOMs</caption>
                 <thead>
@@ -77,6 +78,7 @@ useEffect(() => {
 
             )}
             </Modal>
+            </div>
         </>
     )
 }

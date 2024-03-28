@@ -81,7 +81,7 @@ export const ListAllItems = () => {
 
     return (
         <>
-
+            <div className="flex w-screen justify-center mt-12">
             <Table className={"max-w-[50%]"}>
                 <thead>
                 <tr>
@@ -153,8 +153,8 @@ export const ListAllItems = () => {
                     </Table>
                 )}
             </Modal>
-            {!showForm && <Button variant="solid" onClick={() => setShowForm(true)}>Create Item</Button>}
-            {showForm && <Button variant="solid" onClick={() => setShowForm(false)}>Dismiss</Button>}
+            {!showForm && <Button variant="solid" onClick={() => setShowForm(true)} className="max-h-4">Create Item</Button>}
+            {showForm && <Button variant="solid" onClick={() => setShowForm(false)} className="max-h-4">Dismiss</Button>}
 
             {
                 showForm && (
@@ -187,6 +187,7 @@ export const ListAllItems = () => {
                     </Card>
                 )
             }
+            </div>
         </>
     );
 };
