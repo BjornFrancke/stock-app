@@ -39,20 +39,25 @@ bomRouter.route('/delete/:bomId')
 
 bomRouter.route('/addComponent/:bomId')
 .patch(async (req, res) => {
-    const id = req.params.bomId
+    const bomId = req.params.bomId
     const newComponentId = req.body.componentId
     const newComponentAmount: number = Number(req.body.componentAmount)
     try {
-        const bom = await Bom.findById(id)
-        const newComponent = await Item.findById(newComponentId)
-        if (newComponent && bom){
-            bom?.components.push({id: newComponentId, amount: newComponentAmount})
+        const bom = await Bom.findById(bomId); // Find the BOM by its ID
+        const newComponent = await Item.findById(newComponentId); // Find the component by its ID
 
-        } else {
-            throw new Error("Component not found");
+        if (!bom) {
+            return res.status(404).send("BOM not found");
         }
-        const updateBom = await bom.save
-        res.send(updateBom)
+        if (!newComponent) {
+            return res.status(404).send("Component not found")
+        }
+
+        // Push the new component and its amount to the BOM's components array
+        bom.components.push({ id: newComponentId, amount: newComponentAmount });
+
+        const updatedBom = await bom.save(); // Correctly call the save method to update the BOM in the database
+        res.json(updatedBom); // Send the updated BOM as a response
     } catch {
         res.status(500).send("Internal Server Error")
     }

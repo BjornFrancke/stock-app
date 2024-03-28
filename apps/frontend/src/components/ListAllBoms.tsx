@@ -20,6 +20,8 @@ const [newBomName, setNewBomName] = useState(" ")
 const [newBomProduct, setNewBomProduct] = useState(" ")
 const [selectedComponent, setSelectedComponent] = useState<Icomponent | null> (null)
 const [newComponentAmount, setNewComponentAmount] = useState(0)
+const [addComponentForm, setAddComponentForm] = useState(false)
+const [newComponentId, setNewComponentId] = useState(" ")
 
 
 
@@ -63,6 +65,19 @@ const handleSubmitNewBom = async () => {
     setIsCreationModalOpen(false);
     setNewBomName('');
 };
+
+const handleSubmitNewComponent = async (id: string | undefined) => {
+    if (typeof id === "undefined") {
+        console.warn("Cannot find BOM")
+        return
+    }
+    const componentData = {componentId: newComponentId, componentAmount: 2}
+    await axios.patch(`http://localhost:3000/bom/AddComponent/${id}`, componentData)
+    .catch(error => console.error("Failed to add component:", error));
+    fetchBoms()
+    setNewComponentId(" ")
+    setAddComponentForm(false)
+}
 
 const handleComponentAmountChange = async (id: string | undefined) => {
     if (typeof id === undefined) {
@@ -160,6 +175,24 @@ useEffect(() => {
                                            </tr>
 
                                     ))}
+                    </tr>
+                    <tr>
+                        <td><Button onClick={() => setAddComponentForm(true)}>Add Component</Button></td>
+                        {addComponentForm && (
+                        <td className="flex"><form>
+                            <Input
+                            type="text"
+                            placeholder="ID"
+                            size="md"
+                            variant="outlined"
+                            value={newComponentId}
+                            onChange={(e) => setNewComponentId(e.target.value)}
+                            />
+                        </form > <Button onClick={() => handleSubmitNewComponent(selectedBom._id)}>Add</Button>
+                        <Button onClick={() => setAddComponentForm(false)}>X</Button>
+                        </td>
+                        
+                        )}
                     </tr>
 
                 </Table>
