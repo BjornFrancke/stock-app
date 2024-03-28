@@ -26,16 +26,16 @@ bomRouter.route('/findById/:bomId')
 })
 
 
-bomRouter.route('/deleteById/:bomId')
-.delete(async (req, res) => {
-    const id = req.params.bomId
-    try {
-        const deletedBom = Bom.findByIdAndDelete(id)
-        res.json(deletedBom)
-    } catch {
-        res.status(500).send("Internal Server Error")
-    }
-})
+bomRouter.route('/delete/:bomId')
+    .delete(async (req, res) => {
+        const id = req.params.bomId
+        try {
+            const deletedBom = await Bom.findByIdAndDelete(id)
+            res.json(deletedBom)
+        } catch {
+            res.status(500).send("Internal Server Error")
+        }
+    })
 
 bomRouter.route('/addComponent/:bomId')
 .patch(async (req, res) => {
@@ -70,5 +70,19 @@ bomRouter.route('/setComponentAmount/:bomId/:componentId')
         }
     })
 
+bomRouter.route('/create')
+.post(async (req, res) => {
+    try {
+        const newBom = new Bom({
+            name: req.body.name,
+            product: req.body.product,
+            components: []
+        })
+        const bomAdded = await newBom.save()
+        res.send(bomAdded)
+    } catch {
+        res.status(500).send("Internal Server Error")
+    }
+})
 
 export default bomRouter
