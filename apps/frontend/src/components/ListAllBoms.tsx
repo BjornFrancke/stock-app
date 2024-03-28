@@ -32,6 +32,7 @@ useEffect(() => {
     return(
         <>
                 <Table className={"max-w-[50%]"}>
+                <caption>BOMs</caption>
                 <thead>
                 <tr>
                     <th>Name</th>
@@ -68,7 +69,7 @@ useEffect(() => {
                     <tr>
                         <td>Components</td>
                         {selectedBom.components && selectedBom.components.map((component, index) => (
-                                        <div key={index}>{component.id} - {component.amount}</div> // Assuming each component has a 'name' property
+                                        <div key={index}>{component.id} - {component.amount}</div>
                                     ))}
                     </tr>
 

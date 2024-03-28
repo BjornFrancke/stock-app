@@ -55,6 +55,17 @@ itemRouter.route('/findById/:itemId')
     }
 })
 
+itemRouter.route('/getNameById/:itemId')
+    .get(async (req, res) => {
+        try {
+            const itemData = await Item.findById(req.params.itemId)
+            const itemName = itemData?.name
+            res.json(itemName)
+        } catch {
+            res.status(500).send("Internal Server Error")
+        }
+    })
+
 itemRouter.route('/update/:itemId')
     .patch(async (req, res) => {
         try{
