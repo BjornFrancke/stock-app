@@ -26,7 +26,7 @@ bomRouter.route('/findById/:bomId')
 })
 
 
-bomRouter.route('/delete/:bomId')
+bomRouter.route('/deleteById/:bomId')
 .delete(async (req, res) => {
     const id = req.params.bomId
     try {

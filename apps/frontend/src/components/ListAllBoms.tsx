@@ -20,6 +20,15 @@ const handleCloseModal = () => {
     setIsModalOpen(false)
 }
 
+const handleBomDelete = async (id: string | undefined) => {
+    if (typeof id === "undefined") {
+        console.warn("Cannot find BOM")
+    } else {
+        await axios.delete(`http://localhost:3000/bom/deleteById/${id}`)
+        fetchBoms()
+    }
+}
+
 useEffect(() => {
     fetchBoms();
 }, []);
@@ -38,6 +47,7 @@ useEffect(() => {
                 <tr>
                     <th>Name</th>
                     <th>Product</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,6 +55,7 @@ useEffect(() => {
                         <tr key={bom._id}>
                             <td onClick={() => handleBomClick(bom)}>{bom.name}</td>
                             <td>{bom.product}</td>
+                            <td onClick={() => handleBomDelete(bom._id)}>Delete</td>
 
                         </tr>
                     ))}
