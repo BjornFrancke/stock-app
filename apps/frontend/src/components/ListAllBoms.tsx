@@ -1,7 +1,7 @@
 import Table from "@mui/joy/Table";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Ibom, Icomponent } from "../types";
+import { Ibom, Icomponent, Iitems } from "../types";
 import Modal from 'react-modal';
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
@@ -22,6 +22,8 @@ const [selectedComponent, setSelectedComponent] = useState<Icomponent | null> (n
 const [newComponentAmount, setNewComponentAmount] = useState(0)
 const [addComponentForm, setAddComponentForm] = useState(false)
 const [newComponentId, setNewComponentId] = useState(" ")
+const [availableComponents, setAvailableComponents] = useState([]); // State for available components
+
 
 
 
@@ -96,11 +98,18 @@ const handleComponentAmountChange = async (id: string | undefined) => {
 
 useEffect(() => {
     fetchBoms();
+    fetchAvailableComponents(); // Assuming you have a function to fetch available components
 }, []);
 
     const fetchBoms = async () => {
         const response = await axios.get('http://localhost:3000/bom/findAll');
         setBoms(response.data);
+    };
+
+    const fetchAvailableComponents = async () => {
+        // Example API call
+        const response = await axios.get('http://localhost:3000/item/findAll');
+        setAvailableComponents(response.data); // Assuming response.data contains an array of components
     };
 
     return(
@@ -179,15 +188,20 @@ useEffect(() => {
                     <tr>
                         <td><Button onClick={() => setAddComponentForm(true)}>Add Component</Button></td>
                         {addComponentForm && (
-                        <td className="flex"><form>
-                            <Input
-                            type="text"
-                            placeholder="ID"
-                            size="md"
-                            variant="outlined"
-                            value={newComponentId}
-                            onChange={(e) => setNewComponentId(e.target.value)}
-                            />
+                        <td className="flex">
+                            <form>
+                                <select
+                                    value={newComponentId}
+                                    onChange={(e) => setNewComponentId(e.target.value)}
+                                    className="p-2 border border-gray-300 rounded-md"
+                                    >
+                                    <option value="">Select a Component</option>
+                                    {availableComponents.map((component: Iitems) => (
+                                        <option key={component._id} value={component._id}>
+                                            {component.name}
+                                        </option>
+                                    ))}
+                                    </select>
                         </form > <Button onClick={() => handleSubmitNewComponent(selectedBom._id)}>Add</Button>
                         <Button onClick={() => setAddComponentForm(false)}>X</Button>
                         </td>
