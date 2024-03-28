@@ -95,7 +95,7 @@ export const ListAllItems = () => {
                         <tr key={item._id}>
                             <td onClick={() => handleItemClick(item)} className={"underline cursor-pointer"}>{item.name}</td>
                             <td>{item.stock}</td>
-                            <td>{item._id &&
+                            <td>{item._id && isModalOpen === false &&
                                 <Chip
                                 variant="soft"
                                 color="danger"
