@@ -135,8 +135,8 @@ useEffect(() => {
                         <td>Components</td>
                         {selectedBom.components && selectedBom.components.map((component, index) => (
                                         <tr key={index}>
-                                           <td onClick={() => setSelectedComponent(component)}>{component.id}</td> 
-                                           <td className=" text-gray-400"><Chip variant="outlined">{component.amount}</Chip></td>
+                                           <td >{component.id}</td> 
+                                           <td className=" text-gray-400"><Chip onClick={() => setSelectedComponent(component)} variant="outlined">{component.amount}</Chip></td>
                                            {selectedComponent?.id === component.id &&
                                            <td><form><Input 
                                            type="number" 
@@ -149,6 +149,7 @@ useEffect(() => {
                                            
                                            ></Input>
                                             <Button variant='outlined' size="sm" type='button' onClick={() => handleComponentAmountChange(selectedBom._id)}>Change</Button>
+                                            <Button variant="outlined" size="sm" typeof="button" onClick={() => setSelectedComponent(null)}>X</Button>
 
                                            </form></td>
                                            }
