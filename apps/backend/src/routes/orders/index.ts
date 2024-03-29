@@ -23,6 +23,7 @@ ordersRoute.route('/create')
                 orderNumber: req.body.orderNumber,
                 items: [],
                 createtionDate: creationDate,
+                dueDate: req.body.dueDate,
                 receptian: req.body.receptian
             }
         );
