@@ -116,7 +116,7 @@ const fetchAvailableItems = async () => {
             <thead>
               <tr>
                 <td>#</td>
-                <td>Recepian</td>
+                <td>Recipient</td>
                 <td>Due date</td>
                 <td>Status</td>
                 <td>
@@ -193,7 +193,7 @@ const fetchAvailableItems = async () => {
               <form>
                 <Input
                   type="text"
-                  placeholder="Recepian"
+                  placeholder="Recipient"
                   value={newOrderRecepian}
                   onChange={(e) => setNewOrderReceptian(e.target.value)}
                 />
@@ -249,7 +249,7 @@ const fetchAvailableItems = async () => {
                 <td>{selectedOrder?._id}</td>
             </tr>
             <tr>
-                <td>Recepian</td>
+                <td>Recipient</td>
                 <td>{selectedOrder?.receptian}</td>
             </tr>
             </Table>
