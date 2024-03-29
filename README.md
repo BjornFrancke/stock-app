@@ -1,7 +1,7 @@
 
 # Stock-app
 
-A simple stock-app made with TypeScript, express.js and MongoDB
+A simple stock-app made with the MERN stack
 
 ## Run Locally
 
