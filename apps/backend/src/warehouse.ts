@@ -1,7 +1,6 @@
 import {Iwarehouse} from "./types";
 import {HydratedDocument, model, Model, Schema} from "mongoose";
 import {ObjectId} from "mongodb";
-import {itemSchema} from "./items";
 
 type WarehouseModel = Model<Iwarehouse>
 const warehouseSchema = new Schema<Iwarehouse, WarehouseModel>({

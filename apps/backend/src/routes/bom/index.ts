@@ -1,7 +1,6 @@
 import express from "express";
 import { Bom } from "../../bom";
 import { Item } from "../../items";
-import { Ibom } from "../../types";
 
 const bomRouter = express.Router()
 

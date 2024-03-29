@@ -1,4 +1,4 @@
-import {Schema, Model, model, HydratedDocument} from "mongoose"
+import {Schema, model, HydratedDocument} from "mongoose"
 import {Iitems, ItemsModel} from "./types";
 
 export const itemSchema = new Schema<Iitems, ItemsModel>({
