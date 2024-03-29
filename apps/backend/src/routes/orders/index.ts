@@ -33,4 +33,14 @@ ordersRoute.route('/create')
     }
 })
 
+ordersRoute.route('/delete/:orderId')
+    .delete(async (req, res) => {
+        try {
+            const deletedOrder = await Order.findByIdAndDelete(req.params.orderId);
+            res.json(deletedOrder)
+        } catch {
+            res.status(500).send("Internal Server Error");
+        }
+    })
+
 export default ordersRoute
