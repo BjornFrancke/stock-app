@@ -9,6 +9,7 @@ import Input from "@mui/joy/Input";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import IconButton from "@mui/joy/IconButton";
 import FormLabel from "@mui/joy/FormLabel";
+import ChipDelete from "@mui/joy/ChipDelete";
 
 
 export const ListAllBoms = () => {
@@ -152,10 +153,14 @@ useEffect(() => {
                             <td onClick={() => handleBomClick(bom)} className=" underline cursor-pointer select-none">{bom.name}</td>
                             <td>{bom.product}</td>
                             <td>{bom._id && 
-                            <Button
-                                onClick={() => handleBomDelete(bom._id)}
+                            <Chip
+                            variant="soft"
+                                color="danger"
+                                size="sm"
+                                className={"select-none"}
+                                endDecorator={<ChipDelete onClick={() => handleBomDelete(bom._id)} />}
                             >
-                             Delete   </Button>
+                             Delete   </Chip>
                             }
                             </td>
 
