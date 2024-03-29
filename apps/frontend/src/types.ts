@@ -27,3 +27,18 @@ export interface Iorder {
     receptian?: string,
     isDone?: boolean
 }
+
+export interface Icustomer {
+    _id: string,
+    name: string,
+    mailAdress: string,
+    phoneNr?: string,
+    address: Iaddress
+}
+
+export interface Iaddress {
+    street: string,
+    zip: number,
+    city: string,
+    country: string
+}
