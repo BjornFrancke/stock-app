@@ -129,7 +129,7 @@ const fetchAvailableItems = async () => {
             <tbody>
               {orders.map((order: Iorder) => (
                 <tr key={order._id}>
-                  <td onClick={() => handleOrderClick(order)}>
+                  <td className=" underline cursor-pointer select-none" onClick={() => handleOrderClick(order)}>
                     {order.orderNumber}
                   </td>
                   <td>{order.receptian}</td>

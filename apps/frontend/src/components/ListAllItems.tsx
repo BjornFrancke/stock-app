@@ -84,6 +84,8 @@ export const ListAllItems = () => {
 
     return (
         <>
+                <h1 className="text-center mt-6">Items</h1>
+
             <div className="flex w-screen justify-center mt-12">
             <Table className={"max-w-[50%]"}>
                 <thead>

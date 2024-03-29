@@ -38,6 +38,14 @@ export interface Iorder {
     isDone?: boolean
 }
 
+export interface Icustomer {
+    _id?: ObjectId | string,
+    name: string,
+    mailAdress: string,
+    phoneNr?: string,
+    address: Iaddress
+}
+export type CustomerModel = Model<Icustomer>
 export type ItemsModel = Model<Iitems>
 export type BomModel = Model<Ibom>
 export type OrderModel = Model<Iorder>
