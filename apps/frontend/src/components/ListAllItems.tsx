@@ -11,6 +11,7 @@ import {Input} from "@mui/joy";
 import Card from '@mui/joy/Card';
 import Chip from "@mui/joy/Chip"
 import {ChipDelete} from "@mui/joy"
+import { PencilSquareIcon } from '@heroicons/react/16/solid';
 
 export const ListAllItems = () => {
     const [items, setItems] = useState([]);
@@ -132,9 +133,11 @@ export const ListAllItems = () => {
                         <tr>
                             <td>Stock</td>
                             {!showChangeStockForm && (
-                            <td>{selectedItem.stock}
-                            <Button variant='outlined' size="sm" type='button' onClick={() => setShowChangeStockForm(true)}>edit</Button>
-
+                            <td onClick={() => setShowChangeStockForm(true)}
+                            className=' select-none cursor-pointer'
+                            ><Chip
+                            endDecorator={<PencilSquareIcon className='h-4 w-4 text-black select-none'/>}
+                            >{selectedItem.stock}</Chip>
                             </td>
                             
                             )}
