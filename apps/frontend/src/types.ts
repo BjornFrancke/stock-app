@@ -24,5 +24,6 @@ export interface Iorder {
     items?: {_id?: string | undefined, amount: number}[]
     createtionDate: Date,
     dueDate: Date | string,
-    receptian?: string
+    receptian?: string,
+    isDone?: boolean
 }

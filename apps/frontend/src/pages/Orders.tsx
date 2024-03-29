@@ -6,6 +6,8 @@ import Table from "@mui/joy/Table";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Iorder } from "../types";
+import Chip from "@mui/joy/Chip";
+import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 
 export function Orders() {
     const [orders, setOrders] = useState([])
@@ -29,6 +31,17 @@ const handleSubmitNewOrder = async () => {
 
 }
 
+const handleMarkAsDone = async (id: string | undefined) => {
+    // Send a DELETE request
+    if (typeof id === 'undefined') {
+        console.warn('Cannot delete an item without an id');
+        return;
+    }
+    await axios.patch(`http://localhost:3000/orders/markAsDone/${id}`);
+    // After deleting the item, fetch items again to refresh the list
+    fetchOrders();
+};
+
 useEffect(() => {
     fetchOrders();
 }, []);
@@ -51,9 +64,10 @@ const fetchOrders = async () => {
                     <td>#</td>
                     <td>Recepian</td>
                     <td>Due date</td>
-                    <td>Actions
-                        <Button onClick={() => setIsCreationModalOpen(true)}>+</Button>
-                        </td>
+                    <td>Status</td>
+                    <td>
+                        <Button onClick={() => setIsCreationModalOpen(true)}>Add Order</Button>
+                    </td>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +76,15 @@ const fetchOrders = async () => {
                         <td>{order.orderNumber}</td>
                         <td>{order.receptian}</td>
                         <td>{new Date(order.dueDate).toLocaleDateString()}</td>
+                        {order.isDone && (
+                            <td><Chip color="success">Done!</Chip></td>
+                        )}
+                        {!order.isDone && (
+                            <td><Chip onClick={() => handleMarkAsDone(order._id)} endDecorator={<CheckBadgeIcon className="h-3 w-3 text-black"/>}>Not done!</Chip></td>
+                            )}                  
+                        {order.isDone === null && (
+                            <td>Null</td>
+                        )}
                     </tr>
                     
                 ))}
