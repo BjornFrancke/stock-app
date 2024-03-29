@@ -1,6 +1,6 @@
 import "../src/index.css"
 import { Outlet, Link } from "react-router-dom";
-import { ClipboardDocumentListIcon, Cog8ToothIcon, HomeIcon, Squares2X2Icon } from "@heroicons/react/16/solid";
+import { ClipboardDocumentListIcon, Cog8ToothIcon, HomeIcon, QueueListIcon, Squares2X2Icon } from "@heroicons/react/16/solid";
 
 const Layout = () => {
   return (
@@ -17,9 +17,13 @@ const Layout = () => {
             <Link to="/boms"><ClipboardDocumentListIcon className="h-6 w-6 text-black"/></Link>
           </li>
           <li className="hover:bg-gray-500 rounded">
-            <Link to="/"><Cog8ToothIcon className="h-6 w-6 text-black"/></Link>
+            <Link to="/orders"><QueueListIcon className="h-6 w-6 text-black"/></Link>
 
           </li>
+          <li className="hover:bg-gray-500 rounded">
+            <Link to="/"><Cog8ToothIcon className="h-6 w-6 text-black"/></Link>
+
+          </li>          
         </ul>
       </nav>
 
