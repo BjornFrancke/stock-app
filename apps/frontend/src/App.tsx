@@ -4,6 +4,7 @@ import { ListAllBoms } from './components/ListAllBoms';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './Layout';
 import { Home } from './pages/Home';
+import { Orders } from './pages/Orders';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
             <Route index element={<Home/>}/>
             <Route path="items" element={<ListAllItems/>}/>
             <Route path="boms" element={<ListAllBoms/>}/>
+            <Route path="orders" element={<Orders/>}/>
             </Route>
             
         </Routes>

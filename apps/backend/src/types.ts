@@ -31,12 +31,14 @@ export interface Ibom {
 
 export interface Iorder {
     orderNumber: number,
-    items: [{id: ObjectId, amount: number}]
-    createtionDate: Date
+    items: [{_id: ObjectId, amount: number}]
+    createtionDate: Date,
     dueDate: Date,
-    receptian?: string
+    receptian?: string,
+    isDone?: boolean
 }
 
 export type ItemsModel = Model<Iitems>
 export type BomModel = Model<Ibom>
+export type OrderModel = Model<Iorder>
 

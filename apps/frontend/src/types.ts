@@ -17,3 +17,12 @@ export interface Icomponent {
     name?: string
     amount: number
 }
+
+export interface Iorder {
+    _id?: string | undefined
+    orderNumber: number,
+    items?: {_id?: string | undefined, amount: number}[]
+    createtionDate: Date,
+    dueDate: Date | string,
+    receptian?: string
+}
