@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Iorder } from "../types";
 import Chip from "@mui/joy/Chip";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
+import ChipDelete from "@mui/joy/ChipDelete";
 
 export function Orders() {
     const [orders, setOrders] = useState([])
@@ -38,6 +39,16 @@ const handleMarkAsDone = async (id: string | undefined) => {
         return;
     }
     await axios.patch(`http://localhost:3000/orders/markAsDone/${id}`);
+    // After deleting the item, fetch items again to refresh the list
+    fetchOrders();
+};
+const handleDelete = async (id: string | undefined) => {
+    // Send a DELETE request
+    if (typeof id === 'undefined') {
+        console.warn('Cannot delete an item without an id');
+        return;
+    }
+    await axios.delete(`http://localhost:3000/orders/delete/${id}`);
     // After deleting the item, fetch items again to refresh the list
     fetchOrders();
 };
@@ -85,6 +96,15 @@ const fetchOrders = async () => {
                         {order.isDone === null && (
                             <td>Null</td>
                         )}
+                        <td> <Chip
+                                variant="soft"
+                                color="danger"
+                                size="sm"
+                                className={"select-none"}
+                                endDecorator={<ChipDelete onClick={() => handleDelete(order._id)}/>}
+                                >
+                                    Delete
+                                </Chip></td>
                     </tr>
                     
                 ))}
