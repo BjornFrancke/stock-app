@@ -1,5 +1,6 @@
 import express from "express";
 import { Order } from "../../models/orders";
+import mongoose from "mongoose";
 
 const ordersRoute = express.Router()
 
@@ -51,6 +52,35 @@ ordersRoute.route('/markAsDone/:orderId')
         res.status(500).send("Internal Server Error");
     }
 })
+
+ordersRoute.route('/:orderId/additem')
+.patch(async (req, res) => {
+    const orderId = req.params.orderId;
+    const itemId = req.body.itemId
+    const amount = Number(req.body.amount);
+
+    if (!amount) {
+        return res.status(400).send("Item amount is required");
+    }
+
+    try {
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            return res.status(404).send("Order not found");
+        }
+
+        const newItem = { _id: itemId, amount: amount };
+        order.items.push(newItem);
+
+        const updatedOrder = await order.save(); 
+        res.json(updatedOrder); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 
 ordersRoute.route('/delete/:orderId')
     .delete(async (req, res) => {
