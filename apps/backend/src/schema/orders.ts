@@ -7,7 +7,8 @@ export const orderSchema = new Schema<Iorder, OrderModel>({
     items: [{_id: ObjectId, amount: Number}],
     createtionDate: Date,
     dueDate: Date,
-    receptian: String
+    receptian: String,
+    isDone: Boolean
 })
 
 

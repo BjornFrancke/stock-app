@@ -34,7 +34,8 @@ export interface Iorder {
     items: [{_id: ObjectId, amount: number}]
     createtionDate: Date,
     dueDate: Date,
-    receptian?: string
+    receptian?: string,
+    isDone?: boolean
 }
 
 export type ItemsModel = Model<Iitems>
