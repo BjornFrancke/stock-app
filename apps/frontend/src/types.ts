@@ -23,6 +23,6 @@ export interface Iorder {
     orderNumber: number,
     items?: {_id?: string | undefined, amount: number}[]
     createtionDate: Date,
-    dueDate: Date,
+    dueDate: Date | string,
     receptian?: string
 }

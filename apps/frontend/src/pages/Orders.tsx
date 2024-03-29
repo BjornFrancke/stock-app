@@ -49,8 +49,11 @@ const fetchOrders = async () => {
             <thead>
                 <tr>
                     <td>#</td>
-                    <td>Status</td>
+                    <td>Recepian</td>
                     <td>Due date</td>
+                    <td>Actions
+                        <Button onClick={() => setIsCreationModalOpen(true)}>+</Button>
+                        </td>
                 </tr>
             </thead>
             <tbody>
@@ -58,12 +61,12 @@ const fetchOrders = async () => {
                     <tr key={order._id}>
                         <td>{order.orderNumber}</td>
                         <td>{order.receptian}</td>
+                        <td>{new Date(order.dueDate).toLocaleDateString()}</td>
                     </tr>
                     
                 ))}
             </tbody>
         </Table>
-        <Button onClick={() => setIsCreationModalOpen(true)}>Open</Button>
         <Modal
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"
@@ -97,6 +100,7 @@ const fetchOrders = async () => {
                 )
                 }
                 <Button onClick={handleSubmitNewOrder}>Submit</Button>
+                <Button onClick={() => setIsCreationModalOpen(false)} color="danger" variant="outlined">Cancel</Button>
                 </form>
             </Sheet>
         </Modal>
