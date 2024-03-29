@@ -1,6 +1,7 @@
 import express from "express";
 import { Bom } from "../../bom";
 import { Item } from "../../items";
+import { Ibom } from "../../types";
 
 const bomRouter = express.Router()
 
@@ -16,21 +17,66 @@ bomRouter.route('/findAll')
 
 bomRouter.route('/findById/:bomId')
 .get(async(req, res) => {
-    const id = req.params.bomId
+    const bomId = req.params.bomId
     try{
-        const data = await Bom.findById(id)
+        const data = await Bom.findById(bomId)
         res.json(data)
     } catch {
         res.status(500).send("internal Server Error")
     }
 })
 
+bomRouter.route('/bomDetailsById/:bomId')
+.get(async (req, res) => {
+    const bomId = req.params.bomId;
+    try {
+        const bomData = await Bom.findById(bomId);
+        if (!bomData) {
+            return res.status(404).send("BOM not found");
+        }
+
+        const bomDataProduct = await Item.findById(bomData.product);
+        if (!bomDataProduct) {
+            return res.status(404).send("Product not found");
+        }
+
+        const componentsPromises = bomData.components.map(async component => {
+            const componentRes = await Item.findById(component.id);
+            return {
+                id: component.id,
+                name: componentRes?.name,
+                description: componentRes?.description,
+                amount: component.amount,
+                stock: componentRes?.stock
+            };
+        });
+
+        const componentsWithDetails = await Promise.all(componentsPromises);
+
+        const newBomData = {
+            id: bomId,
+            name: bomData.name,
+            product: {
+                name: bomDataProduct.name,
+                id: bomDataProduct._id
+            },
+            components: componentsWithDetails
+        };
+
+        res.json(newBomData);
+    } catch (error) {
+        console.error("Error finding BOM with names by ID:", error);
+        res.status(500).send("Internal Server Error: " + error);
+    }
+});
+
+
 
 bomRouter.route('/delete/:bomId')
     .delete(async (req, res) => {
-        const id = req.params.bomId
+        const bomId = req.params.bomId
         try {
-            const deletedBom = await Bom.findByIdAndDelete(id)
+            const deletedBom = await Bom.findByIdAndDelete(bomId)
             res.json(deletedBom)
         } catch {
             res.status(500).send("Internal Server Error")

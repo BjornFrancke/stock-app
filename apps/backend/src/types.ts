@@ -2,6 +2,7 @@ import {ObjectId} from "mongodb";
 import { Date } from "mongoose";
 
 export interface Iitems {
+    _id?: ObjectId | string,
     name: string,
     description?: string,
     stock: number,
@@ -22,9 +23,10 @@ export interface Iaddress {
 }
 
 export interface Ibom {
+    _id?: ObjectId | string
     name: string,
-    product: ObjectId,
-    components: [{id: ObjectId | string, amount: number}]
+    product: ObjectId | string,
+    components: [{id: ObjectId | string, amount: number, _id?: ObjectId | string}]
 }
 
 export interface Iorder {
