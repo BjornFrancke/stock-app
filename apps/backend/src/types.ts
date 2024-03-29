@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb";
-import { Date } from "mongoose";
+import { Date, Model } from "mongoose";
 
 export interface Iitems {
     _id?: ObjectId | string,
@@ -36,3 +36,7 @@ export interface Iorder {
     dueDate: Date,
     receptian?: string
 }
+
+export type ItemsModel = Model<Iitems>
+export type BomModel = Model<Ibom>
+

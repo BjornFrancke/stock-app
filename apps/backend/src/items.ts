@@ -1,7 +1,6 @@
 import {Schema, Model, model, HydratedDocument} from "mongoose"
-import {Iitems} from "./types";
+import {Iitems, ItemsModel} from "./types";
 
-type ItemsModel = Model<Iitems>
 export const itemSchema = new Schema<Iitems, ItemsModel>({
     name: {type: String},
     description: {type: String},

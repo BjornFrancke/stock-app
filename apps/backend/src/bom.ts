@@ -1,8 +1,7 @@
 import { HydratedDocument, Model, Schema, model } from "mongoose";
-import { Ibom } from "./types";
+import { BomModel, Ibom } from "./types";
 import { ObjectId } from "mongodb";
 
-type BomModel = Model<Ibom>
 const bomSchema = new Schema<Ibom, BomModel>({
     name: String,
     product: ObjectId,
