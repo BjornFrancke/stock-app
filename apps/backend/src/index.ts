@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import {appPort, DATABASE_URL} from "./config";
 import cors from "cors"
 import bomRouter from "./routes/bom";
+import ordersRoute from "./routes/orders";
 
 mongoose.connect(DATABASE_URL)
 const database = mongoose.connection
@@ -36,6 +37,7 @@ app.post('/', (req, res) => {
 app.use('/item', itemRouter)
 app.use('/warehouse', warehouseRouter)
 app.use('/bom', bomRouter)
+app.use('/orders', ordersRoute)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
