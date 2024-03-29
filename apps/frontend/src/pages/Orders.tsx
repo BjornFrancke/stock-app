@@ -9,6 +9,7 @@ import { Iitems, Iorder } from "../types";
 import Chip from "@mui/joy/Chip";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import ChipDelete from "@mui/joy/ChipDelete";
+import Divider from "@mui/joy/Divider";
 
 export function Orders() {
     const [orders, setOrders] = useState([])
@@ -42,6 +43,7 @@ export function Orders() {
           setNewItemToAddAmount(0);
           setNewItemToAddId("")
           setIsOrdersModalOpen(false);
+          setIsAddItemForm(false)
         } catch (error) {
           console.error("Failed to add item:", error);
         }
@@ -227,12 +229,15 @@ const fetchAvailableItems = async () => {
           >
             <Sheet
               variant="outlined"
+              className="space-y-10"
               sx={{
                 maxWidth: 750,
                 borderRadius: "md",
                 p: 3,
                 boxShadow: "lg",
-              }}
+                
+              }
+            }
             >
               <Table>
               <tr>
@@ -247,30 +252,41 @@ const fetchAvailableItems = async () => {
                 <td>Recepian</td>
                 <td>{selectedOrder?.receptian}</td>
             </tr>
-            <tr>
-            <td>
+            </Table>
+            
+            <Table>
+            <thead>
+            <h2>Items</h2>
+                <tr>
+                    <td>#</td>         
+                    <td>ID</td>
+                    <td>Amount</td>
+
+
+                </tr>
+            </thead>
+            
+                <tbody>
               {selectedOrder && selectedOrder.items && selectedOrder.items.length > 0 ? (
                 selectedOrder.items.map((item, index) => (
                   <tr key={item._id}>
-                    <td>Item {index + 1}</td>
-                    <td>ID {item._id} </td>
-                    <td>Amount: {item.amount}</td>
+                    <td>{index + 1}</td>
+                    <td>{item._id} </td>
+                    <td>{item.amount}</td>
                   </tr>
                 ))
               ) : (
                 <tr>No items</tr>
               )}
 
-            </td>
-            </tr>
             <tr>
                         {isAddItemForm && (
                         <td className="flex">
-                            <form>
+                            <form className="flex space-x-2">
                                 <select
                                     value={newItemToAddId}
                                     onChange={(e) => setNewItemToAddId(e.target.value)}
-                                    className="p-2 border border-gray-300 rounded-md"
+                                    className="pl-1 border border-gray-300 rounded-md"
                                     >
                                     <option value="">Select a Component</option>
                                     {availableItems.map((item: Iitems) => (
@@ -281,19 +297,26 @@ const fetchAvailableItems = async () => {
                                     </select>
                                     <input
                                     type="number"
+                                    className="pl-1 border max-w-16 border-gray-300 rounded-md"
                                     value={newItemToAddAmount}
                                     onChange={(e) => setNewItemToAddAmount(e.target.valueAsNumber)}
                                     />
-                        </form > <Button onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
-                        <Button onClick={() => setIsAddItemForm(false)}>X</Button>
+                                    <Button onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
+                                    <Button variant={"plain"} onClick={() => setIsAddItemForm(false)}>X</Button>
+
+                        </form > 
                         </td>
                         
                         )}
                     </tr>
                     <tr>
-                        <td>                <td><Button onClick={() => setIsAddItemForm(true)}>Add</Button></td>
+                        <td>               {isAddItemForm === false && (
+                            <td><Button onClick={() => setIsAddItemForm(true)}>Add</Button></td>
+
+                        )} 
 </td>
                     </tr>
+                    </tbody>
 </Table>
             </Sheet>
           </Modal>
