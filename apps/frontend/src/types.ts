@@ -9,10 +9,11 @@ export interface Ibom {
     _id?: string | undefined
     name: string,
     product: string,
-    components: [Icomponent]
+    components: Icomponent[]
 }
 
 export interface Icomponent {
     id: string | undefined,
+    name?: string
     amount: number
 }

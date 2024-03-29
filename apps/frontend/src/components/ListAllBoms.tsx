@@ -27,11 +27,22 @@ const [availableComponents, setAvailableComponents] = useState([]); // State for
 
 
 
-const handleBomClick = (bom: Ibom) => {
-    setSelectedBom(bom);
-    setIsModalOpen(true)
-}
-
+const handleBomClick = async (bom: Ibom) => {
+    // Create a copy of the bom object to avoid directly mutating state
+    const bomCopy = { ...bom, components: [...bom.components] };
+  
+    // Fetch component names in parallel
+    const componentNamesPromises = bomCopy.components.map(async (component) => {
+      const name = await fetchComponentNameById(component.id);
+      return { ...component, name }; // Create a new component object including the name
+    });
+  
+    // Wait for all promises to resolve
+    bomCopy.components = await Promise.all(componentNamesPromises);
+  
+    setSelectedBom(bomCopy);
+    setIsModalOpen(true);
+  };
 
 const handleAddBomClick = () => {
     setIsCreationModalOpen(true)
@@ -112,6 +123,17 @@ useEffect(() => {
         setAvailableComponents(response.data); // Assuming response.data contains an array of components
     };
 
+    const fetchComponentNameById = async (componentId: string | undefined) => {
+        try {
+          const response = await axios.get(`http://localhost:3000/item/getNameById/${componentId}`);
+          console.log(response.data)
+          return response.data; // Assuming the endpoint returns an object with a name property
+        } catch (error) {
+          console.error("Failed to fetch component name:", error);
+          return ""; // Return a default string in case of an error
+        }
+      };
+
     return(
         <>
             <div className="flex w-screen justify-center mt-12">
@@ -166,7 +188,7 @@ useEffect(() => {
                         <td>Components <Button onClick={() => setAddComponentForm(true)}>Add</Button></td>
                         {selectedBom.components && selectedBom.components.map((component, index) => (
                                         <tr key={index}>
-                                           <td >{component.id}</td> 
+                                           <td >{component.name || component.id}</td> 
                                            <td className=" text-gray-400"><Chip onClick={() => setSelectedComponent(component)} variant="outlined">{component.amount}</Chip></td>
                                            {selectedComponent?.id === component.id &&
                                            <td><form><Input 
