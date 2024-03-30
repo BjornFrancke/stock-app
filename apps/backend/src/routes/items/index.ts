@@ -49,6 +49,9 @@ itemRouter.route('/findById/:itemId')
     .get(async (req, res) => {
     try {
         const itemData = await Item.findById(req.params.itemId)
+        if (!itemData) {
+            res.status(404).send("Item was not found")
+        }
         res.json(itemData)
     } catch {
         res.status(500).send("Internal Server Error")
@@ -59,6 +62,9 @@ itemRouter.route('/getNameById/:itemId')
     .get(async (req, res) => {
         try {
             const itemData = await Item.findById(req.params.itemId)
+            if (!itemData) {
+                res.status(404).send("Item was not found")
+            }
             const itemName = itemData?.name
             res.json(itemName)
         } catch {
@@ -88,11 +94,12 @@ itemRouter.route('/setStock/:itemId/:newStock')
             const id = req.params.itemId
             const newStock: number = Number(req.params.newStock)
             const item = await Item.findById(id);
-            if (item) {
-                item.stock = newStock;
-            } else {
-                throw new Error("Item not found");
+            if (!item) {
+                res.status(404).send("Item was not found")
+                return
             }
+            item.stock = newStock;
+
             const updatedItem = await item.save();
             res.send(updatedItem);
 
