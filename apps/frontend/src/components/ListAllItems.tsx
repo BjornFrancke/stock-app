@@ -1,9 +1,9 @@
 import '../index.css'
 
 
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
-import { Iitems } from "../types.ts";
+import {Iitems} from "../types.ts";
 import Modal from 'react-modal';
 import Button from '@mui/joy/Button';
 import Table from '@mui/joy/Table';
@@ -11,7 +11,7 @@ import {Input} from "@mui/joy";
 import Card from '@mui/joy/Card';
 import Chip from "@mui/joy/Chip"
 import {ChipDelete} from "@mui/joy"
-import { PencilSquareIcon } from '@heroicons/react/16/solid';
+import {PencilSquareIcon} from '@heroicons/react/16/solid';
 
 export const ListAllItems = () => {
     const [items, setItems] = useState([]);
@@ -84,129 +84,134 @@ export const ListAllItems = () => {
 
     return (
         <>
-                <h1 className="text-center mt-6">Items</h1>
+            <h1 className="text-center mt-6">Items</h1>
 
             <div className="flex w-screen justify-center mt-12">
-            <Table className={"max-w-[50%]"}>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Stock</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
+                <Table className={"max-w-[50%]"}>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     {items.map((item: Iitems) => (
                         <tr key={item._id}>
-                            <td onClick={() => handleItemClick(item)} className={"underline cursor-pointer"}>{item.name}</td>
+                            <td onClick={() => handleItemClick(item)}
+                                className={"underline cursor-pointer"}>{item.name}</td>
                             <td>{item.stock}</td>
                             <td>{item._id && isModalOpen === false &&
                                 <Chip
-                                variant="soft"
-                                color="danger"
-                                size="sm"
-                                className={"select-none"}
-                                endDecorator={<ChipDelete onClick={() => handleDelete(item._id)} />}
+                                    variant="soft"
+                                    color="danger"
+                                    size="sm"
+                                    className={"select-none"}
+                                    endDecorator={<ChipDelete onClick={() => handleDelete(item._id)}/>}
                                 >
                                     Delete
                                 </Chip>}
                             </td>
                         </tr>
                     ))}
-                </tbody>
-            </Table>
-            <Modal
-                isOpen={isModalOpen}
-                onRequestClose={handleCloseModal}
-                contentLabel="Item Details"
-                className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
-            > 
-            <Button variant={"solid"} onClick={handleCloseModal}> Close</Button>
-                {selectedItem && (
-                    <Table className={"z-30 max-w-[50vw]"}>
-                        <tr>
-                            <td>Name</td>
-                            <td>{selectedItem.name}</td>
-                        </tr>
-                        <tr>
-                            <td>Description</td>
-                            <td>{selectedItem.description}</td>
-                        </tr>
-                        <tr>
-                            <td>Stock</td>
-                            {!showChangeStockForm && (
-                            <td onClick={() => setShowChangeStockForm(true)}
-                            className=' select-none cursor-pointer'
-                            ><Chip
-                            endDecorator={<PencilSquareIcon className='h-4 w-4 text-black select-none'/>}
-                            >{selectedItem.stock}</Chip>
-                            </td>
-                            
-                            )}
-                           
+                    </tbody>
+                </Table>
+                <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={handleCloseModal}
+                    contentLabel="Item Details"
+                    className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
+                >
+                    <Button variant={"solid"} onClick={handleCloseModal}> Close</Button>
+                    {selectedItem && (
+                        <Table className={"z-30 max-w-[50vw]"}>
+                            <tr>
+                                <td>Name</td>
+                                <td>{selectedItem.name}</td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                                <td>{selectedItem.description}</td>
+                            </tr>
+                            <tr>
+                                <td>Stock</td>
+                                {!showChangeStockForm && (
+                                    <td onClick={() => setShowChangeStockForm(true)}
+                                        className=' select-none cursor-pointer'
+                                    ><Chip
+                                        endDecorator={<PencilSquareIcon className='h-4 w-4 text-black select-none'/>}
+                                    >{selectedItem.stock}</Chip>
+                                    </td>
 
-                            {showChangeStockForm && (
- <td>
- <form className='flex'>
-     <Input
-     type="number"
-     placeholder='item stock'
-     size="sm"
-     color="neutral"
-     variant="outlined"
-     value={newStockValue}
-     onChange={(e) => setNewStockValue(Number(e.target.value))}
-     />
-     <Button variant='solid' size="sm" type='button' onClick={() => handleStockChange(selectedItem._id)}>Change</Button>
-     <Button variant='outlined' color='danger' size="sm" type='button' onClick={() => setShowChangeStockForm(false)}>Cancel</Button>
+                                )}
 
 
- </form>
-</td>
-                            )}
-                           
-                        </tr>
-                        <tr>
-                            <td>ID</td>
-                            <td>{selectedItem._id}</td>
-                        </tr>
-                    </Table>
-                )}
-            </Modal>
-            {!showForm && <Button variant="solid" onClick={() => setShowForm(true)} className="max-h-4">Create Item</Button>}
-            {showForm && <Button variant="solid" onClick={() => setShowForm(false)} className="max-h-4">Dismiss</Button>}
+                                {showChangeStockForm && (
+                                    <td>
+                                        <form className='flex'>
+                                            <Input
+                                                type="number"
+                                                placeholder='item stock'
+                                                size="sm"
+                                                color="neutral"
+                                                variant="outlined"
+                                                value={newStockValue}
+                                                onChange={(e) => setNewStockValue(Number(e.target.value))}
+                                            />
+                                            <Button variant='solid' size="sm" type='button'
+                                                    onClick={() => handleStockChange(selectedItem._id)}>Change</Button>
+                                            <Button variant='outlined' color='danger' size="sm" type='button'
+                                                    onClick={() => setShowChangeStockForm(false)}>Cancel</Button>
 
-            {
-                showForm && (
-                    <Card
-                        color="neutral"
-                        orientation="vertical"
-                        variant="outlined"
-                        size={"sm"}
-                        className={"w-fit flex justify-center"}
-                    >
-                    <form className='space-y-6'>
-                        <Input
-                            type="text"
-                            placeholder="Item name"
-                            size="md"
+
+                                        </form>
+                                    </td>
+                                )}
+
+                            </tr>
+                            <tr>
+                                <td>ID</td>
+                                <td>{selectedItem._id}</td>
+                            </tr>
+                        </Table>
+                    )}
+                </Modal>
+                {!showForm &&
+                    <Button variant="solid" onClick={() => setShowForm(true)} className="max-h-4">Create Item</Button>}
+                {showForm &&
+                    <Button variant="solid" onClick={() => setShowForm(false)} className="max-h-4">Dismiss</Button>}
+
+                {
+                    showForm && (
+                        <Card
+                            color="neutral"
+                            orientation="vertical"
                             variant="outlined"
-                            value={newItemName}
-                            onChange={(e) => setNewItemName(e.target.value)}
-                        />
-                        <Input
-                            type="number"
-                            placeholder="Item stock"
-                            size="md"
-                            variant="outlined"
-                            value={newItemStock}
-                            onChange={(e) => setNewItemStock(Number(e.target.value))}
-                        />
-                        <Button variant={"solid"} type="button" onClick={handleSubmitNewItem}>Create</Button>
-                    </form>
-                    </Card>
-                )
-            }
+                            size={"sm"}
+                            className={"w-fit flex justify-center"}
+                        >
+                            <form className='space-y-6'>
+                                <Input
+                                    type="text"
+                                    placeholder="Item name"
+                                    size="md"
+                                    variant="outlined"
+                                    value={newItemName}
+                                    onChange={(e) => setNewItemName(e.target.value)}
+                                />
+                                <Input
+                                    type="number"
+                                    placeholder="Item stock"
+                                    size="md"
+                                    variant="outlined"
+                                    value={newItemStock}
+                                    onChange={(e) => setNewItemStock(Number(e.target.value))}
+                                />
+                                <Button variant={"solid"} type="button" onClick={handleSubmitNewItem}>Create</Button>
+                            </form>
+                        </Card>
+                    )
+                }
             </div>
         </>
     );
