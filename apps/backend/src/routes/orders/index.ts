@@ -1,6 +1,7 @@
 import express from "express";
 import { Order } from "../../models/orders";
 import mongoose from "mongoose";
+import { Item } from "../../items";
 
 const ordersRoute = express.Router()
 
@@ -86,6 +87,9 @@ ordersRoute.route('/delete/:orderId')
     .delete(async (req, res) => {
         try {
             const deletedOrder = await Order.findByIdAndDelete(req.params.orderId);
+            if (!deletedOrder) {
+                res.status(404).send("The order was not found")
+            }
             res.json(deletedOrder)
         } catch {
             res.status(500).send("Internal Server Error");
