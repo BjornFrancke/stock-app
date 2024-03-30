@@ -1,4 +1,4 @@
-import { ListItemButton, Modal, Sheet, Table } from "@mui/joy";
+import { Button, Input, Modal, Sheet, Table } from "@mui/joy";
 import { Icustomer } from "../types";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -7,7 +7,45 @@ export function Customer() {
 const [customers, setCustomers] = useState([])
 const [selectedCustomer, setSelectedCustomer] = useState<Icustomer | null>(null);
 const [isModalOpen, setIsModalOpen] = useState(false)
+const [newCustomerName, setNewCustomerName] = useState('');
+const [newCustomerEmail, setNewCustomerEmail] = useState('');
+const [newCustomerPhone, setNewCustomerPhone] = useState('');
+const [newCustomerStreet, setNewCustomerStreet] = useState('');
+const [newCustomerZip, setNewCustomerZip] = useState('');
+const [newCustomerCity, setNewCustomerCity] = useState('');
+const [newCustomerCountry, setNewCustomerCountry] = useState('');
+const [isNewCustomerModalOpen, setIsNewCustomerModalOpen] = useState(false);
 
+const handleSubmitNewCustomer = async () => {
+  
+    const customerData = {
+      name: newCustomerName,
+      mailAdress: newCustomerEmail,
+      phoneNr: newCustomerPhone,
+      address: {
+        street: newCustomerStreet,
+        zip: newCustomerZip,
+        city: newCustomerCity,
+        country: newCustomerCountry,
+      },
+    };
+  
+    try {
+      await axios.post('http://localhost:3000/customer/create', customerData);
+      fetchCustomers();
+      setNewCustomerName('');
+      setNewCustomerEmail('');
+      setNewCustomerPhone('');
+      setNewCustomerStreet('');
+      setNewCustomerZip('');
+      setNewCustomerCity('');
+      setNewCustomerCountry('');
+      setIsNewCustomerModalOpen(false); 
+    } catch (error) {
+      console.error("Failed to create customer:", error);
+    }
+  };
+  
 
 const handleCustomerClick = (customer: Icustomer) => {
     setSelectedCustomer(customer);
@@ -31,6 +69,8 @@ useEffect(() => {
             <div>
                 <h1>Customers</h1>
             </div>
+            <Button onClick={() => setIsNewCustomerModalOpen(true)}>Add New Customer</Button>
+
         <div className=" w-[50%]">
             <Table
                 variant="outlined"
@@ -109,6 +149,41 @@ useEffect(() => {
                 </Sheet>
 
             </Modal>
+            <Modal
+  aria-labelledby="new-customer-modal-title"
+  aria-describedby="new-customer-modal-description"
+  open={isNewCustomerModalOpen}
+  onClose={() => setIsNewCustomerModalOpen(false)}
+  sx={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+  <Sheet
+    variant="outlined"
+    sx={{
+      width: 'auto',
+      maxWidth: '500px',
+      borderRadius: 'md',
+      p: 3,
+      boxShadow: 'lg',
+    }}
+  >
+    <h2 id="new-customer-modal-title">Add New Customer</h2>
+    <form onSubmit={handleSubmitNewCustomer}>
+      <Input placeholder="Name" value={newCustomerName} onChange={e => setNewCustomerName(e.target.value)} />
+      <Input placeholder="Email Address" value={newCustomerEmail} onChange={e => setNewCustomerEmail(e.target.value)} />
+      <Input placeholder="Phone Number" value={newCustomerPhone} onChange={e => setNewCustomerPhone(e.target.value)} />
+      <Input placeholder="Street" value={newCustomerStreet} onChange={e => setNewCustomerStreet(e.target.value)} />
+      <Input type="number" placeholder="Zip Code" value={newCustomerZip} onChange={e => setNewCustomerZip(e.target.value)} />
+      <Input placeholder="City" value={newCustomerCity} onChange={e => setNewCustomerCity(e.target.value)} />
+      <Input placeholder="Country" value={newCustomerCountry} onChange={e => setNewCustomerCountry(e.target.value)} />
+      <Button type="submit">Submit</Button>
+    </form>
+  </Sheet>
+</Modal>
+
             </div>
         </div>
         </div>
