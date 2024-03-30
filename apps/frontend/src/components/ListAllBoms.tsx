@@ -83,11 +83,12 @@ export const ListAllBoms = () => {
             console.warn("Cannot find BOM")
             return
         }
-        const componentData = {componentId: newComponentId, componentAmount: 2}
+        const componentData = {componentId: newComponentId, componentAmount: newComponentAmount}
         await axios.patch(`http://localhost:3000/bom/AddComponent/${id}`, componentData)
             .catch(error => console.error("Failed to add component:", error));
         fetchBoms()
-        setNewComponentId(" ")
+        setNewComponentId("")
+        setNewComponentAmount(0)
         setAddComponentForm(false)
     }
 
@@ -226,6 +227,7 @@ export const ListAllBoms = () => {
                                 {addComponentForm && (
                                     <td className="flex">
                                         <form>
+
                                             <select
                                                 value={newComponentId}
                                                 onChange={(e) => setNewComponentId(e.target.value)}
@@ -238,6 +240,16 @@ export const ListAllBoms = () => {
                                                     </option>
                                                 ))}
                                             </select>
+                                            <Input
+                                                type="number"
+                                                placeholder="Value"
+                                                size="md"
+                                                variant="outlined"
+                                                value={newComponentAmount}
+                                                onChange={(e) => setNewComponentAmount(Number(e.target.value))}
+
+
+                                            />
                                         </form>
                                         <Button onClick={() => handleSubmitNewComponent(selectedBom._id)}>Add</Button>
                                         <Button onClick={() => setAddComponentForm(false)}>X</Button>
