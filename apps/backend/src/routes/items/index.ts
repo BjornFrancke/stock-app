@@ -1,6 +1,7 @@
 import express from "express";
 import {Item} from "../../items";
 import {Error} from "mongoose";
+import {Bom} from "../../bom";
 
 
 const itemRouter = express.Router()
@@ -20,6 +21,10 @@ itemRouter.route('/findAll')
 itemRouter.route('/delete/:itemId')
     .delete(async (req, res) => {
         try {
+            const isItemUsedInBom = await Bom.findOne({ "components.id": req.params.itemId });
+            if (isItemUsedInBom) {
+                return res.status(403).send("Item is used in a BOM and cannot be deleted");
+            }
             const deletedItem = await Item.findByIdAndDelete(req.params.itemId);
             res.json(deletedItem)
         } catch {
