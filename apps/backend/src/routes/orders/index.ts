@@ -2,6 +2,7 @@ import express from "express";
 import { Order } from "../../models/orders";
 import mongoose from "mongoose";
 import { Item } from "../../items";
+import {orderMarkedAsDone} from "../../orders";
 
 const ordersRoute = express.Router()
 
@@ -41,14 +42,15 @@ ordersRoute.route('/markAsDone/:orderId')
 .patch(async (req, res) => {
     const orderId = req.params.orderId
     try {
-        const order = await Order.findById(orderId)
-        if (order) {
-            order.isDone = true
+        console.log("Order found")
+        if (orderId) {
+            console.log("Order exist")
+            const updatedOrder = await orderMarkedAsDone(orderId)
+            res.send(updatedOrder)
         } else {
             throw new Error("Item not found");
+            res.status(404).send(Error)
         }
-        const updatedOrder = await order.save();
-        res.send(updatedOrder);
     } catch {
         res.status(500).send("Internal Server Error");
     }
