@@ -1,6 +1,8 @@
 import express from "express";
 import { Bom } from "../../bom";
 import { Item } from "../../items";
+import {processBom} from "../../manufactoring";
+import {ObjectId} from "mongodb";
 
 const bomRouter = express.Router()
 
@@ -129,6 +131,17 @@ bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
 
         } catch (error) {
             console.error("Error updating component amount:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    })
+
+bomRouter.route('/manufacture/:bomId')
+    .patch(async (req, res) => {
+        const bomId = req.params.bomId
+        try {
+            const response = await processBom(bomId)
+            res.json(response)
+        } catch {
             res.status(500).send("Internal Server Error");
         }
     })
