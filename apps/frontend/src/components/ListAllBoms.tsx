@@ -190,7 +190,13 @@ export const ListAllBoms = () => {
                                 <td>{selectedBom.product}</td>
                             </tr>
                             <tr>
-                                <td>Components <Button onClick={() => setAddComponentForm(true)}>Add</Button></td>
+                                <td>Components <Button
+                                    size={"sm"}
+                                    variant={"outlined"}
+                                    onClick={() => setAddComponentForm(true)}>
+                                    Add</Button></td>
+                                <td>Stock</td>
+                            </tr>
                                 {selectedBom.components && selectedBom.components.map((component, index) => (
                                     <tr key={index}>
                                         <td>{component.name || component.id}</td>
@@ -217,12 +223,13 @@ export const ListAllBoms = () => {
 
                                                 </form>
                                             </td>
-                                        }
 
+                                        }
                                     </tr>
 
+
                                 ))}
-                            </tr>
+
                             <tr>
                                 {addComponentForm && (
                                     <td className="flex">
