@@ -1,7 +1,8 @@
 
 # Stock-app
 
-A simple stock-app made with the MERN stack
+A simple stock-app made with the MERN stack.
+The project consists of two apps, a backend and frontend.
 
 ## Run Locally
 
@@ -21,6 +22,12 @@ Install dependencies
 
 ```bash
   yarn install
+```
+
+Fill out the config file
+
+```bash
+ code apps/backend/config.ts
 ```
 
 Start the server
