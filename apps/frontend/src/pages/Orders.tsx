@@ -7,8 +7,10 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
 import Chip from "@mui/joy/Chip";
-import {CheckBadgeIcon} from "@heroicons/react/16/solid";
+import {CheckBadgeIcon, ExclamationTriangleIcon, XMarkIcon} from "@heroicons/react/16/solid";
 import ChipDelete from "@mui/joy/ChipDelete";
+import {Snackbar} from "@mui/joy";
+import IconButton from "@mui/joy/IconButton";
 
 export function Orders() {
     const [orders, setOrders] = useState([])
@@ -16,16 +18,18 @@ export function Orders() {
     const [isCreationModalOpen, setIsCreationModalOpen] = useState(false)
     const [isOrdersModalOpen, setIsOrdersModalOpen] = useState(false)
     const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
-    const [newOrderRecepian, setNewOrderReceptian] = useState("")
+    const [newOrderRecipient, setNewOrderRecipient] = useState("")
     const [newItemToAddAmount, setNewItemToAddAmount] = useState(0)
     const [newItemToAddId, setNewItemToAddId] = useState("")
     const [availableItems, setAvailableItems] = useState([]); // State for available components
     const [isAddItemForm, setIsAddItemForm] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("Unknown error")
+    const [isError, setIsError] = useState(false)
 
 
     const handleAddNewItem = async (orderId: string | undefined) => {
         if (!selectedOrder || !newItemToAddAmount) {
-            alert("Please fill in all fields.");
+            handleErrorMessage(400, "Please fill in all fields")
             return;
         }
 
@@ -43,22 +47,27 @@ export function Orders() {
             setIsAddItemForm(false)
         } catch (error) {
             console.error("Failed to add item:", error);
+            handleErrorMessage(500, "Failed to add item")
         }
     };
-
 
     const handleSubmitNewOrder = async () => {
         const orderData = {
             orderNumber: 3,
-            receptian: newOrderRecepian,
+            receptian: newOrderRecipient,
             dueDate: newOrderDueDate
 
         }
+        if (orderData.receptian === "" || !orderData.dueDate) {
+            handleErrorMessage(400, "Please fill in all fields")
+            return
+        }
         await axios.post('http://localhost:3000/orders/create', orderData)
+
         fetchOrders()
         setIsCreationModalOpen(false)
         setNewOrderDueDate(null)
-        setNewOrderReceptian("")
+        setNewOrderRecipient("")
 
     }
 
@@ -67,24 +76,35 @@ export function Orders() {
         setIsOrdersModalOpen(true)
     }
 
+    const handleErrorMessage = (code: number, message: string) => {
+        setIsError(true)
+        setErrorMessage(`${code}: ${message}`)
+    }
+
+    const handleErrorDismiss = () => {
+        setIsError(false)
+        setErrorMessage("")
+    }
     const handleMarkAsDone = async (id: string | undefined) => {
-        // Send a DELETE request
         if (typeof id === 'undefined') {
-            console.warn('Cannot delete an item without an id');
+            console.warn('ID is undefined');
+            handleErrorMessage(400, 'ID is undefined')
             return;
         }
-        await axios.patch(`http://localhost:3000/orders/markAsDone/${id}`);
-        // After deleting the item, fetch items again to refresh the list
-        fetchOrders();
+        const response = await axios.patch(`http://localhost:3000/orders/markAsDone/${id}`);
+        if (response.status != 200) {
+            handleErrorMessage(Number(response.status), response.statusText)
+            return
+        }
+        await fetchOrders();
     };
     const handleDelete = async (id: string | undefined) => {
-        // Send a DELETE request
         if (typeof id === 'undefined') {
             console.warn('Cannot delete an item without an id');
+            handleErrorMessage(400, 'Cannot delete an item without an id')
             return;
         }
         await axios.delete(`http://localhost:3000/orders/delete/${id}`);
-        // After deleting the item, fetch items again to refresh the list
         fetchOrders();
     };
 
@@ -96,12 +116,12 @@ export function Orders() {
     const fetchOrders = async () => {
         const response = await axios.get('http://localhost:3000/orders/findAll');
         setOrders(response.data);
+
     };
 
     const fetchAvailableItems = async () => {
-        // Example API call
         const response = await axios.get('http://localhost:3000/item/findAll');
-        setAvailableItems(response.data); // Assuming response.data contains an array of components
+        setAvailableItems(response.data);
     };
 
 
@@ -109,18 +129,19 @@ export function Orders() {
         <>
             <h1 className="text-center mt-6">Orders</h1>
             <div className="flex w-screen justify-center mt-12">
+
                 <Table borderAxis="both" className={"max-w-[50%]"}>
                     <thead>
                     <tr>
-                        <td>#</td>
-                        <td>Recipient</td>
-                        <td>Due date</td>
-                        <td>Status</td>
-                        <td>
+                        <th>#</th>
+                        <th>Recipient</th>
+                        <th>Due date</th>
+                        <th>Status</th>
+                        <th>
                             <Button onClick={() => setIsCreationModalOpen(true)}>
                                 Add Order
                             </Button>
-                        </td>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -192,8 +213,8 @@ export function Orders() {
                             <Input
                                 type="text"
                                 placeholder="Recipient"
-                                value={newOrderRecepian}
-                                onChange={(e) => setNewOrderReceptian(e.target.value)}
+                                value={newOrderRecipient}
+                                onChange={(e) => setNewOrderRecipient(e.target.value)}
                             />
                             <Input
                                 type="date"
@@ -251,14 +272,13 @@ export function Orders() {
                                 <td>{selectedOrder?.receptian}</td>
                             </tr>
                         </Table>
-
                         <Table>
+                            <caption className={"text-left"}>Items</caption>
                             <thead>
-                            <h2>Items</h2>
                             <tr>
-                                <td>#</td>
-                                <td>ID</td>
-                                <td>Amount</td>
+                            <th>#</th>
+                                <th>ID</th>
+                                <th>Amount</th>
 
 
                             </tr>
@@ -274,7 +294,9 @@ export function Orders() {
                                     </tr>
                                 ))
                             ) : (
-                                <tr>No items</tr>
+                                <tr>
+                                    <td>No items</td>
+                                </tr>
                             )}
 
                             <tr>
@@ -308,7 +330,7 @@ export function Orders() {
                                 )}
                             </tr>
                             <tr>
-                                <td>               {isAddItemForm === false && (
+                                <td>               {!isAddItemForm && (
                                     <td><Button onClick={() => setIsAddItemForm(true)}>Add</Button></td>
 
                                 )}
@@ -319,6 +341,15 @@ export function Orders() {
                     </Sheet>
                 </Modal>
             </div>
+            <Snackbar
+                    open={isError}
+                    color={"danger"}
+                    variant={"solid"}
+                    startDecorator={<ExclamationTriangleIcon className={"h-6 w-6 text-white"}/>}
+                    endDecorator={<IconButton variant={"solid"} color={"danger"} onClick={handleErrorDismiss}><XMarkIcon className={"h-6 w-6 text-white"}/></IconButton>}
+                >
+                    {errorMessage}
+                </Snackbar>
         </>
     );
 }

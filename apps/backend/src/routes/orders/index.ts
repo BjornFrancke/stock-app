@@ -46,7 +46,7 @@ ordersRoute.route('/markAsDone/:orderId')
         if (orderId) {
             console.log("Order exist")
             const updatedOrder = await orderMarkedAsDone(orderId)
-            res.send(updatedOrder)
+            res.status(400).send(updatedOrder)
         } else {
             throw new Error("Item not found");
             res.status(404).send(Error)
