@@ -1,9 +1,17 @@
 import {ObjectId} from "mongodb";
 import {Bom} from "./bom";
 import {Ibom} from "./types";
-import {Item} from "./items";
+import {isStockSufficient, Item, reduceStock} from "./items";
 
 
+/**
+ * Processes a Bill of Materials (BOM).
+ *
+ * @param {ObjectId | string} bomId - The ID of the BOM to process.
+ *
+ * @returns {Promise<Object>} - A promise that resolves to an object with a message property indicating the result of the BOM processing.
+ *                             The message property can have values: "Bom not found", "Success".
+ */
 export async function processBom(bomId: ObjectId | string) {
     const bomData: Ibom | null = await Bom.findById(bomId)
 
@@ -19,11 +27,9 @@ export async function processBom(bomId: ObjectId | string) {
             const component = bomData.components[componentIndex];
             if (component._id) {
                 const itemData = await Item.findById(component.id)
-                console.log(itemData?.name)
-                console.log(itemData?.stock)
-                if (itemData && itemData.stock >= component.amount) {
-                    itemData.stock -= component.amount;
-                    await itemData.save();
+                if (isStockSufficient(itemData, component.amount)) {
+                    reduceStock(itemData, component.amount)
+
                 } else {
                     console.log("Insufficient stock for component: " + component.id);
                     return
@@ -47,3 +53,8 @@ export async function processBom(bomId: ObjectId | string) {
 
 
 }
+
+
+
+
+

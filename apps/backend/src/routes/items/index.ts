@@ -1,5 +1,5 @@
 import express from "express";
-import {Item} from "../../items";
+import {Item, listAllItems} from "../../items";
 import {Error} from "mongoose";
 import {Bom} from "../../bom";
 
@@ -10,8 +10,8 @@ const itemRouter = express.Router()
 itemRouter.route('/findAll')
     .get(async(req, res) => {
     try {
-        const data = await Item.find()
-        res.json(data)
+        const response = await listAllItems()
+        res.json(response)
     } catch {
         res.status(500).send("Internal Server Error");
     }

@@ -10,29 +10,18 @@ export const itemSchema = new Schema<Iitems, ItemsModel>({
 
 export const Item: ItemsModel = model<Iitems, ItemsModel>('Item', itemSchema)
 
-export const item: HydratedDocument<Iitems> = new Item({
-    name: "PSU",
-    description: "1000 watt power supply",
-    stock: 3
-})
-
-export function createItem() {
-    const testData: HydratedDocument<Iitems> = new Item({
-        name: "PSU",
-        description: "1000 watt power supply",
-        stock: 3
-    })
-   testData.save()
-}
 
 export function listAllItems() {
-    const responds = Item.find()
-    console.log(responds)
+    const response = Item.find()
+    return response
 }
 
-export const logItemData = (item: HydratedDocument<Iitems>): void => {
-    console.log("Name: " + item.name)
-    console.log("Description: " + item.description)
-    console.log("Stock: " + item.stock)
+export async function reduceStock(itemData: any, amount: number){
+    itemData.stock -= amount;
+    await itemData.save();
 }
 
+
+export function isStockSufficient(itemData: any, requiredAmount: number){
+    return itemData && itemData.stock >= requiredAmount;
+}
