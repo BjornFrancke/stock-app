@@ -7,7 +7,13 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
 import Chip from "@mui/joy/Chip";
-import {CheckBadgeIcon, ExclamationTriangleIcon, XMarkIcon} from "@heroicons/react/16/solid";
+import {
+    CheckBadgeIcon, EllipsisVerticalIcon,
+    ExclamationTriangleIcon,
+    PlusIcon,
+    PrinterIcon,
+    XMarkIcon
+} from "@heroicons/react/16/solid";
 import ChipDelete from "@mui/joy/ChipDelete";
 import {Snackbar} from "@mui/joy";
 import IconButton from "@mui/joy/IconButton";
@@ -91,11 +97,7 @@ export function Orders() {
             handleErrorMessage(400, 'ID is undefined')
             return;
         }
-        const response = await axios.patch(`http://localhost:3000/orders/markAsDone/${id}`);
-        if (response.status != 200) {
-            handleErrorMessage(Number(response.status), response.statusText)
-            return
-        }
+        await axios.patch(`http://localhost:3000/orders/markAsDone/${id}`);
         await fetchOrders();
     };
     const handleDelete = async (id: string | undefined) => {
@@ -248,108 +250,178 @@ export function Orders() {
                 >
                     <Sheet
                         variant="outlined"
-                        className="space-y-10"
+                        className="space-y-10 bg-[#D7D7D7]"
                         sx={{
-                            maxWidth: 750,
-                            borderRadius: "md",
+                            width: "80%",
+                            borderRadius: "sm",
                             p: 3,
                             boxShadow: "lg",
+                            backgroundColor: "#D7D7D7"
 
                         }
                         }
                     >
-                        <Table>
-                            <tr>
-                                <td>#</td>
-                                <td>{selectedOrder?.orderNumber}</td>
-                            </tr>
-                            <tr>
-                                <td>ID</td>
-                                <td>{selectedOrder?._id}</td>
-                            </tr>
-                            <tr>
-                                <td>Recipient</td>
-                                <td>{selectedOrder?.receptian}</td>
-                            </tr>
-                        </Table>
-                        <Table>
-                            <caption className={"text-left"}>Items</caption>
-                            <thead>
-                            <tr>
-                            <th>#</th>
-                                <th>ID</th>
-                                <th>Amount</th>
+                        <div className={"flex justify-between"}>
+                            <div className={"flex space-x-2"}>
+                                <h1 className={"text-[#50A6A1] text-2xl"}>Order</h1>
+                                <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.orderNumber}</h1>
+                            </div>
+                            <div className={"flex"}>
+                                <XMarkIcon className={"h-6 w-6 text-gray-500"}/>
+
+                            </div>
+                        </div>
 
 
-                            </tr>
-                            </thead>
+                        <div>
+                            <div className={"w-full min-h-6 space-x-4"}>
+                                <a className={"underline decoration-[#50A6A1] underline-offset-[6px] decoration-2"}>Information</a>
+                                <a>Notes</a>
+                            </div>
+                            <div className={"w-full bg-black"}></div>
+                            <div className={"w-[90px] h-[2px]"}></div>
 
-                            <tbody>
-                            {selectedOrder && selectedOrder.items && selectedOrder.items.length > 0 ? (
-                                selectedOrder.items.map((item, index) => (
-                                    <tr key={item._id}>
-                                        <td>{index + 1}</td>
-                                        <td>{item._id} </td>
-                                        <td>{item.amount}</td>
-                                    </tr>
-                                ))
-                            ) : (
+                        </div>
+
+                        <div
+                            className={"bg-[#FEFEFE] w-full min-h-36 p-3 px-9 py-5 rounded shadow justify-between flex flex-col"}>
+                            <div>
+                                Customer
+                                <h2 className={"text-[#50A6A1]"}>{selectedOrder?.receptian}</h2>
+                            </div>
+                            <div className={"flex space-x-1"}>
+                                {selectedOrder?.isDone && (
+                                    <div
+                                        className={"bg-[#78F585] bg-opacity-50 border-2 border-[#78F585] w-fit h-fit px-3 py-0.5 rounded text-xs"}>
+                                        Sent
+                                    </div>
+                                )}
+                                {!selectedOrder?.isDone && (
+                                    <div
+                                        className={"bg-[#616161] bg-opacity-50 border-2 border-[#616161] w-fit h-fit px-3 py-0.5 rounded text-xs"}
+                                        onClick={() => handleMarkAsDone(selectedOrder?._id)}>
+                                        Not Sent
+                                    </div>
+                                )}
+
+                                <div
+                                    className={"bg-[#616161] bg-opacity-50 border-2 border-[#616161] w-fit h-fit px-3 py-0.5 rounded text-xs"}>
+                                    Not invoiced
+                                </div>
+                                {selectedOrder?.dueDate != undefined && (
+                                    <div
+                                        className={"bg-[#616161] bg-opacity-50 border-2 border-[#616161] w-fit h-fit px-3 py-0.5 rounded text-xs"}>
+                                        Due: {new Date(selectedOrder.dueDate).toLocaleDateString()}
+                                    </div>
+                                )}
+
+
+                            </div>
+
+                        </div>
+                        <div
+                            className={"bg-[#FEFEFE] w-full min-h-[500px] p-3 px-9 py-5 rounded shadow flex flex-col space-y-3"}>
+                            <div className={"flex space-x-1"}>
+                                <h1>Lines</h1>
+
+                                {!isAddItemForm && (
+                                    <div
+                                        className={"border-2 border-[#50A6A1] w-fit h-fit px-1.5 py-0.5 rounded text-xs flex space-x-1 select-none cursor-pointer"}
+                                        onClick={() => setIsAddItemForm(true)}
+                                    >
+                                        <PlusIcon className={"w-4 h-4 text-gray-500"}/>
+                                        Product
+
+                                    </div>
+
+                                )}
+                                <div
+                                    className={"border-2 border-[#50A6A1] w-fit h-fit px-1.5 py-0.5 rounded text-xs flex space-x-1"}>
+                                    <PrinterIcon className={"w-auto h-4 text-gray-500"}/>
+                                    Print
+                                </div>
+                            </div>
+                            <Table>
+                                <thead>
                                 <tr>
-                                    <td>No items</td>
+                                    <th style={{width: '10%'}}>#</th>
+                                    <th style={{width: '30%'}}>ID</th>
+                                    <th style={{width: '15%'}}>Quantity</th>
+                                    <th style={{width: '20%'}}>Unit price(DKK)</th>
+                                    <th style={{width: '20%'}}>Total(DKK)</th>
+                                    <th style={{width: '5%'}}></th>
                                 </tr>
-                            )}
-
-                            <tr>
-                                {isAddItemForm && (
-                                    <td className="flex">
-                                        <form className="flex space-x-2">
-                                            <select
-                                                value={newItemToAddId}
-                                                onChange={(e) => setNewItemToAddId(e.target.value)}
-                                                className="pl-1 border border-gray-300 rounded-md"
-                                            >
-                                                <option value="">Select a Component</option>
-                                                {availableItems.map((item: Iitems) => (
-                                                    <option key={item._id} value={item._id}>
-                                                        {item.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <input
-                                                type="number"
-                                                className="pl-1 border max-w-16 border-gray-300 rounded-md"
-                                                value={newItemToAddAmount}
-                                                onChange={(e) => setNewItemToAddAmount(e.target.valueAsNumber)}
-                                            />
-                                            <Button onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
-                                            <Button variant={"plain"} onClick={() => setIsAddItemForm(false)}>X</Button>
-
-                                        </form>
-                                    </td>
-
+                                </thead>
+                                <tbody>
+                                {selectedOrder && selectedOrder.items && selectedOrder.items.length > 0 ? (
+                                    selectedOrder.items.map((item, index) => (
+                                        <tr key={item._id}>
+                                            <td>{index + 1}</td>
+                                            <td>{item._id} </td>
+                                            <td>{item.amount}</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td><EllipsisVerticalIcon className={"w-6 h-6 text-gray-500"}/></td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td>No items</td>
+                                    </tr>
                                 )}
-                            </tr>
-                            <tr>
-                                <td>               {!isAddItemForm && (
-                                    <td><Button onClick={() => setIsAddItemForm(true)}>Add</Button></td>
 
-                                )}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </Table>
+                                <tr>
+                                    {isAddItemForm && (
+                                        <td className="flex">
+                                            <form className="flex space-x-2">
+                                                <select
+                                                    value={newItemToAddId}
+                                                    onChange={(e) => setNewItemToAddId(e.target.value)}
+                                                    className="pl-1 border border-gray-300 rounded-md"
+                                                >
+                                                    <option value="">Select a Component</option>
+                                                    {availableItems.map((item: Iitems) => (
+                                                        <option key={item._id} value={item._id}>
+                                                            {item.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <input
+                                                    type="number"
+                                                    className="pl-1 border max-w-16 border-gray-300 rounded-md"
+                                                    value={newItemToAddAmount}
+                                                    onChange={(e) => setNewItemToAddAmount(e.target.valueAsNumber)}
+                                                />
+                                                <Button
+                                                    onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
+                                                <Button variant={"plain"}
+                                                        onClick={() => setIsAddItemForm(false)}>X</Button>
+
+                                            </form>
+                                        </td>
+
+                                    )}
+                                </tr>
+                                </tbody>
+                            </Table>
+                        </div>
+
+
                     </Sheet>
                 </Modal>
+
+
             </div>
             <Snackbar
-                    open={isError}
-                    color={"danger"}
-                    variant={"solid"}
-                    startDecorator={<ExclamationTriangleIcon className={"h-6 w-6 text-white"}/>}
-                    endDecorator={<IconButton variant={"solid"} color={"danger"} onClick={handleErrorDismiss}><XMarkIcon className={"h-6 w-6 text-white"}/></IconButton>}
-                >
-                    {errorMessage}
-                </Snackbar>
+                open={isError}
+                color={"danger"}
+                variant={"solid"}
+                startDecorator={<ExclamationTriangleIcon className={"h-6 w-6 text-white"}/>}
+                endDecorator={<IconButton variant={"solid"} color={"danger"} onClick={handleErrorDismiss}><XMarkIcon
+                    className={"h-6 w-6 text-white"}/></IconButton>}
+            >
+                {errorMessage}
+            </Snackbar>
         </>
     );
 }
