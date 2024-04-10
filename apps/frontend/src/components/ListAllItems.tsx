@@ -8,10 +8,10 @@ import Modal from 'react-modal';
 import Button from '@mui/joy/Button';
 import Table from '@mui/joy/Table';
 import {Input} from "@mui/joy";
-import Card from '@mui/joy/Card';
 import Chip from "@mui/joy/Chip"
 import {ChipDelete} from "@mui/joy"
 import {PencilSquareIcon} from '@heroicons/react/16/solid';
+import Sheet from "@mui/joy/Sheet";
 
 export const ListAllItems = () => {
     const [items, setItems] = useState([]);
@@ -84,15 +84,29 @@ export const ListAllItems = () => {
 
     return (
         <>
-            <h1 className="text-center mt-6">Items</h1>
+            <Sheet
+                className={"mx-auto mt-6 space-y-4"}
+                sx={{
+                    maxWidth: 800,
+                    borderRadius: "md",
+                    p: 3,
+                    boxShadow: "lg",
+                }}
+            >
+            <h1 className="text-xl mb-12">Items</h1>
 
-            <div className="flex w-screen justify-center mt-12">
-                <Table className={"max-w-[50%]"}>
+            <div>
+                <Table borderAxis={"both"}>
                     <thead>
                     <tr>
                         <th>Name</th>
                         <th>Stock</th>
-                        <th>Actions</th>
+                        <th>
+                            {!showForm &&
+                                <Button variant={"outlined"} sx={{color: "#50A6A1"}} onClick={() => setShowForm(true)}>Create Item</Button>}
+                            {showForm &&
+                                <Button disabled variant={"outlined"} sx={{color: "#50A6A1"}} onClick={() => setShowForm(true)}>Create Item</Button>}
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -114,6 +128,36 @@ export const ListAllItems = () => {
                             </td>
                         </tr>
                     ))}
+                    {
+                        showForm && (
+                            <tr>
+                                <td>
+                                    <Input
+                                        type="text"
+                                        placeholder="Item name"
+                                        size="md"
+                                        variant="outlined"
+                                        value={newItemName}
+                                        onChange={(e) => setNewItemName(e.target.value)}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        type="number"
+                                        placeholder="Item stock"
+                                        size="md"
+                                        variant="outlined"
+                                        value={newItemStock}
+                                        onChange={(e) => setNewItemStock(Number(e.target.value))}
+                                    />
+                                </td>
+                                <td>
+                                    <Button onClick={handleSubmitNewItem}>Submit</Button>
+                                        <Button variant="solid" onClick={() => setShowForm(false)} className="max-h-4">Dismiss</Button>
+                                </td>
+                            </tr>
+                        )
+                    }
                     </tbody>
                 </Table>
                 <Modal
@@ -169,6 +213,8 @@ export const ListAllItems = () => {
                                 )}
 
                             </tr>
+
+
                             <tr>
                                 <td>ID</td>
                                 <td>{selectedItem._id}</td>
@@ -176,43 +222,11 @@ export const ListAllItems = () => {
                         </Table>
                     )}
                 </Modal>
-                {!showForm &&
-                    <Button variant="solid" onClick={() => setShowForm(true)} className="max-h-4">Create Item</Button>}
-                {showForm &&
-                    <Button variant="solid" onClick={() => setShowForm(false)} className="max-h-4">Dismiss</Button>}
 
-                {
-                    showForm && (
-                        <Card
-                            color="neutral"
-                            orientation="vertical"
-                            variant="outlined"
-                            size={"sm"}
-                            className={"w-fit flex justify-center"}
-                        >
-                            <form className='space-y-6'>
-                                <Input
-                                    type="text"
-                                    placeholder="Item name"
-                                    size="md"
-                                    variant="outlined"
-                                    value={newItemName}
-                                    onChange={(e) => setNewItemName(e.target.value)}
-                                />
-                                <Input
-                                    type="number"
-                                    placeholder="Item stock"
-                                    size="md"
-                                    variant="outlined"
-                                    value={newItemStock}
-                                    onChange={(e) => setNewItemStock(Number(e.target.value))}
-                                />
-                                <Button variant={"solid"} type="button" onClick={handleSubmitNewItem}>Create</Button>
-                            </form>
-                        </Card>
-                    )
-                }
+
+
             </div>
+            </Sheet>
         </>
     );
 };
