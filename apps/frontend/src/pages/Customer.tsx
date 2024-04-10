@@ -1,7 +1,8 @@
-import {Button, Input, Modal, Sheet, Table} from "@mui/joy";
+import {Button, CardContent, Input, Modal, Sheet, Table, Typography} from "@mui/joy";
 import {Icustomer} from "../types";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import Card from "@mui/joy/Card";
 
 export function Customer() {
     const [customers, setCustomers] = useState([])
@@ -64,24 +65,46 @@ export function Customer() {
 
 
     return (
-        <div className=" max-w-[80%] mx-auto">
-            <div className=" mx-auto justify-center mt-6">
-                <div>
-                    <h1>Customers</h1>
+        <Sheet
+            className={"mx-auto mt-6"}
+            sx={{
+                maxWidth: 800,
+                borderRadius: "md",
+                p: 3,
+                boxShadow: "lg",
+            }}
+
+        >
+
+        <div className="mx-auto">
+            <div className=" mx-auto justify-center space-y-4">
+                <div className={"mb-4"}>
+                    <h1 className={"text-xl text-[#50A6A1]"}>Customers</h1>
                 </div>
-                <Button onClick={() => setIsNewCustomerModalOpen(true)}>Add New Customer</Button>
+                <Button variant={"outlined"} onClick={() => setIsNewCustomerModalOpen(true)}>Add New Customer</Button>
 
-                <div className=" w-[50%]">
-                    <Table
-                        variant="outlined"
+                <div className="">
+                    <div
+                        className={"grid grid-cols-2 gap-4"}
                     >
-
                         {customers.map((customer: Icustomer) => (
-                            <tr key={customer._id}>
-                                <td onClick={() => handleCustomerClick(customer)}>{customer.name}</td>
-                            </tr>
+                            <div>
+                                <Card
+                                    key={customer._id}
+                                    variant="outlined"
+                                      >
+                                    <CardContent>
+                                        <Typography
+                                            onClick={() => handleCustomerClick(customer)}
+                                            level="title-md"
+                                        className={"select-none cursor-pointer hover:underline underline-offset-2"}
+                                        >{customer.name}</Typography>
+                                        <Typography>{customer.address.city}, {customer.address.country}</Typography>
+                                    </CardContent>
+                                </Card>
+                            </div>
                         ))}
-                    </Table>
+                    </div>
                     <Modal
                         aria-labelledby="modal-title"
                         aria-describedby="modal-desc"
@@ -194,5 +217,6 @@ export function Customer() {
                 </div>
             </div>
         </div>
+        </Sheet>
     )
 }
