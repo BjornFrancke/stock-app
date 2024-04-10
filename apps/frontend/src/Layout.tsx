@@ -47,7 +47,7 @@ const Layout = () => {
 
                         </li>
                         <li className="hover:bg-gray-500 rounded">
-                            <Link to="/"><Cog8ToothIcon className="h-6 w-6 text-black"/></Link>
+                            <Link to="/settings"><Cog8ToothIcon className="h-6 w-6 text-black"/></Link>
 
                         </li>
                     </ul>
