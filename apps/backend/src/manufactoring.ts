@@ -2,6 +2,7 @@ import {ObjectId} from "mongodb";
 import {Bom} from "./bom";
 import {Ibom} from "./types";
 import {isStockSufficient, Item, reduceStock} from "./items";
+import {ManufactoringOrder} from "./models/manufactoringOrder";
 
 
 /**
@@ -54,7 +55,50 @@ export async function processBom(bomId: ObjectId | string) {
 
 }
 
+export async function getNewManuOrderNumber(){
+    const latestManuOrder = await ManufactoringOrder.findOne().sort({reference: -1});
+    const newOrderNumber = latestManuOrder ? latestManuOrder.reference + 1 : 1;
+    return newOrderNumber;
+}
+export async function bomComponentAvailable(bomId: ObjectId, toProduce: number) {
+    console.log("Next function")
+    const bomData: Ibom | null = await Bom.findById(bomId);
+    const componentStatus = []
+    if (!bomData) {
+        console.log("No bom data")
+        return false
+    }
+    console.log("Bom data good")
+    const components = bomData.components;
+    for (let i = 0; i < components.length; i++) {
+        console.log(i)
+        const component = components[i];
+        if (component.id){
+            const itemData = await Item.findById(component.id);
+        const isAvailable = await isStockSufficient(itemData, component.amount * toProduce);
+        if (!isAvailable) {
+            componentStatus.push(
+                {
+                    _id: component.id,
+                    name: itemData?.name,
+                    required: component.amount * toProduce,
+                    status: false
+                }
+            )
+        } else {
+            componentStatus.push(
+                {
+                    _id: component.id,
+                    name: itemData?.name,
+                    required: component.amount * toProduce,
+                    status: true
+                })
+        }
+        }
+    }
+    return componentStatus
 
+}
 
 
 
