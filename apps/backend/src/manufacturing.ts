@@ -2,7 +2,7 @@ import {ObjectId} from "mongodb";
 import {Bom} from "./bom";
 import {Ibom} from "./types";
 import {isStockSufficient, Item, reduceStock} from "./items";
-import {ManufactoringOrder} from "./models/manufactoringOrder";
+import {ManufacturingOrder} from "./models/manufacturingOrder";
 
 
 /**
@@ -56,7 +56,7 @@ export async function processBom(bomId: ObjectId | string) {
 }
 
 export async function getNewManuOrderNumber(){
-    const latestManuOrder = await ManufactoringOrder.findOne().sort({reference: -1});
+    const latestManuOrder = await ManufacturingOrder.findOne().sort({reference: -1});
     const newOrderNumber = latestManuOrder ? latestManuOrder.reference + 1 : 1;
     return newOrderNumber;
 }

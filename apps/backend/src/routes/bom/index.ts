@@ -1,7 +1,7 @@
 import express from "express";
 import { Bom } from "../../bom";
 import { Item } from "../../items";
-import {processBom} from "../../manufactoring";
+import {processBom} from "../../manufacturing";
 import {ObjectId} from "mongodb";
 
 const bomRouter = express.Router()

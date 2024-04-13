@@ -46,7 +46,7 @@ export interface Icustomer {
     address: Iaddress
 }
 
-export interface ImanufactoringOrder {
+export interface ImanufacturingOrder {
     _id?: ObjectId,
     reference: number,
     product: {productId: ObjectId, name: string },
@@ -64,5 +64,5 @@ export type CustomerModel = Model<Icustomer>
 export type ItemsModel = Model<Iitems>
 export type BomModel = Model<Ibom>
 export type OrderModel = Model<Iorder>
-export type ManufacotringOrderModel = Model<ImanufactoringOrder>
+export type ManufacturingOrderModel = Model<ImanufacturingOrder>
 

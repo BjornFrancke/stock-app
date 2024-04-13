@@ -1,13 +1,13 @@
 import express from "express";
-import {ManufactoringOrder} from "../../models/manufactoringOrder";
-import {bomComponentAvailable, getNewManuOrderNumber} from "../../manufactoring";
+import {ManufacturingOrder} from "../../models/manufacturingOrder";
+import {bomComponentAvailable, getNewManuOrderNumber} from "../../manufacturing";
 
-const manufactoringRouter = express.Router()
+const manufacturingRouter = express.Router()
 
-manufactoringRouter.route('/')
+manufacturingRouter.route('/')
 .get(async (req, res) => {
     try {
-        const manuOrders = await ManufactoringOrder.find()
+        const manuOrders = await ManufacturingOrder.find()
         res.send(manuOrders)
     } catch {
         res.status(500).send("Internal Server Error")
@@ -16,7 +16,7 @@ manufactoringRouter.route('/')
 .post(async (req, res) => {
     try {
         const nextOrderNumber = await getNewManuOrderNumber()
-        const newManuOrder = new ManufactoringOrder({
+        const newManuOrder = new ManufacturingOrder({
             reference: nextOrderNumber,
             product: {
                 productId: req.body.productId,
@@ -41,20 +41,20 @@ manufactoringRouter.route('/')
 })
 
 
-manufactoringRouter.route('/:manufactoringOrder')
+manufacturingRouter.route('/:manufacturingOrder')
     .delete(async (req, res) => {
         try {
-        await ManufactoringOrder.findByIdAndDelete(req.params.manufactoringOrder);
+        await ManufacturingOrder.findByIdAndDelete(req.params.manufacturingOrder);
         res.send("Manufactoring Order deleted successfully");
         } catch {
             res.status(500).send("Internal Server Error")
         }
     })
 
-manufactoringRouter.route('/check/:manufactoringOrder')
+manufacturingRouter.route('/check/:manufacturingOrder')
     .patch(async (req, res) => {
         console.log("Function starting")
-        const manuOrder = await ManufactoringOrder.findById(req.params.manufactoringOrder)
+        const manuOrder = await ManufacturingOrder.findById(req.params.manufacturingOrder)
         console.log("menu order found")
         if (manuOrder) {
             console.log("Menu order true")
@@ -75,4 +75,4 @@ manufactoringRouter.route('/check/:manufactoringOrder')
     }
     )
 
-export default manufactoringRouter
+export default manufacturingRouter

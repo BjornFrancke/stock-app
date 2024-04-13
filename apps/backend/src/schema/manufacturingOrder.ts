@@ -1,8 +1,8 @@
 import {Schema} from "mongoose";
-import {ImanufactoringOrder, ManufacotringOrderModel} from "../types";
+import {ImanufacturingOrder, ManufacturingOrderModel} from "../types";
 import {ObjectId} from "mongodb";
 
-export const manufactoringOrderSchema = new Schema<ImanufactoringOrder, ManufacotringOrderModel>({
+export const manufacturingOrderSchema = new Schema<ImanufacturingOrder, ManufacturingOrderModel>({
     reference: Number,
     bom: {bomId: ObjectId, name: String},
     product: {productId: ObjectId, name: String},
