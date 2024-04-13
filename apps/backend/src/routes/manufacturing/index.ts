@@ -1,6 +1,6 @@
 import express from "express";
 import {ManufacturingOrder} from "../../models/manufacturingOrder";
-import {bomComponentAvailable, getNewManuOrderNumber} from "../../manufacturing";
+import {getBOMComponentStatus, getNewManuOrderNumber} from "../../manufacturing";
 
 const manufacturingRouter = express.Router()
 
@@ -45,7 +45,19 @@ manufacturingRouter.route('/:manufacturingOrder')
     .delete(async (req, res) => {
         try {
         await ManufacturingOrder.findByIdAndDelete(req.params.manufacturingOrder);
-        res.send("Manufactoring Order deleted successfully");
+        res.send("Manufacturing Order deleted successfully");
+        } catch {
+            res.status(500).send("Internal Server Error")
+        }
+    })
+    .get(async (req, res) => {
+        const manuOrder = await ManufacturingOrder.findById(req.params.manufacturingOrder);
+        try {
+        if (manuOrder) {
+            res.json(manuOrder);
+        } else {
+            res.status(404).send("Manufacturing Order not found");
+        }
         } catch {
             res.status(500).send("Internal Server Error")
         }
@@ -60,7 +72,7 @@ manufacturingRouter.route('/check/:manufacturingOrder')
             console.log("Menu order true")
             const bomId = manuOrder.bom.bomId;
             const toProduce = manuOrder.quantity.toProduce;
-            const isAvailable = await bomComponentAvailable(bomId, toProduce);
+            const isAvailable = await getBOMComponentStatus(bomId, toProduce);
             if (isAvailable) {
                 console.log("menu available")
                 manuOrder.componentStatus = isAvailable

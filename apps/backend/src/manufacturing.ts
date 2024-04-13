@@ -60,18 +60,15 @@ export async function getNewManuOrderNumber(){
     const newOrderNumber = latestManuOrder ? latestManuOrder.reference + 1 : 1;
     return newOrderNumber;
 }
-export async function bomComponentAvailable(bomId: ObjectId, toProduce: number) {
-    console.log("Next function")
+export async function getBOMComponentStatus(bomId: ObjectId, toProduce: number) {
     const bomData: Ibom | null = await Bom.findById(bomId);
     const componentStatus = []
     if (!bomData) {
-        console.log("No bom data")
-        return false
+        console.log("error")
+        return
     }
-    console.log("Bom data good")
     const components = bomData.components;
     for (let i = 0; i < components.length; i++) {
-        console.log(i)
         const component = components[i];
         if (component.id){
             const itemData = await Item.findById(component.id);
@@ -100,5 +97,22 @@ export async function bomComponentAvailable(bomId: ObjectId, toProduce: number) 
 
 }
 
+
+async function checkManufacturingOrderAvailability(id: string) {
+    const manufacturingOrder = await ManufacturingOrder.findById(id)
+
+    if (!manufacturingOrder) {
+        return console.log("error");
+    }
+
+    const bomId = manufacturingOrder.bom.bomId;
+    const toProduce = manufacturingOrder.quantity.toProduce;
+
+    const componentStatus = await getBOMComponentStatus(bomId, toProduce);
+    manufacturingOrder.componentStatus = componentStatus;
+
+    const updatedManuOrder = await manufacturingOrder.save();
+    return updatedManuOrder;
+}
 
 
