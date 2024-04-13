@@ -120,7 +120,7 @@ bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
             if (!bom) {
                 return res.status(404).send("BOM not found");
             }
-            const componentIndex = bom.components.findIndex(c => c.id == componentId);
+            const componentIndex = bom.components.findIndex(c => c.id.toString() == componentId);
             if (componentIndex === -1) {
                 return res.status(404).send("Component not found in BOM");
             }
