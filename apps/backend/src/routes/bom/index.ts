@@ -1,7 +1,7 @@
 import express from "express";
 import { Bom } from "../../bom";
 import { Item } from "../../items";
-import {processBom} from "../../manufactoring";
+import {processBom} from "../../manufacturing";
 import {ObjectId} from "mongodb";
 
 const bomRouter = express.Router()
@@ -120,7 +120,7 @@ bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
             if (!bom) {
                 return res.status(404).send("BOM not found");
             }
-            const componentIndex = bom.components.findIndex(c => c.id == componentId);
+            const componentIndex = bom.components.findIndex(c => c.id.toString() == componentId);
             if (componentIndex === -1) {
                 return res.status(404).send("Component not found in BOM");
             }

@@ -7,6 +7,8 @@ import cors from "cors"
 import bomRouter from "./routes/bom";
 import ordersRoute from "./routes/orders";
 import customerRouter from "./routes/customer";
+import manufacturingRouter from "./routes/manufacturing";
+import {getNewManuOrderNumber} from "./manufacturing";
 
 mongoose.connect(DATABASE_URL)
 const database = mongoose.connection
@@ -40,7 +42,10 @@ app.use('/warehouse', warehouseRouter)
 app.use('/bom', bomRouter)
 app.use('/orders', ordersRoute)
 app.use('/customer', customerRouter)
+app.use("/manuOrder", manufacturingRouter)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
+
+getNewManuOrderNumber()
