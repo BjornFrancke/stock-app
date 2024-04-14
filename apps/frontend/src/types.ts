@@ -14,6 +14,7 @@ export interface Ibom {
 
 export interface Icomponent {
     id: string | undefined,
+    _id?: string | undefined,
     name?: string
     amount: number
 }

@@ -5,14 +5,6 @@ import {isStockSufficient, Item, reduceStock} from "./items";
 import {ManufacturingOrder} from "./models/manufacturingOrder";
 
 
-/**
- * Processes a Bill of Materials (BOM).
- *
- * @param {ObjectId | string} bomId - The ID of the BOM to process.
- *
- * @returns {Promise<Object>} - A promise that resolves to an object with a message property indicating the result of the BOM processing.
- *                             The message property can have values: "Bom not found", "Success".
- */
 export async function processBom(bomId: ObjectId | string) {
     const bomData: Ibom | null = await Bom.findById(bomId)
 

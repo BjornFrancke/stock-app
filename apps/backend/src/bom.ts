@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { BomModel, Ibom } from "./types";
 import { ObjectId } from "mongodb";
 

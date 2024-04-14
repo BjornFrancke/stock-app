@@ -1,8 +1,7 @@
 import express from "express";
-import { Bom } from "../../bom";
+import {Bom} from "../../bom";
 import { Item } from "../../items";
 import {processBom} from "../../manufacturing";
-import {ObjectId} from "mongodb";
 
 const bomRouter = express.Router()
 
@@ -110,11 +109,35 @@ bomRouter.route('/addComponent/:bomId')
     }
 })
 
+bomRouter.route('/removeComponent/:bomId/:componentId')
+    .delete(async (req, res) => {
+        const bomId = req.params.bomId;
+        const componentId = req.params.componentId;
+        try {
+            const bom = await Bom.findById(bomId);
+            if (!bom) {
+                return res.status(404).send("BOM not found");
+            }
+            const componentIndex = bom.components.findIndex(c => c.id.toString() === componentId);
+            if (componentIndex === -1) {
+                return res.status(404).send("Component not found in BOM");
+            }
+            bom.components.splice(componentIndex, 1);
+
+            const updatedBom = await bom.save();
+            res.json(updatedBom);
+
+        } catch (error) {
+            console.error("Error removing component from BOM:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    })
+
 bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
     .patch(async (req, res) => {
         const bomId = req.params.bomId
         const componentId = req.params.componentId
-        const newAmount = Number(req.params.amount); // Assuming amount is passed as a string and needs to be an integer
+        const newAmount = Number(req.params.amount);
         try {
             const bom = await Bom.findById(bomId)
             if (!bom) {
@@ -160,5 +183,8 @@ bomRouter.route('/create')
         res.status(500).send("Internal Server Error")
     }
 })
+
+
+
 
 export default bomRouter
