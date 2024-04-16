@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb";
-import { Date, Model } from "mongoose";
+import { Model } from "mongoose";
 
 export interface Iitems {
     _id?: ObjectId,
