@@ -164,65 +164,82 @@ export const ListAllItems = () => {
                     isOpen={isModalOpen}
                     onRequestClose={handleCloseModal}
                     contentLabel="Item Details"
-                    className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
+                    className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-28 space-y-6"}
                 >
-                    <Button variant={"solid"} onClick={handleCloseModal}> Close</Button>
-                    {selectedItem && (
-                        <Table className={"z-30 max-w-[50vw]"}>
-                            <tr>
-                                <td>Name</td>
-                                <td>{selectedItem.name}</td>
-                            </tr>
-                            <tr>
-                                <td>Description</td>
-                                <td>{selectedItem.description}</td>
-                            </tr>
-                            <tr>
-                                <td>Stock</td>
-                                {!showChangeStockForm && (
-                                    <td onClick={() => setShowChangeStockForm(true)}
-                                        className=' select-none cursor-pointer'
-                                    ><Chip
-                                        endDecorator={<PencilSquareIcon className='h-4 w-4 text-black select-none'/>}
-                                    >{selectedItem.stock}</Chip>
-                                    </td>
+                    <div className={"flex space-x-2"}>
+                        <h1 className={"text-2xl text-[#50A6A1]"}>Item</h1>
 
-                                )}
+                            <h1 className={"text-2xl text-gray-500"}>{selectedItem?.name}</h1>
+                    </div>
+                    <Sheet
+                        variant="outlined"
+                        sx={{
+                            maxWidth: 800,
+                            minWidth: 800,
+                            borderRadius: "md",
+                            p: 6,
+                            boxShadow: "lg",
+                        }}
+                    >
 
+                        <Button variant={"solid"} onClick={handleCloseModal}> Close</Button>
+                        {selectedItem && (
+                            <Table className={"z-30 max-w-[50vw]"}>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>{selectedItem.name}</td>
+                                </tr>
+                                <tr>
+                                    <td>Description</td>
+                                    <td>{selectedItem.description}</td>
+                                </tr>
+                                <tr>
+                                    <td>Stock</td>
+                                    {!showChangeStockForm && (
+                                        <td onClick={() => setShowChangeStockForm(true)}
+                                            className=' select-none cursor-pointer'
+                                        ><Chip
+                                            endDecorator={<PencilSquareIcon
+                                                className='h-4 w-4 text-black select-none'/>}
+                                        >{selectedItem.stock}</Chip>
+                                        </td>
 
-                                {showChangeStockForm && (
-                                    <td>
-                                        <form className='flex'>
-                                            <Input
-                                                type="number"
-                                                placeholder='item stock'
-                                                size="sm"
-                                                color="neutral"
-                                                variant="outlined"
-                                                value={newStockValue}
-                                                onChange={(e) => setNewStockValue(Number(e.target.value))}
-                                            />
-                                            <Button variant='solid' size="sm" type='button'
-                                                    onClick={() => handleStockChange(selectedItem._id)}>Change</Button>
-                                            <Button variant='outlined' color='danger' size="sm" type='button'
-                                                    onClick={() => setShowChangeStockForm(false)}>Cancel</Button>
-
-
-                                        </form>
-                                    </td>
-                                )}
-
-                            </tr>
+                                    )}
 
 
-                            <tr>
-                                <td>ID</td>
-                                <td>{selectedItem._id}</td>
-                            </tr>
-                        </Table>
-                    )}
+                                    {showChangeStockForm && (
+                                        <td>
+                                            <form className='flex'>
+                                                <Input
+                                                    type="number"
+                                                    placeholder='item stock'
+                                                    size="sm"
+                                                    color="neutral"
+                                                    variant="outlined"
+                                                    value={newStockValue}
+                                                    onChange={(e) => setNewStockValue(Number(e.target.value))}
+                                                />
+                                                <Button variant='solid' size="sm" type='button'
+                                                        onClick={() => handleStockChange(selectedItem._id)}>Change</Button>
+                                                <Button variant='outlined' color='danger' size="sm" type='button'
+                                                        onClick={() => setShowChangeStockForm(false)}>Cancel</Button>
+
+
+                                            </form>
+                                        </td>
+                                    )}
+
+                                </tr>
+
+
+                                <tr>
+                                    <td>ID</td>
+                                    <td>{selectedItem._id}</td>
+                                </tr>
+                            </Table>
+                        )}
+                    </Sheet>
                 </Modal>
-
 
 
             </div>
