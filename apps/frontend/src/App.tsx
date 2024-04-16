@@ -7,6 +7,7 @@ import {Home} from './pages/Home';
 import {Orders} from './pages/Orders';
 import {Customer} from './pages/Customer';
 import {Settings} from "./pages/Settings.tsx";
+import {Manufacturing} from "./pages/Manufacturing.tsx";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                     <Route index element={<Home/>}/>
                     <Route path="items" element={<ListAllItems/>}/>
                     <Route path="boms" element={<ListAllBoms/>}/>
+                    <Route path="manufacturing" element={<Manufacturing/>}/>
                     <Route path="orders" element={<Orders/>}/>
                     <Route path="customer" element={<Customer/>}/>
                     <Route path="settings" element={<Settings/>}/>
