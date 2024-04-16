@@ -6,7 +6,7 @@ import {
     QueueListIcon,
     Squares2X2Icon,
     UserGroupIcon,
-    UserIcon
+    UserIcon, WrenchScrewdriverIcon
 } from "@heroicons/react/16/solid";
 import {Dropdown, Menu, MenuButton, MenuItem} from "@mui/joy";
 
@@ -36,6 +36,9 @@ export function NavBar() {
                 <li className=" hover:bg-gray-500 rounded">
                     <Link to="/boms"><ClipboardDocumentListIcon className="h-6 w-6 text-black"/></Link>
                 </li>
+                <li>
+                    <Link to="/manufacturing"><WrenchScrewdriverIcon className={"h-6 w-6 text-black"}/></Link>
+                </li>
                 <li className="hover:bg-gray-500 rounded">
                     <Link to="/orders"><QueueListIcon className="h-6 w-6 text-black"/></Link>
 
@@ -48,6 +51,7 @@ export function NavBar() {
                     <Link to="/settings"><Cog8ToothIcon className="h-6 w-6 text-black"/></Link>
 
                 </li>
+
             </ul>
         </div>
         <div className={"py-3 py-auto"}>
