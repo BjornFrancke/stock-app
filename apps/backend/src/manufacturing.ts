@@ -107,4 +107,39 @@ async function checkManufacturingOrderAvailability(id: string) {
     return updatedManuOrder;
 }
 
+export async function createManufacturingOrder(bomId: ObjectId | string, quantity: number, dueDate: Date) {
+    const newManuOrderNumber = await getNewManuOrderNumber();
+    const bomData: Ibom | null = await Bom.findById(bomId);
+    if (!bomData) {
+        console.log("error missing bomData");
+        return
+    }
+    const productData = await Item.findById(bomData.product);
+    if (!productData) {
+        console.log("error missing productDate")
+        return
+    }
+    const newManufacturingOrder = new ManufacturingOrder({
+        reference: newManuOrderNumber,
+        bom: {
+            bomId: bomId,
+            name: bomData?.name || "Unnamed"
+        },
+        product: {
+            productId: productData?._id,
+            name: productData?.name || "Unnamed",
+        },
+        quantity: {
+            produced: 0,
+            toProduce: quantity
+        },
+        creationDate: Date.now(),
+        isDone: false,
+        componentStatus: []
+    });
+
+    console.log(productData?.name)
+    const createdManufacturingOrder = await newManufacturingOrder.save();
+    return createdManufacturingOrder;
+}
 

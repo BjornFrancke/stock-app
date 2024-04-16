@@ -5,15 +5,16 @@ import Sheet from "@mui/joy/Sheet";
 import Modal from "react-modal";
 import Button from "@mui/joy/Button";
 import Input from "@mui/joy/Input";
+import {Ibom} from "../types.ts";
 
 
 export interface ImanufacturingOrder {
     _id?: string,
     reference: number,
-    product: {productId: string, name: string },
-    bom: {bomId: string, name: string},
-    componentStatus?: {_id: string, name?: string, required: number, status: boolean}[]
-    quantity?: {produced: number, toProduce: number},
+    product: { productId: string, name: string },
+    bom: { bomId: string, name: string },
+    componentStatus?: { _id: string, name?: string, required: number, status: boolean }[]
+    quantity?: { produced: number, toProduce: number },
     creationDate?: Date,
     dueDate?: Date,
     doneDate?: Date,
@@ -27,11 +28,21 @@ export function Manufacturing() {
     const [selectedOrder, setSelectedOrder] = useState<ImanufacturingOrder | null>()
     const [selectedOrderProduced, setSelectedOrderProduced] = useState<number>(0)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isCreationModalOpen, setIsCreationModalOpen] = useState(false)
+    const [availableBoms, setAvailableBoms] = useState([])
+    const [newOrderBomId, setNewOrderBomId] = useState("")
+    const [newOrderQuantity, setNewOrderQuantity] = useState(0)
+    const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
 
     const handleManufacturingOrderClick = (manuOrder: ImanufacturingOrder) => {
         setSelectedOrder(manuOrder)
         setSelectedOrderProduced(manuOrder.quantity?.produced || 0)
         setIsModalOpen(true)
+    }
+
+    const handleOpenCreationModal = async () => {
+        await fetchAvailableBoms()
+        setIsCreationModalOpen(true)
     }
 
     const fetchManufacturingOrders = async () => {
@@ -44,8 +55,34 @@ export function Manufacturing() {
         }
     }
 
+    const fetchAvailableBoms = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/bom/findAll');
+            setAvailableBoms(response.data)
+        } catch {
+            console.error("Could to fetch available Boms")
+        }
+    }
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
+    }
+
+    const handleManuOrderCreation = async () => {
+        const newManuOrderData = {
+            bomId: newOrderBomId,
+            quantity: newOrderQuantity,
+            dueDate: newOrderDueDate
+        }
+
+           try {
+               await axios.post(`http://localhost:3000/manuOrder`, newManuOrderData)
+               setIsCreationModalOpen(false)
+               fetchManufacturingOrders()
+           } catch {
+            console.error("Could to create Manufacturing order")
+           }
+
     }
 
     const handleManuOrderCheck = async () => {
@@ -68,47 +105,49 @@ export function Manufacturing() {
 
     return (
         <>
-        <Sheet
-            className={"mx-auto mt-6 space-y-4"}
-            sx={{
-                maxWidth: 800,
-                borderRadius: "md",
-                p: 3,
-                boxShadow: "lg",
-            }}
-        >
-            <h1 className={"text-xl mb-12"}>Manufactoring</h1>
-            <h1>Selected: {selectedOrder?.reference}</h1>
-            <Table>
-                <tr>
-                    <td>#</td>
-                    <td>Product</td>
-                    <td>BOM</td>
-                    <td>Status</td>
-                    <td>Due Date</td>
-                    <td>Done Date</td>
-                </tr>
-                {manufacturingOrders.map((manuOrder: ImanufacturingOrder) => (
-                    <tr key={manuOrder._id}>
-                        <td
-                            className=" underline cursor-pointer select-none"
-                        onClick={() => handleManufacturingOrderClick(manuOrder)}
-                        >{manuOrder.reference}</td>
-                        <td>{manuOrder.product.name}</td>
-                        <td>{manuOrder.bom.name}</td>
-                        <td>{manuOrder.isDone ? "Done" : "Not done"}</td>
-                        {manuOrder?.creationDate != undefined && (
-                            <td
-                                className={"bg-[#616161] bg-opacity-50 border-2 border-[#616161] w-fit h-fit px-3 py-0.5 rounded text-xs select-none cursor-pointer"}>
-                                {new Date(manuOrder.creationDate).toLocaleDateString()}
-                            </td>
-                        )}
+            <Sheet
+                className={"mx-auto mt-6 space-y-4"}
+                sx={{
+                    maxWidth: 800,
+                    borderRadius: "md",
+                    p: 3,
+                    boxShadow: "lg",
+                }}
+            >
+                <h1 className={"text-xl mb-12"}>Manufactoring</h1>
+                <Table borderAxis={"both"}>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>BOM</th>
+                        <th>Status</th>
+                        <th><Button onClick={() => handleOpenCreationModal()}>Create</Button></th>
                     </tr>
-                ))
-                }
-            </Table>
+                    </thead>
+                    <tbody>
+                    {manufacturingOrders.map((manuOrder: ImanufacturingOrder) => (
+                        <tr key={manuOrder._id}>
+                            <td
+                                className=" underline cursor-pointer select-none"
+                                onClick={() => handleManufacturingOrderClick(manuOrder)}
+                            >{manuOrder.reference}</td>
+                            <td>{manuOrder.product.name}</td>
+                            <td>{manuOrder.bom.name}</td>
+                            <td>{manuOrder.isDone ? "Done" : "Not done"}</td>
+                            {manuOrder?.creationDate != undefined && (
+                                <td
+                                    className={"bg-[#616161] bg-opacity-50 border-2 border-[#616161] w-fit h-fit px-3 py-0.5 rounded text-xs select-none cursor-pointer"}>
+                                    {new Date(manuOrder.creationDate).toLocaleDateString()}
+                                </td>
+                            )}
+                        </tr>
+                    ))
+                    }
+                    </tbody>
+                </Table>
 
-        </Sheet>
+            </Sheet>
             <div>
                 <Modal
                     isOpen={isModalOpen}
@@ -122,7 +161,8 @@ export function Manufacturing() {
                     </div>
                     <div className={"flex space-x-2"}>
                         <Button size={"sm"}>Produce all</Button>
-                        <Button onClick={() => handleManuOrderCheck()} color={"neutral"} size={"sm"}>Check availability</Button>
+                        <Button onClick={() => handleManuOrderCheck()} color={"neutral"} size={"sm"}>Check
+                            availability</Button>
                         <Button color={"neutral"} size={"sm"}>Unreserve</Button>
                         <Button color={"neutral"} size={"sm"}>Scrap</Button>
                         <Button onClick={() => handleManuOrderDelete()} color={"danger"} size={"sm"}>Delete</Button>
@@ -147,7 +187,7 @@ export function Manufacturing() {
                             </div>
                             <h1 className={" text-gray-500 my-auto"}>To Produce</h1>
                         </div>
-                        <Table borderAxis={"both"}>
+                        <Table borderAxis={"x"}>
                             <tr>
                                 <td>BOM</td>
                                 <td className={"underline select-none cursor-pointer"}>{selectedOrder?.bom.name}</td>
@@ -186,12 +226,61 @@ export function Manufacturing() {
                                     <td>{component.required * (selectedOrder?.quantity?.toProduce || 0)}</td>
                                     <td>{component.required * (selectedOrder?.quantity?.produced || 0)}</td>
                                     <td>{component.status ? "Available" : "Not Sufficient"}</td>
-
                                 </tr>
                             ))}
                             </tbody>
                         </Table>
                     </Sheet>
+                </Modal>
+                <Modal
+                isOpen={isCreationModalOpen}
+                onRequestClose={() => setIsCreationModalOpen(false)}
+                className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
+
+                >
+<Sheet
+    variant="outlined"
+    sx={{
+            maxWidth: 800,
+            minWidth: 800,
+            borderRadius: "md",
+            p: 6,
+            boxShadow: "lg",}}
+>
+    <h1>Create a Manu</h1>
+    <form className={"space-y-4"}>
+        <div>
+            <h1>BOM:</h1>
+            <select
+                value={newOrderBomId}
+                onChange={(e) => setNewOrderBomId(e.target.value)}
+                className="p-2 border border-gray-300 rounded-md"
+            >
+                <option value="">Select a BOM</option>
+                {availableBoms.map((bom: Ibom) => (
+                    <option key={bom._id} value={bom._id}>
+                        {bom.name}
+                    </option>
+                ))}
+            </select>
+        </div>
+        <h1>Quantity</h1>
+        <Input value={newOrderQuantity} onChange={(e) => setNewOrderQuantity(e.target.valueAsNumber)} type={"number"}/>
+        <div>
+            <h1>Due Date</h1>
+            <Input
+                placeholder="Date"
+                onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
+                type={"date"}
+            />
+        </div>
+        <Button onClick={() => handleManuOrderCreation()}>Create</Button>
+
+
+
+
+    </form>
+</Sheet>
                 </Modal>
             </div>
         </>

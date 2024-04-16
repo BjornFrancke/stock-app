@@ -1,6 +1,6 @@
 import express from "express";
 import {ManufacturingOrder} from "../../models/manufacturingOrder";
-import {getBOMComponentStatus, getNewManuOrderNumber} from "../../manufacturing";
+import {createManufacturingOrder, getBOMComponentStatus, getNewManuOrderNumber} from "../../manufacturing";
 
 const manufacturingRouter = express.Router()
 
@@ -15,25 +15,10 @@ manufacturingRouter.route('/')
 })
 .post(async (req, res) => {
     try {
-        const nextOrderNumber = await getNewManuOrderNumber()
-        const newManuOrder = new ManufacturingOrder({
-            reference: nextOrderNumber,
-            product: {
-                productId: req.body.productId,
-                name: req.body.productName
-            },
-            bom: {
-                bomId: req.body.bomId,
-                name: req.body.bomName
-            },
-            createtionDate: Date.now(),
-            quantity: {
-                produced: 0,
-                toProduce: req.body.toProduce
-            },
-            isDone: false,
-        })
-        const savedManuOrder = await newManuOrder.save();
+        const bomId = req.body.bomId
+        const quantity = req.body.quantity
+        const dueDate = new Date(req.body.dueDate)
+        const savedManuOrder = await createManufacturingOrder(bomId, quantity, dueDate)
         res.json(savedManuOrder)
     } catch (error) {
     res.status(500).send("error" + error)
