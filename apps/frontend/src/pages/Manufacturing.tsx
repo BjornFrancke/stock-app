@@ -145,8 +145,7 @@ export function Manufacturing() {
                             <td>{manuOrder.bom.name}</td>
                             <td>{manuOrder.isDone ? "Done" : "Not done"}</td>
                             {manuOrder?.creationDate != undefined && (
-                                <td
-                                    className={"bg-[#616161] bg-opacity-50 border-2 border-[#616161] w-fit h-fit px-3 py-0.5 rounded text-xs select-none cursor-pointer"}>
+                                <td>
                                     {new Date(manuOrder.creationDate).toLocaleDateString()}
                                 </td>
                             )}
