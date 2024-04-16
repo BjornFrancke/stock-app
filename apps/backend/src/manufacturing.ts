@@ -170,6 +170,7 @@ export async function createManufacturingOrder(bomId: ObjectId | string, quantit
             toProduce: quantity
         },
         creationDate: Date.now(),
+        dueDate: dueDate,
         isDone: false,
         componentStatus: []
     });

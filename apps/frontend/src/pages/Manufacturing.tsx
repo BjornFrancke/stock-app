@@ -6,6 +6,8 @@ import Modal from "react-modal";
 import Button from "@mui/joy/Button";
 import Input from "@mui/joy/Input";
 import {Ibom} from "../types.ts";
+import Chip from "@mui/joy/Chip";
+import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
 
 
 export interface ImanufacturingOrder {
@@ -144,11 +146,16 @@ export function Manufacturing() {
                             <td>{manuOrder.product.name}</td>
                             <td>{manuOrder.bom.name}</td>
                             <td>{manuOrder.isDone ? "Done" : "Not done"}</td>
-                            {manuOrder?.creationDate != undefined && (
+                            {manuOrder?.dueDate != undefined && !isModalOpen && (
                                 <td>
-                                    {new Date(manuOrder.creationDate).toLocaleDateString()}
+                                    {
+                                        (new Date(manuOrder.dueDate).valueOf()) < Date.now() ?
+                                            <Chip color={"danger"} endDecorator={<BellAlertIcon className={"h-3 w-3 text-red-300"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip> :
+                                            <Chip color={"success"} endDecorator={<CalendarDaysIcon className={"h-3 w-3 text-green-300"}/>} >{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip>
+                                    }
                                 </td>
                             )}
+
                         </tr>
                     ))
                     }
@@ -187,11 +194,16 @@ export function Manufacturing() {
                         <div className={"flex space-x-2 mb-4"}>
                             <h1 className={"text-[#50A6A1] my-auto"}>Quantity</h1>
                             <div className={"max-w-24"}>
-                                <Input variant={"outlined"} type={"number"} size={"sm"}
-                                       endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
-                                       value={selectedOrderProduced}
-                                       onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
-                                />
+                                {selectedOrder?.isDone ? <Input variant={"outlined"} disabled type={"number"} size={"sm"}
+                                                                endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
+                                                                value={selectedOrderProduced}
+                                                                onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
+                                /> : <Input variant={"outlined"} type={"number"} size={"sm"}
+                                            endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
+                                            value={selectedOrderProduced}
+                                            onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
+                                />}
+
                             </div>
                             <h1 className={" text-gray-500 my-auto"}>To Produce</h1>
                         </div>
