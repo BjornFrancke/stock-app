@@ -5,6 +5,19 @@ import {isStockSufficient, Item, reduceStock} from "./items";
 import {ManufacturingOrder} from "./models/manufacturingOrder";
 
 
+async function markManufacturingOrderAsDone (orderId : ObjectId) : Promise<void> {
+    const manuOrder = await ManufacturingOrder.findById(orderId);
+
+
+    if (!manuOrder) {
+        return;
+    }
+    manuOrder.isDone = true
+    manuOrder.doneDate = new Date();
+    await manuOrder.save();
+
+}
+
 export async function processBom(bomId: ObjectId | string) {
     const bomData: Ibom | null = await Bom.findById(bomId)
 
@@ -59,6 +72,7 @@ export async function processManufacturingOrder(orderId: ObjectId | string, toPr
 
     if (toProduce === (orderData.quantity.toProduce - orderData.quantity.produced)) {
         orderData.isDone = true
+        orderData.doneDate = new Date();
         orderData.quantity.produced = toProduce
         await orderData.save()
     }

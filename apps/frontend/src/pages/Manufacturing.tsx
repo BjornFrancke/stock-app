@@ -123,7 +123,7 @@ export function Manufacturing() {
                     boxShadow: "lg",
                 }}
             >
-                <h1 className={"text-xl mb-12"}>Manufactoring</h1>
+                <h1 className={"text-xl mb-12"}>Manufacturing</h1>
                 <Table borderAxis={"both"}>
                     <thead>
                     <tr>

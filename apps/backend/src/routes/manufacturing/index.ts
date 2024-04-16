@@ -3,7 +3,6 @@ import {ManufacturingOrder} from "../../models/manufacturingOrder";
 import {
     createManufacturingOrder,
     getBOMComponentStatus,
-    getNewManuOrderNumber,
     processManufacturingOrder
 } from "../../manufacturing";
 
@@ -64,16 +63,12 @@ manufacturingRouter.route('/:manufacturingOrder')
 
 manufacturingRouter.route('/check/:manufacturingOrder')
     .patch(async (req, res) => {
-        console.log("Function starting")
         const manuOrder = await ManufacturingOrder.findById(req.params.manufacturingOrder)
-        console.log("menu order found")
         if (manuOrder) {
-            console.log("Menu order true")
             const bomId = manuOrder.bom.bomId;
             const toProduce = manuOrder.quantity.toProduce;
             const isAvailable = await getBOMComponentStatus(bomId, toProduce);
             if (isAvailable) {
-                console.log("menu available")
                 manuOrder.componentStatus = isAvailable
                 const updatedManuOrder = await manuOrder.save()
                 res.json(updatedManuOrder)
