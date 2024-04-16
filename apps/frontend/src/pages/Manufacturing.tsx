@@ -77,13 +77,13 @@ export function Manufacturing() {
             dueDate: newOrderDueDate
         }
 
-           try {
-               await axios.post(`http://localhost:3000/manuOrder`, newManuOrderData)
-               setIsCreationModalOpen(false)
-               fetchManufacturingOrders()
-           } catch {
+        try {
+            await axios.post(`http://localhost:3000/manuOrder`, newManuOrderData)
+            setIsCreationModalOpen(false)
+            fetchManufacturingOrders()
+        } catch {
             console.error("Could to create Manufacturing order")
-           }
+        }
 
     }
 
@@ -150,8 +150,10 @@ export function Manufacturing() {
                                 <td>
                                     {
                                         (new Date(manuOrder.dueDate).valueOf()) < Date.now() ?
-                                            <Chip color={"danger"} endDecorator={<BellAlertIcon className={"h-3 w-3 text-red-300"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip> :
-                                            <Chip color={"success"} endDecorator={<CalendarDaysIcon className={"h-3 w-3 text-green-300"}/>} >{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip>
+                                            <Chip color={"danger"} endDecorator={<BellAlertIcon
+                                                className={"h-3 w-3 text-red-300"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip> :
+                                            <Chip color={"success"} endDecorator={<CalendarDaysIcon
+                                                className={"h-3 w-3 text-green-300"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip>
                                     }
                                 </td>
                             )}
@@ -175,7 +177,11 @@ export function Manufacturing() {
                         <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.reference}</h1>
                     </div>
                     <div className={"flex space-x-2"}>
-                        <Button onClick={() => handleManuOrderProduce()} size={"sm"}>Produce</Button>
+                        {selectedOrder?.isDone ?
+                            <Button variant={"soft"} color={"success"} onClick={() => handleManuOrderProduce()}
+                                    size={"sm"}>Completed</Button>
+                            : <Button onClick={() => handleManuOrderProduce()} size={"sm"}>Produce</Button>
+                        }
                         <Button onClick={() => handleManuOrderCheck()} color={"neutral"} size={"sm"}>Check
                             availability</Button>
                         <Button color={"neutral"} size={"sm"}>Unreserve</Button>
@@ -194,15 +200,16 @@ export function Manufacturing() {
                         <div className={"flex space-x-2 mb-4"}>
                             <h1 className={"text-[#50A6A1] my-auto"}>Quantity</h1>
                             <div className={"max-w-24"}>
-                                {selectedOrder?.isDone ? <Input variant={"outlined"} disabled type={"number"} size={"sm"}
-                                                                endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
-                                                                value={selectedOrderProduced}
-                                                                onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
-                                /> : <Input variant={"outlined"} type={"number"} size={"sm"}
-                                            endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
-                                            value={selectedOrderProduced}
-                                            onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
-                                />}
+                                {selectedOrder?.isDone ?
+                                    <Input variant={"outlined"} disabled type={"number"} size={"sm"}
+                                           endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
+                                           value={selectedOrderProduced}
+                                           onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
+                                    /> : <Input variant={"outlined"} type={"number"} size={"sm"}
+                                                endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
+                                                value={selectedOrderProduced}
+                                                onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
+                                    />}
 
                             </div>
                             <h1 className={" text-gray-500 my-auto"}>To Produce</h1>
@@ -253,54 +260,54 @@ export function Manufacturing() {
                     </Sheet>
                 </Modal>
                 <Modal
-                isOpen={isCreationModalOpen}
-                onRequestClose={() => setIsCreationModalOpen(false)}
-                className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
+                    isOpen={isCreationModalOpen}
+                    onRequestClose={() => setIsCreationModalOpen(false)}
+                    className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
 
                 >
-<Sheet
-    variant="outlined"
-    sx={{
-            maxWidth: 800,
-            minWidth: 800,
-            borderRadius: "md",
-            p: 6,
-            boxShadow: "lg",}}
->
-    <h1>Create a Manu</h1>
-    <form className={"space-y-4"}>
-        <div>
-            <h1>BOM:</h1>
-            <select
-                value={newOrderBomId}
-                onChange={(e) => setNewOrderBomId(e.target.value)}
-                className="p-2 border border-gray-300 rounded-md"
-            >
-                <option value="">Select a BOM</option>
-                {availableBoms.map((bom: Ibom) => (
-                    <option key={bom._id} value={bom._id}>
-                        {bom.name}
-                    </option>
-                ))}
-            </select>
-        </div>
-        <h1>Quantity</h1>
-        <Input value={newOrderQuantity} onChange={(e) => setNewOrderQuantity(e.target.valueAsNumber)} type={"number"}/>
-        <div>
-            <h1>Due Date</h1>
-            <Input
-                placeholder="Date"
-                onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
-                type={"date"}
-            />
-        </div>
-        <Button onClick={() => handleManuOrderCreation()}>Create</Button>
+                    <Sheet
+                        variant="outlined"
+                        sx={{
+                            maxWidth: 800,
+                            minWidth: 800,
+                            borderRadius: "md",
+                            p: 6,
+                            boxShadow: "lg",
+                        }}
+                    >
+                        <h1>Create a Manu</h1>
+                        <form className={"space-y-4"}>
+                            <div>
+                                <h1>BOM:</h1>
+                                <select
+                                    value={newOrderBomId}
+                                    onChange={(e) => setNewOrderBomId(e.target.value)}
+                                    className="p-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="">Select a BOM</option>
+                                    {availableBoms.map((bom: Ibom) => (
+                                        <option key={bom._id} value={bom._id}>
+                                            {bom.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <h1>Quantity</h1>
+                            <Input value={newOrderQuantity}
+                                   onChange={(e) => setNewOrderQuantity(e.target.valueAsNumber)} type={"number"}/>
+                            <div>
+                                <h1>Due Date</h1>
+                                <Input
+                                    placeholder="Date"
+                                    onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
+                                    type={"date"}
+                                />
+                            </div>
+                            <Button onClick={() => handleManuOrderCreation()}>Create</Button>
 
 
-
-
-    </form>
-</Sheet>
+                        </form>
+                    </Sheet>
                 </Modal>
             </div>
         </>
