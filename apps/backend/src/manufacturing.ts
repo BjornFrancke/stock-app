@@ -56,9 +56,17 @@ export async function processManufacturingOrder(orderId: ObjectId | string, toPr
     for (let produced = 0; toProduce >= produced; produced++ ) {
         await processBom(bomId)
     }
-    orderData.isDone = true
-    orderData.quantity.produced = toProduce
-    await orderData.save();
+
+    if (toProduce === (orderData.quantity.toProduce - orderData.quantity.produced)) {
+        orderData.isDone = true
+        orderData.quantity.produced = toProduce
+        await orderData.save()
+    }
+    else {
+        orderData.quantity.produced = toProduce
+        await orderData.save();
+    }
+
 }
 
 export async function getNewManuOrderNumber(){
