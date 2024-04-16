@@ -47,6 +47,20 @@ export async function processBom(bomId: ObjectId | string) {
 
 }
 
+export async function processManufacturingOrder(orderId: ObjectId | string, toProduce: number) {
+    const orderData = await ManufacturingOrder.findById(orderId)
+    if (!orderData) {
+        return
+    }
+    const bomId = orderData.bom.bomId
+    for (let produced = 0; toProduce >= produced; produced++ ) {
+        await processBom(bomId)
+    }
+    orderData.isDone = true
+    orderData.quantity.produced = toProduce
+    await orderData.save();
+}
+
 export async function getNewManuOrderNumber(){
     const latestManuOrder = await ManufacturingOrder.findOne().sort({reference: -1});
     const newOrderNumber = latestManuOrder ? latestManuOrder.reference + 1 : 1;

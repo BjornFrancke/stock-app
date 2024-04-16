@@ -1,6 +1,11 @@
 import express from "express";
 import {ManufacturingOrder} from "../../models/manufacturingOrder";
-import {createManufacturingOrder, getBOMComponentStatus, getNewManuOrderNumber} from "../../manufacturing";
+import {
+    createManufacturingOrder,
+    getBOMComponentStatus,
+    getNewManuOrderNumber,
+    processManufacturingOrder
+} from "../../manufacturing";
 
 const manufacturingRouter = express.Router()
 
@@ -47,6 +52,15 @@ manufacturingRouter.route('/:manufacturingOrder')
             res.status(500).send("Internal Server Error")
         }
     })
+    .patch(async (req, res) => {
+        try {
+            await processManufacturingOrder(req.params.manufacturingOrder, req.body.produce)
+        } catch {
+            res.status(500).send("Internal Server Error");
+        }
+    })
+
+
 
 manufacturingRouter.route('/check/:manufacturingOrder')
     .patch(async (req, res) => {

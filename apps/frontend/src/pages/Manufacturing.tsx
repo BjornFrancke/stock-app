@@ -71,7 +71,7 @@ export function Manufacturing() {
     const handleManuOrderCreation = async () => {
         const newManuOrderData = {
             bomId: newOrderBomId,
-            quantity: newOrderQuantity,
+            quantity: newOrderQuantity.valueOf(),
             dueDate: newOrderDueDate
         }
 
@@ -83,6 +83,15 @@ export function Manufacturing() {
             console.error("Could to create Manufacturing order")
            }
 
+    }
+
+    const handleManuOrderProduce = async () => {
+        const bomId = selectedOrder?._id
+        const reqData = {
+            produce: selectedOrderProduced
+        }
+        await axios.patch(`http://localhost:3000/manuOrder/${bomId}`, reqData)
+        fetchManufacturingOrders()
     }
 
     const handleManuOrderCheck = async () => {
@@ -160,7 +169,7 @@ export function Manufacturing() {
                         <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.reference}</h1>
                     </div>
                     <div className={"flex space-x-2"}>
-                        <Button size={"sm"}>Produce all</Button>
+                        <Button onClick={() => handleManuOrderProduce()} size={"sm"}>Produce</Button>
                         <Button onClick={() => handleManuOrderCheck()} color={"neutral"} size={"sm"}>Check
                             availability</Button>
                         <Button color={"neutral"} size={"sm"}>Unreserve</Button>
