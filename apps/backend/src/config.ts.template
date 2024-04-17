@@ -1,3 +1,0 @@
-// MongoDB
-export const DATABASE_URL = " "
-export const appPort = 3000
