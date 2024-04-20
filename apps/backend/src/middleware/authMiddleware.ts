@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import asyncHandler from "express-async-handler";
 import {jtwSecret} from "../controllers";
 import {User} from "../models/userModel";
@@ -15,11 +15,11 @@ export const protect = asyncHandler(async (req: ExtendedRequest, res : Response,
     ) try {
         token = req.headers.authorization.split(" ")[1];
 
-        const decoded = jwt.verify(token, jtwSecret);
+        const decoded = jwt.verify(token, jtwSecret) as JwtPayload;
 
-        req.user = (await User.findById(decoded).select("-password")) as Iuser;
+        req.user = (await User.findById(decoded.id).select("-password")) as Iuser;
 
-
+        next()
     } catch (error){
         console.log(error);
         res.status(401);
