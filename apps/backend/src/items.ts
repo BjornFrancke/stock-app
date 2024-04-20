@@ -1,5 +1,6 @@
-import {Schema, model, HydratedDocument} from "mongoose"
+import {Schema, model, HydratedDocument, Error} from "mongoose"
 import {Iitems, ItemsModel} from "./types";
+import {ObjectId} from "mongodb";
 
 export const itemSchema = new Schema<Iitems, ItemsModel>({
     name: {type: String},
@@ -9,6 +10,15 @@ export const itemSchema = new Schema<Iitems, ItemsModel>({
 
 
 export const Item: ItemsModel = model<Iitems, ItemsModel>('Item', itemSchema)
+
+export const setStock = async (itemId: string, newStock: number) => {
+    const item = await Item.findById(itemId);
+    if (!item) {
+        throw new Error("Item not found");
+    }
+    item.stock = newStock;
+    return await item.save();
+}
 
 
 export function listAllItems() {
