@@ -1,5 +1,6 @@
 import express from "express";
-import {loginUser, registerUser} from "../controllers";
+import {getLoggedInUser, loginUser, registerUser} from "../controllers";
+import {protect} from "../middleware/authMiddleware";
 
 const userRoutes = express.Router();
 
@@ -8,5 +9,8 @@ userRoutes.route('/register')
 
 userRoutes.route('/login')
     .post(loginUser)
+
+userRoutes.route('/me')
+    .get(protect, getLoggedInUser)
 
 export default userRoutes;

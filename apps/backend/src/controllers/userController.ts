@@ -72,7 +72,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
 })
 
-const getLoggedInUser = asyncHandler(async (req: ExtendedRequest, res) => {
+export const getLoggedInUser = asyncHandler(async (req: ExtendedRequest, res) => {
     const userData = await User.findById(req.user?._id)
     if (!userData) {
         res.status(404).send("User not found");
