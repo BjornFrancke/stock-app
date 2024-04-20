@@ -9,6 +9,7 @@ import ordersRoute from "./routes/orders";
 import customerRouter from "./routes/customer";
 import manufacturingRouter from "./routes/manufacturing";
 import {getNewManuOrderNumber} from "./manufacturing";
+import userRoutes from "./routes/userRoutes";
 
 mongoose.connect(DATABASE_URL)
 const database = mongoose.connection
@@ -43,6 +44,7 @@ app.use('/bom', bomRouter)
 app.use('/orders', ordersRoute)
 app.use('/customer', customerRouter)
 app.use("/manuOrder", manufacturingRouter)
+app.use("/user", userRoutes)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
