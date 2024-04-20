@@ -3,8 +3,9 @@ import 'dotenv/config'
 import asyncHandler from "express-async-handler";
 import {User} from "../models/userModel";
 import bcrypt from "bcryptjs";
+import {ExtendedRequest} from "../types"
 
-const jtwSecret = process.env.JWT_SECRET_KEY || "secret"
+export const jtwSecret = process.env.JWT_SECRET_KEY || "secret"
 
 
 const generateToken = (id: string | object | undefined) => {
@@ -68,5 +69,21 @@ export const loginUser = asyncHandler(async (req, res) => {
     } else {
         res.status(401).send("Invalid email or password")
     }
+
+})
+
+const getLoggedInUser = asyncHandler(async (req: ExtendedRequest, res) => {
+    const userData = await User.findById(req.user?._id)
+    if (!userData) {
+        res.status(404).send("User not found");
+        return;
+    }
+    const {_id, name, email} = userData;
+    res.status(200).json({
+        id: _id,
+        name,
+        email
+
+    })
 
 })
