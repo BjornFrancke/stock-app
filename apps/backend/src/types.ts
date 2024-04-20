@@ -60,9 +60,17 @@ export interface ImanufacturingOrder {
 
 }
 
+export interface Iuser {
+    _id?: ObjectId,
+    name: string,
+    email: string,
+    password: string,
+    token: string
+}
+
 export type CustomerModel = Model<Icustomer>
 export type ItemsModel = Model<Iitems>
 export type BomModel = Model<Ibom>
 export type OrderModel = Model<Iorder>
 export type ManufacturingOrderModel = Model<ImanufacturingOrder>
-
+export type UserModel = Model<Iuser>
