@@ -51,7 +51,6 @@ export function Manufacturing() {
         try {
             const response = await instance.get('/manuOrder');
             setManufacturingOrders(response.data)
-            console.log(response.data);
         } catch (error) {
             console.error(error);
         }

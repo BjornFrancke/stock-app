@@ -104,9 +104,8 @@ export function Customer() {
                             className={"grid grid-cols-2 gap-4"}
                         >
                             {customers.map((customer: Icustomer) => (
-                                <div>
+                                <div key={customer._id}>
                                     <Card
-                                        key={customer._id}
                                         variant="outlined"
                                     >
                                         <CardContent>

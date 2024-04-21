@@ -19,9 +19,8 @@ export function NavBar() {
 
     return <nav className="flex w-screen mx-auto justify-center space-x-64  shadow py-3">
         <Link to="/">
-            <div className={"bg-[#50A6A1] flex space-x-1 w-fit px-3 py-2 rounded-2xl"}>
-
-                <svg xmlns="http://www.w3.org/2000/svg" width="27px" height="auto" viewBox="0 0 24 24">
+            <div className={"bg-[#50A6A1] flex space-x-1 w-fit px-3 my-auto py-2 rounded-2xl"}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="27px" height="27" viewBox="0 0 27 27">
                     <path fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round"
                           strokeWidth={1.5}
                           d="M10 15v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2m6-10v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2m6 10v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2M6 16v-3m6-7V3m6 13v-3"></path>
@@ -60,17 +59,11 @@ export function NavBar() {
 
             </ul>
         </div>
-        <div className={"py-3 py-auto"}>
+        <div className={" my-auto"}>
             <Dropdown
 
-                sx={{
-                    paddingTop: "0px",
-                    height: "12px",
-                    marginTop: "auto",
-                    marginBottom: "auto"
-                }}
             >
-                <MenuButton variant={"plain"}><UserIcon className="h-6 w-6 text-black"/></MenuButton>
+                <MenuButton variant={"plain"}><UserIcon className=" h-6 w-6 text-black"/></MenuButton>
 
                     {localStorage.getItem("token") ? (
                         <Menu>

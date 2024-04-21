@@ -108,8 +108,8 @@ export const ListAllItems = () => {
                 <h1 className="text-xl mb-12">Items</h1>
                 {error && <Alert color={"danger"} variant={"solid"}>{error}</Alert>}
                 {loading && (
-                    <tr className={"mx-auto w-fit"}><CircularProgress/>
-                    </tr>
+                    <CircularProgress/>
+
 
                 )}
                 <div>
