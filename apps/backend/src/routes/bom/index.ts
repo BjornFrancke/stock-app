@@ -8,34 +8,35 @@ import {
     removeComponent,
     setComponentAmount
 } from "../../controllers";
+import {protect} from "../../middleware/authMiddleware";
 
 const bomRouter = express.Router()
 
 bomRouter.route('/findAll')
-    .get(getBoms)
+    .get(protect, getBoms)
 
 bomRouter.route('/findById/:bomId')
-    .get(getBomById)
+    .get(protect, getBomById)
 
 bomRouter.route('/bomDetailsById/:bomId')
-    .get(getBomDetails);
+    .get(protect, getBomDetails);
 
 bomRouter.route('/delete/:bomId')
-    .delete(deleteBom)
+    .delete(protect, deleteBom)
 
 bomRouter.route('/addComponent/:bomId')
-    .patch(addComponent)
+    .patch(protect, addComponent)
 
 bomRouter.route('/removeComponent/:bomId/:componentId')
-    .delete(removeComponent)
+    .delete(protect, removeComponent)
 
 bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
-    .patch(setComponentAmount)
+    .patch(protect, setComponentAmount)
 
 bomRouter.route('/create')
-    .post(createBom)
+    .post(protect, createBom)
 
 bomRouter.route('/manufacture/:bomId')
-    .patch(manufactureBom)
+    .patch(protect, manufactureBom)
 
 export default bomRouter

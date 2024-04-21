@@ -1,6 +1,5 @@
-import axios from "axios";
 import {useEffect, useState} from "react";
-import {axiosConfig} from "../services/backend-api/axiosConfig.ts";
+import {instance} from "../services/backend-api/axiosConfig.ts";
 import Sheet from "@mui/joy/Sheet";
 
 export function Profile() {
@@ -10,7 +9,7 @@ export function Profile() {
     })
 
     const fetchProfile = async () => {
-        const profileData = await axios.get('http://localhost:3000/user/me', axiosConfig)
+        const profileData = await instance.get('/user/me')
         setProfileInfo({
             name: profileData.data.name || "username",
             email: profileData.data.email || "Email Address",

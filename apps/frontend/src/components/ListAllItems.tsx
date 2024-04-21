@@ -25,6 +25,7 @@ export const ListAllItems = () => {
     const [selectedItem, setSelectedItem] = useState<Iitems | null>(null) // Details of the clicked item
     const [newStockValue, setNewStockValue] = useState(0) // handle new stock value
 
+    // @ts-ignore
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {

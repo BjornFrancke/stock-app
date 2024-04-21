@@ -1,5 +1,4 @@
 import Table from "@mui/joy/Table";
-import axios from "axios";
 import {useEffect, useState} from "react";
 import {Ibom, Icomponent, Iitems} from "../types";
 import Modal from 'react-modal';
@@ -11,6 +10,7 @@ import IconButton from "@mui/joy/IconButton";
 import FormLabel from "@mui/joy/FormLabel";
 import ChipDelete from "@mui/joy/ChipDelete";
 import Sheet from "@mui/joy/Sheet";
+import {instance} from "../services/backend-api/axiosConfig.ts";
 
 
 function BomCreationModal(props: {
@@ -101,7 +101,7 @@ export const ListAllBoms = () => {
             console.warn("Cannot find BOM")
             return
         }
-        await axios.delete(`http://localhost:3000/bom/delete/${id}`)
+        await instance.delete(`/bom/delete/${id}`)
         fetchBoms()
 
     }
@@ -111,7 +111,7 @@ export const ListAllBoms = () => {
             name: newBomName,
             product: newBomProduct
         };
-        await axios.post('http://localhost:3000/bom/create', bomData);
+        await instance.post('/bom/create', bomData);
         // After creating new item, fetch items again to refresh the list
         fetchBoms();
         setIsCreationModalOpen(false);
@@ -124,7 +124,7 @@ export const ListAllBoms = () => {
             return
         }
         const componentData = {componentId: newComponentId, componentAmount: newComponentAmount}
-        await axios.patch(`http://localhost:3000/bom/AddComponent/${id}`, componentData)
+        await instance.patch(`/bom/AddComponent/${id}`, componentData)
             .catch(error => console.error("Failed to add component:", error));
         fetchBoms()
         setNewComponentId("")
@@ -138,7 +138,7 @@ export const ListAllBoms = () => {
             return;
         }
         try {
-            await axios.delete(`http://localhost:3000/bom/removeComponent/${bomId}/${componentId}`)
+            await instance.delete(`/bom/removeComponent/${bomId}/${componentId}`)
             setIsModalOpen(false)
             fetchBoms();
         } catch {
@@ -152,7 +152,7 @@ const handleComponentAmountChange = async (id: string | undefined) => {
         return
     }
 
-    await axios.patch(`http://localhost:3000/bom/setComponentAmount/${id}/${selectedComponent?.id}/${newComponentAmount}`);
+    await instance.patch(`/bom/setComponentAmount/${id}/${selectedComponent?.id}/${newComponentAmount}`);
     setIsModalOpen(false)
     fetchBoms();
     setNewComponentAmount(0)
@@ -168,7 +168,7 @@ useEffect(() => {
 
 const fetchBoms = async () => {
     try {
-        const response = await axios.get('http://localhost:3000/bom/findAll');
+        const response = await instance.get('/bom/findAll');
         setBoms(response.data);
     } catch {
         console.log("Could not fetch BOMs");
@@ -178,7 +178,7 @@ const fetchBoms = async () => {
 
 const fetchAvailableComponents = async () => {
     try {
-        const response = await axios.get('http://localhost:3000/item/findAll');
+        const response = await instance.get('/item/findAll');
         setAvailableComponents(response.data);
     } catch {
         console.error("Could to fetch availableComponents")
@@ -190,7 +190,7 @@ const fetchComponentNameById = async (componentId: string | undefined) => {
         if (!componentId) {
             console.error('No component id provided')
         }
-        const response = await axios.get(`http://localhost:3000/item/getNameById/${componentId}`);
+        const response = await instance.get(`/item/getNameById/${componentId}`);
         return response.data;
     } catch {
         console.error("Failed to fetch component name:");
