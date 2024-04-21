@@ -3,11 +3,12 @@ import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
 import {useState} from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
-export function User () {
+export function Login () {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         const loginInfo = {
@@ -19,6 +20,7 @@ export function User () {
         const token = loggedIn.data.token
         console.log(loggedIn);
         localStorage.setItem("token", token)
+        navigate("/items");
     }
 
     return (
