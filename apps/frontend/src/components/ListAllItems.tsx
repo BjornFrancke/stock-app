@@ -6,7 +6,7 @@ import {Iitems} from "../types.ts";
 import Modal from 'react-modal';
 import Button from '@mui/joy/Button';
 import Table from '@mui/joy/Table';
-import {Input} from "@mui/joy";
+import {Alert, CircularProgress, Input} from "@mui/joy";
 import Chip from "@mui/joy/Chip"
 import {ChipDelete} from "@mui/joy"
 import {ArrowsPointingOutIcon, PencilSquareIcon} from '@heroicons/react/16/solid';
@@ -24,6 +24,8 @@ export const ListAllItems = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState<Iitems | null>(null) // Details of the clicked item
     const [newStockValue, setNewStockValue] = useState(0) // handle new stock value
+    const [loading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<string | null>(null)
 
     // @ts-ignore
     const [searchParams, setSearchParams] = useSearchParams();
@@ -33,9 +35,14 @@ export const ListAllItems = () => {
     }, []);
 
     const fetchItems = async () => {
-        await instance.get('/item/findAll')
-        const response = await instance.get('/item/findAll')
-        setItems(response.data);
+        instance.get('/item/findAll').then(response => {
+            setItems(response.data);
+            setLoading(false);
+        }).catch(error => {
+            setError(error.message);
+            setLoading(false);
+        })
+
     };
 
     const handleStockChange = async (id: string | undefined) => {
@@ -59,17 +66,13 @@ export const ListAllItems = () => {
     };
 
 
-
-
-
     const handleItemClick = (item: Iitems) => {
         setSelectedItem(item);
         setNewStockValue(item.stock)
         if (item._id !== undefined) {
-            setSearchParams({ id: item._id });
+            setSearchParams({id: item._id});
         } else {
-            // Handle the case where _id is undefined, e.g., clear the parameter or set a default
-            setSearchParams({ id: '' }); // or setSearchParams({});
+            setSearchParams({id: ''});
         }
         setIsModalOpen(true)
     }
@@ -90,6 +93,7 @@ export const ListAllItems = () => {
         setNewItemStock(0);
     };
 
+
     return (
         <>
             <Sheet
@@ -102,7 +106,12 @@ export const ListAllItems = () => {
                 }}
             >
                 <h1 className="text-xl mb-12">Items</h1>
+                {error && <Alert color={"danger"} variant={"solid"}>{error}</Alert>}
+                {loading && (
+                    <tr className={"mx-auto w-fit"}><CircularProgress/>
+                    </tr>
 
+                )}
                 <div>
                     <Table borderAxis={"both"}>
                         <thead>
@@ -120,6 +129,7 @@ export const ListAllItems = () => {
                         </tr>
                         </thead>
                         <tbody>
+
                         {items.map((item: Iitems) => (
                             <tr key={item._id}>
                                 <td onClick={() => handleItemClick(item)}
@@ -178,13 +188,14 @@ export const ListAllItems = () => {
                         className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-28 space-y-6"}
                     >
                         <div className={"flex justify-between"}>
-                        <div className={"flex space-x-2"}>
-                            <h1 className={"text-2xl text-[#50A6A1]"}>Item</h1>
+                            <div className={"flex space-x-2"}>
+                                <h1 className={"text-2xl text-[#50A6A1]"}>Item</h1>
 
-                            <h1 className={"text-2xl text-gray-500"}>{selectedItem?.name}</h1>
-                        </div>
+                                <h1 className={"text-2xl text-gray-500"}>{selectedItem?.name}</h1>
+                            </div>
                             <div>
-                                <Link to={`http://localhost:5173/item/${selectedItem?._id}`}><ArrowsPointingOutIcon className={"h-6 w-6 text-gray-500 my-auto"}/></Link>
+                                <Link to={`http://localhost:5173/item/${selectedItem?._id}`}><ArrowsPointingOutIcon
+                                    className={"h-6 w-6 text-gray-500 my-auto"}/></Link>
                             </div>
                         </div>
                         <Sheet
