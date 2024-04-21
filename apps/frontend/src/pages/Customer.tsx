@@ -5,43 +5,49 @@ import Card from "@mui/joy/Card";
 import {SelectedCustomerTable} from "../components/Customer/SelectedCustomerTable.tsx";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 
+
 export function Customer() {
     const [customers, setCustomers] = useState([])
     const [selectedCustomer, setSelectedCustomer] = useState<Icustomer | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [newCustomerName, setNewCustomerName] = useState('');
-    const [newCustomerEmail, setNewCustomerEmail] = useState('');
-    const [newCustomerPhone, setNewCustomerPhone] = useState('');
-    const [newCustomerStreet, setNewCustomerStreet] = useState('');
-    const [newCustomerZip, setNewCustomerZip] = useState('');
-    const [newCustomerCity, setNewCustomerCity] = useState('');
-    const [newCustomerCountry, setNewCustomerCountry] = useState('');
+    const [newCustomer, setNewCustomer] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        street: "",
+        zip: 0,
+        city: "",
+        country: "",
+    })
     const [isNewCustomerModalOpen, setIsNewCustomerModalOpen] = useState(false);
+
+
+    const handleNewCustomerDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewCustomer({
+            ...newCustomer,
+            [e.target.name]: e.target.value
+        })
+    }
+
 
     const handleSubmitNewCustomer = async () => {
 
         const customerData = {
-            name: newCustomerName,
-            mailAdress: newCustomerEmail,
-            phoneNr: newCustomerPhone,
+            name: newCustomer.name,
+            mailAdress: newCustomer.email,
+            phoneNr: newCustomer.phone,
             address: {
-                street: newCustomerStreet,
-                zip: newCustomerZip,
-                city: newCustomerCity,
-                country: newCustomerCountry,
+                street: newCustomer.street,
+                zip: newCustomer.zip,
+                city: newCustomer.city,
+                country: newCustomer.country,
             },
         };
 
         try {
             await instance.post('/customer/create', customerData);
             fetchCustomers();
-            setNewCustomerName('');
-            setNewCustomerEmail('');
-            setNewCustomerPhone('');
-            setNewCustomerStreet('');
-            setNewCustomerZip('');
-            setNewCustomerCity('');
-            setNewCustomerCountry('');
+            setNewCustomer(newCustomer) // Sets state to initial state
             setIsNewCustomerModalOpen(false);
         } catch (error) {
             console.error("Failed to create customer:", error);
@@ -188,21 +194,21 @@ export function Customer() {
                                 }}
                             >
                                 <h2 id="new-customer-modal-title">Add New Customer</h2>
-                                <form onSubmit={handleSubmitNewCustomer}>
-                                    <Input placeholder="Name" value={newCustomerName}
-                                           onChange={e => setNewCustomerName(e.target.value)}/>
-                                    <Input placeholder="Email Address" value={newCustomerEmail}
-                                           onChange={e => setNewCustomerEmail(e.target.value)}/>
-                                    <Input placeholder="Phone Number" value={newCustomerPhone}
-                                           onChange={e => setNewCustomerPhone(e.target.value)}/>
-                                    <Input placeholder="Street" value={newCustomerStreet}
-                                           onChange={e => setNewCustomerStreet(e.target.value)}/>
-                                    <Input type="number" placeholder="Zip Code" value={newCustomerZip}
-                                           onChange={e => setNewCustomerZip(e.target.value)}/>
-                                    <Input placeholder="City" value={newCustomerCity}
-                                           onChange={e => setNewCustomerCity(e.target.value)}/>
-                                    <Input placeholder="Country" value={newCustomerCountry}
-                                           onChange={e => setNewCustomerCountry(e.target.value)}/>
+                                <form onSubmit={handleSubmitNewCustomer} className={"space-y-4"}>
+                                    <Input placeholder="Name" name={"name"} value={newCustomer.name}
+                                           onChange={(e) => handleNewCustomerDataChange(e)}/>
+                                    <Input placeholder="Email Address" name={"email"} value={newCustomer.email}
+                                           onChange={e => handleNewCustomerDataChange(e)}/>
+                                    <Input placeholder="Phone Number" name={"phone"} value={newCustomer.phone}
+                                           onChange={e => handleNewCustomerDataChange(e)}/>
+                                    <Input placeholder="Street" name={"street"} value={newCustomer.street}
+                                           onChange={e => handleNewCustomerDataChange(e)}/>
+                                    <Input type="number" name={"zip"} placeholder="Zip Code" value={newCustomer.zip}
+                                           onChange={e => handleNewCustomerDataChange(e)}/>
+                                    <Input placeholder="City" name={"city"} value={newCustomer.city}
+                                           onChange={e => handleNewCustomerDataChange(e)}/>
+                                    <Input placeholder="Country" name={"country"} value={newCustomer.country}
+                                           onChange={e => handleNewCustomerDataChange(e)}/>
                                     <Button type="submit">Submit</Button>
                                 </form>
                             </Sheet>
