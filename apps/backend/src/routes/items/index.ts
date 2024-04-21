@@ -1,25 +1,26 @@
 import express from "express";
 import {Item} from "../../items";
 import {createItem, deleteItem, getItems, getItemsById, setItemStock} from "../../controllers";
+import {protect} from "../../middleware/authMiddleware";
 
 
 const itemRouter = express.Router()
 
 itemRouter.route('/findAll')
-    .get(getItems)
+    .get(protect, getItems)
 
 itemRouter.route('/delete/:itemId')
-    .delete(deleteItem)
+    .delete(protect, deleteItem)
 
 itemRouter.route('/create')
-    .post(createItem)
+    .post(protect, createItem)
 
 
 itemRouter.route('/findById/:itemId')
-    .get(getItemsById)
+    .get(protect, getItemsById)
 
 itemRouter.route('/setStock/:itemId/:newStock')
-    .patch(setItemStock)
+    .patch(protect, setItemStock)
 
 
 itemRouter.route('/getNameById/:itemId')

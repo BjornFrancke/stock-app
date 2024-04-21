@@ -3,7 +3,6 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
-import axios from "axios";
 import {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
 import Chip from "@mui/joy/Chip";
@@ -17,6 +16,7 @@ import {
 import ChipDelete from "@mui/joy/ChipDelete";
 import {Snackbar} from "@mui/joy";
 import IconButton from "@mui/joy/IconButton";
+import {instance} from "../services/backend-api/axiosConfig.ts";
 
 
 export function Orders() {
@@ -61,7 +61,7 @@ export function Orders() {
         };
 
         try {
-            await axios.patch(`http://localhost:3000/orders/${orderId}/additem`, newItemData);
+            await instance.patch(`/orders/${orderId}/additem`, newItemData);
             fetchOrders();
             setNewItemToAddAmount(0);
             setNewItemToAddId("")
@@ -84,7 +84,7 @@ export function Orders() {
             handleErrorMessage(400, "Please fill in all fields")
             return
         }
-        await axios.post('http://localhost:3000/orders/create', orderData)
+        await instance.post('/orders/create', orderData)
 
         fetchOrders()
         setIsCreationModalOpen(false)
@@ -113,7 +113,7 @@ export function Orders() {
             handleErrorMessage(400, 'ID is undefined')
             return;
         }
-        await axios.patch(`http://localhost:3000/orders/markAsDone/${id}`);
+        await instance.patch(`/orders/markAsDone/${id}`);
         await fetchOrders();
     };
     const handleDelete = async (id: string | undefined) => {
@@ -122,7 +122,7 @@ export function Orders() {
             handleErrorMessage(400, 'Cannot delete an item without an id')
             return;
         }
-        await axios.delete(`http://localhost:3000/orders/delete/${id}`);
+        await instance.delete(`/orders/delete/${id}`);
         fetchOrders();
     };
 
@@ -133,18 +133,18 @@ export function Orders() {
     }, []);
 
     const fetchOrders = async () => {
-        const response = await axios.get('http://localhost:3000/orders/findAll');
+        const response = await instance.get('/orders/findAll');
         setOrders(response.data);
 
     };
 
     const fetchAvailableItems = async () => {
-        const response = await axios.get('http://localhost:3000/item/findAll');
+        const response = await instance.get('/item/findAll');
         setAvailableItems(response.data);
     };
 
     const fetchAvailableCustomers = async () => {
-        const response = await axios.get('http://localhost:3000/customer/findAll');
+        const response = await instance.get('/customer/findAll');
         setAvailableCustomers(response.data);
     };
 

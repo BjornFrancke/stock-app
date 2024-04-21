@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import axios from "axios";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Modal from "react-modal";
@@ -8,6 +7,7 @@ import Input from "@mui/joy/Input";
 import {Ibom} from "../types.ts";
 import Chip from "@mui/joy/Chip";
 import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
+import {instance} from "../services/backend-api/axiosConfig.ts";
 
 
 export interface ImanufacturingOrder {
@@ -49,7 +49,7 @@ export function Manufacturing() {
 
     const fetchManufacturingOrders = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/manuOrder');
+            const response = await instance.get('/manuOrder');
             setManufacturingOrders(response.data)
             console.log(response.data);
         } catch (error) {
@@ -59,7 +59,7 @@ export function Manufacturing() {
 
     const fetchAvailableBoms = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/bom/findAll');
+            const response = await instance.get('/bom/findAll');
             setAvailableBoms(response.data)
         } catch {
             console.error("Could to fetch available Boms")
@@ -78,7 +78,7 @@ export function Manufacturing() {
         }
 
         try {
-            await axios.post(`http://localhost:3000/manuOrder`, newManuOrderData)
+            await instance.post(`/manuOrder`, newManuOrderData)
             setIsCreationModalOpen(false)
             fetchManufacturingOrders()
         } catch {
@@ -92,19 +92,19 @@ export function Manufacturing() {
         const reqData = {
             produce: selectedOrderProduced
         }
-        await axios.patch(`http://localhost:3000/manuOrder/${bomId}`, reqData)
+        await instance.patch(`/manuOrder/${bomId}`, reqData)
         fetchManufacturingOrders()
     }
 
     const handleManuOrderCheck = async () => {
         const id = selectedOrder?._id
-        await axios.patch(`http://localhost:3000/manuOrder/check/${id}`)
+        await instance.patch(`/manuOrder/check/${id}`)
         fetchManufacturingOrders();
     }
 
     const handleManuOrderDelete = async () => {
         const id = selectedOrder?._id
-        await axios.delete(`http://localhost:3000/manuOrder/${id}`);
+        await instance.delete(`/manuOrder/${id}`);
         setIsModalOpen(false)
         fetchManufacturingOrders();
     }

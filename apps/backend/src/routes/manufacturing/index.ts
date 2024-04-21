@@ -6,19 +6,20 @@ import {
     getAllManufacturingOrders,
     getManufacturingOrderById, processManufacturingOrderById
 } from "../../controllers";
+import {protect} from "../../middleware/authMiddleware";
 
 const manufacturingRouter = express.Router()
 
 manufacturingRouter.route('/')
-    .get(getAllManufacturingOrders)
-    .post(createManuOrder)
+    .get(protect, getAllManufacturingOrders)
+    .post(protect, createManuOrder)
 
 manufacturingRouter.route('/:manufacturingOrder')
-    .delete(deleteManufacturingOrder)
-    .get(getManufacturingOrderById)
-    .patch(processManufacturingOrderById)
+    .delete(protect, deleteManufacturingOrder)
+    .get(protect, getManufacturingOrderById)
+    .patch(protect, processManufacturingOrderById)
 
 manufacturingRouter.route('/check/:manufacturingOrder')
-    .patch(checkManufacturingOrderById)
+    .patch(protect, checkManufacturingOrderById)
 
 export default manufacturingRouter

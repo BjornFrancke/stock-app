@@ -1,9 +1,9 @@
 import {Button, CardContent, Input, Modal, Sheet, Typography} from "@mui/joy";
 import {Icustomer} from "../types";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import Card from "@mui/joy/Card";
 import {SelectedCustomerTable} from "../components/Customer/SelectedCustomerTable.tsx";
+import {instance} from "../services/backend-api/axiosConfig.ts";
 
 export function Customer() {
     const [customers, setCustomers] = useState([])
@@ -33,7 +33,7 @@ export function Customer() {
         };
 
         try {
-            await axios.post('http://localhost:3000/customer/create', customerData);
+            await instance.post('/customer/create', customerData);
             fetchCustomers();
             setNewCustomerName('');
             setNewCustomerEmail('');
@@ -55,7 +55,7 @@ export function Customer() {
                 console.error("Customer ID is undefined")
                 return
             }
-            await axios.delete(`http://localhost:3000/customer/delete/${customerId}`)
+            await instance.delete(`/customer/delete/${customerId}`)
             fetchCustomers()
             setIsModalOpen(false)
         } catch {
@@ -74,7 +74,7 @@ export function Customer() {
 
 
     const fetchCustomers = async () => {
-        const response = await axios.get('http://localhost:3000/customer/findAll');
+        const response = await instance.get('/customer/findAll');
         setCustomers(response.data);
     };
 

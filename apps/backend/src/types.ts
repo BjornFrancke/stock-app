@@ -1,5 +1,6 @@
 import {ObjectId} from "mongodb";
 import { Model } from "mongoose";
+import {Request} from "express";
 
 export interface Iitems {
     _id?: ObjectId,
@@ -60,9 +61,21 @@ export interface ImanufacturingOrder {
 
 }
 
+export interface Iuser {
+    _id?: ObjectId,
+    name: string,
+    email: string,
+    password: string,
+    token: string
+}
+
+export interface ExtendedRequest extends Request {
+    user?: Iuser
+}
+
 export type CustomerModel = Model<Icustomer>
 export type ItemsModel = Model<Iitems>
 export type BomModel = Model<Ibom>
 export type OrderModel = Model<Iorder>
 export type ManufacturingOrderModel = Model<ImanufacturingOrder>
-
+export type UserModel = Model<Iuser>

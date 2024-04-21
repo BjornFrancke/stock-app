@@ -4,24 +4,25 @@ import mongoose from "mongoose";
 import { Item } from "../../items";
 import {orderMarkedAsDone} from "../../orders";
 import {addItemToOrder, createOrder, deleteOrder, getOrders, markOrderAsDone} from "../../controllers";
+import {protect} from "../../middleware/authMiddleware";
 
 const ordersRoute = express.Router()
 
 
 ordersRoute.route('/findAll')
-.get(getOrders)
+.get(protect, getOrders)
 
 ordersRoute.route('/create')
-.post(createOrder)
+.post(protect, createOrder)
 
 ordersRoute.route('/markAsDone/:orderId')
-.patch(markOrderAsDone)
+.patch(protect, markOrderAsDone)
 
 ordersRoute.route('/:orderId/additem')
-.patch(addItemToOrder);
+.patch(protect, addItemToOrder);
 
 
 ordersRoute.route('/delete/:orderId')
-    .delete(deleteOrder)
+    .delete(protect, deleteOrder)
 
 export default ordersRoute

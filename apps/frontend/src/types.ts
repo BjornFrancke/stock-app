@@ -43,3 +43,11 @@ export interface Iaddress {
     city: string,
     country: string
 }
+
+export interface Iuser {
+    _id?: string | undefined,
+    name: string,
+    email: string,
+    password: string,
+    token: string
+}

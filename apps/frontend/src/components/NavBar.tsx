@@ -11,6 +11,12 @@ import {
 import {Dropdown, Menu, MenuButton, MenuItem} from "@mui/joy";
 
 export function NavBar() {
+
+    function handleLogout() {
+        console.log("Logging out...");
+        localStorage.removeItem("token");
+    }
+
     return <nav className="flex w-screen mx-auto justify-center space-x-64  shadow py-3">
         <Link to="/">
             <div className={"bg-[#50A6A1] flex space-x-1 w-fit px-3 py-2 rounded-2xl"}>
@@ -65,13 +71,21 @@ export function NavBar() {
                 }}
             >
                 <MenuButton variant={"plain"}><UserIcon className="h-6 w-6 text-black"/></MenuButton>
-                <Menu>
-                    <MenuItem>Profile</MenuItem>
-                    <MenuItem>
-                        Language settings
-                    </MenuItem>
-                    <MenuItem>Log out</MenuItem>
-                </Menu>
+
+                    {localStorage.getItem("token") ? (
+                        <Menu>
+                            <Link to="/profile"><MenuItem>Profile</MenuItem></Link>
+                            <MenuItem>
+                                Language settings
+                            </MenuItem>
+                        <MenuItem onClick={() => handleLogout()}>Log out</MenuItem>
+                        </Menu>
+
+
+                    ) : (
+                        <Menu>
+                        <Link to="/login"><MenuItem>Login</MenuItem></Link>
+                        </Menu>)}
             </Dropdown>
         </div>
     </nav>;
