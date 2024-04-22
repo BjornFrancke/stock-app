@@ -1,6 +1,4 @@
 import '../index.css'
-
-
 import {useState, useEffect} from 'react';
 import {Iitems} from "../types.ts";
 import Modal from 'react-modal';
@@ -16,7 +14,7 @@ import {deleteItem} from "../services/backend-api/items.ts";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 
 export const ListAllItems = () => {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState<Iitems[]>([]);
     const [showForm, setShowForm] = useState(false); // control form visibility
     const [showChangeStockForm, setShowChangeStockForm] = useState(false)
     const [newItemName, setNewItemName] = useState(''); // handle new item name
@@ -27,12 +25,15 @@ export const ListAllItems = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
-    // @ts-ignore
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         fetchItems();
     }, []);
+
+    useEffect(() => {
+        handleSearchParams();
+    }, [items]);
 
     const fetchItems = async () => {
         instance.get('/item/findAll').then(response => {
@@ -45,6 +46,21 @@ export const ListAllItems = () => {
 
     };
 
+    const handleSearchParams = () => {
+        if (searchParams) {
+            const search = searchParams.get('id')
+            if (search && items.length > 0) {
+                const item = items.find(item => item._id === search);
+                if (item) {
+                    setSelectedItem(item);
+                    setNewStockValue(item.stock);
+                    setIsModalOpen(true);
+                }
+            }
+        }
+
+    }
+
     const handleStockChange = async (id: string | undefined) => {
         if (typeof id === undefined) {
             console.warn('Cannot set stock of an item without an id')
@@ -53,7 +69,7 @@ export const ListAllItems = () => {
         await instance.patch(`/item/setStock/${id}/${newStockValue}`);
         setIsModalOpen(false)
         setShowChangeStockForm(false)
-        fetchItems();
+        await fetchItems();
     }
 
     const handleDelete = async (id: string | undefined) => {
@@ -62,7 +78,7 @@ export const ListAllItems = () => {
             return;
         }
         await deleteItem(id)
-        fetchItems();
+        await fetchItems();
     };
 
 
@@ -87,7 +103,7 @@ export const ListAllItems = () => {
             stock: newItemStock
         };
         await instance.post('/item/create', itemData);
-        fetchItems();
+        await fetchItems();
         setShowForm(false);
         setNewItemName('');
         setNewItemStock(0);
@@ -120,10 +136,10 @@ export const ListAllItems = () => {
                             <th>Stock</th>
                             <th>
                                 {!showForm &&
-                                    <Button variant={"outlined"} sx={{color: "#50A6A1"}}
+                                    <Button variant={"outlined"}
                                             onClick={() => setShowForm(true)}>Create Item</Button>}
                                 {showForm &&
-                                    <Button disabled variant={"outlined"} sx={{color: "#50A6A1"}}
+                                    <Button disabled variant={"outlined"}
                                             onClick={() => setShowForm(true)}>Create Item</Button>}
                             </th>
                         </tr>
@@ -135,7 +151,7 @@ export const ListAllItems = () => {
                                 <td onClick={() => handleItemClick(item)}
                                     className={"underline cursor-pointer"}>{item.name}</td>
                                 <td>{item.stock}</td>
-                                <td>{item._id && isModalOpen === false &&
+                                <td>{item._id && !isModalOpen &&
                                     <Chip
                                         variant="soft"
                                         color="danger"
@@ -212,6 +228,7 @@ export const ListAllItems = () => {
                             <Button variant={"solid"} onClick={handleCloseModal}> Close</Button>
                             {selectedItem && (
                                 <Table className={"z-30 max-w-[50vw]"}>
+                                    <tbody>
                                     <tr>
                                         <td>Name</td>
                                         <td>{selectedItem.name}</td>
@@ -263,6 +280,7 @@ export const ListAllItems = () => {
                                         <td>ID</td>
                                         <td>{selectedItem._id}</td>
                                     </tr>
+                                    </tbody>
                                 </Table>
                             )}
                         </Sheet>
