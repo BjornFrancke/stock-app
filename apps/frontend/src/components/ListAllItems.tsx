@@ -1,17 +1,18 @@
 import '../index.css'
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Iitems} from "../types.ts";
 import Modal from 'react-modal';
 import Button from '@mui/joy/Button';
 import Table from '@mui/joy/Table';
-import {Alert, CircularProgress, Input} from "@mui/joy";
+import {Alert, ChipDelete, CircularProgress, Input} from "@mui/joy";
 import Chip from "@mui/joy/Chip"
-import {ChipDelete} from "@mui/joy"
 import {ArrowsPointingOutIcon, PencilSquareIcon} from '@heroicons/react/16/solid';
 import Sheet from "@mui/joy/Sheet";
 import {Link, useSearchParams} from "react-router-dom";
-import {deleteItem} from "../services/backend-api/items.ts";
 import {instance} from "../services/backend-api/axiosConfig.ts";
+import {AlertMessage} from "./AlertMessage.tsx";
+import {Ialert} from "./AlertMessage.tsx"
+
 
 export const ListAllItems = () => {
     const [items, setItems] = useState<Iitems[]>([]);
@@ -24,7 +25,12 @@ export const ListAllItems = () => {
     const [newStockValue, setNewStockValue] = useState(0) // handle new stock value
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
+    const [alert, setAlert] = useState<Ialert>({
+            open: false,
+            text: '',
+            severity: 'success'
 
+    })
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
@@ -70,6 +76,11 @@ export const ListAllItems = () => {
         setIsModalOpen(false)
         setShowChangeStockForm(false)
         await fetchItems();
+        setAlert({
+            severity: 'success',
+            text: 'Stock updated',
+            open: true
+        })
     }
 
     const handleDelete = async (id: string | undefined) => {
@@ -77,8 +88,13 @@ export const ListAllItems = () => {
             console.warn('Cannot delete an item without an id');
             return;
         }
-        await deleteItem(id)
+        await instance.delete(`/item/${id}`)
         await fetchItems();
+        setAlert({
+            severity: "danger",
+            text: 'Deleted item',
+            open: true
+        })
     };
 
 
@@ -109,6 +125,10 @@ export const ListAllItems = () => {
         setNewItemStock(0);
     };
 
+    const handleMessageClose = () => {
+        setAlert({ ...alert, open: false });
+    }
+
 
     return (
         <>
@@ -121,6 +141,7 @@ export const ListAllItems = () => {
                     boxShadow: "lg",
                 }}
             >
+                <AlertMessage alertContent={alert} onClose={() => handleMessageClose()}/>
                 <h1 className="text-xl mb-12">Items</h1>
                 {error && <Alert color={"danger"} variant={"solid"}>{error}</Alert>}
                 {loading && (
