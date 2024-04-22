@@ -72,7 +72,7 @@ export const ListAllBoms = () => {
     const [newComponentAmount, setNewComponentAmount] = useState(0)
     const [addComponentForm, setAddComponentForm] = useState(false)
     const [newComponentId, setNewComponentId] = useState("")
-    const [availableComponents, setAvailableComponents] = useState([]); // State for available components
+    const [availableComponents, setAvailableComponents] = useState<Iitems[]>([]); // State for available components
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [searchParams, setSearchParams] = useSearchParams();
@@ -191,6 +191,16 @@ export const ListAllBoms = () => {
 
     }
 
+
+    const findProductsName = (bom: Ibom) => {
+        const item = availableComponents.find(availableComponents => availableComponents._id === bom.product)
+        if (item !== undefined) {
+            return item.name
+        } else {
+            return bom.product
+        }
+    }
+
     useEffect(() => {
         fetchBoms();
         fetchAvailableComponents();
@@ -263,7 +273,7 @@ export const ListAllBoms = () => {
                             <tr key={bom._id}>
                                 <td onClick={() => handleBomClick(bom)}
                                     className=" underline cursor-pointer select-none">{bom.name}</td>
-                                <td>{bom.product}</td>
+                                <td>{findProductsName(bom)}</td>
                                 <td>{bom._id && !isModalOpen &&
                                     <Chip
                                         variant="soft"
@@ -316,7 +326,7 @@ export const ListAllBoms = () => {
                                     </tr>
                                     <tr>
                                         <td>Product</td>
-                                        <td>{selectedBom.product}</td>
+                                        <td>{findProductsName(selectedBom)}</td>
                                     </tr>
                                     </tbody>
 
