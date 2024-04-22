@@ -1,7 +1,6 @@
 import {Link} from "react-router-dom";
 import {
     ClipboardDocumentListIcon,
-    Cog8ToothIcon,
     HomeIcon,
     QueueListIcon,
     Squares2X2Icon,
@@ -52,10 +51,6 @@ export function NavBar() {
                     <Link to="/customer"><UserGroupIcon className="h-6 w-6 text-black"/></Link>
 
                 </li>
-                <li className="hover:bg-gray-500 rounded">
-                    <Link to="/settings"><Cog8ToothIcon className="h-6 w-6 text-black"/></Link>
-
-                </li>
 
             </ul>
         </div>
@@ -65,20 +60,20 @@ export function NavBar() {
             >
                 <MenuButton variant={"plain"}><UserIcon className=" h-6 w-6 text-black"/></MenuButton>
 
-                    {localStorage.getItem("token") ? (
-                        <Menu>
-                            <Link to="/profile"><MenuItem>Profile</MenuItem></Link>
-                            <MenuItem>
-                                Language settings
-                            </MenuItem>
+                {localStorage.getItem("token") ? (
+                    <Menu>
+                        <Link to="/profile"><MenuItem>Profile</MenuItem></Link>
+                        <Link to="/settings"><MenuItem>
+                            Language settings
+                        </MenuItem></Link>
                         <MenuItem onClick={() => handleLogout()}>Log out</MenuItem>
-                        </Menu>
+                    </Menu>
 
 
-                    ) : (
-                        <Menu>
+                ) : (
+                    <Menu>
                         <Link to="/login"><MenuItem>Login</MenuItem></Link>
-                        </Menu>)}
+                    </Menu>)}
             </Dropdown>
         </div>
     </nav>;
