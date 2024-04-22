@@ -12,6 +12,7 @@ import ChipDelete from "@mui/joy/ChipDelete";
 import Sheet from "@mui/joy/Sheet";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {Alert, CircularProgress} from "@mui/joy";
+import {useSearchParams} from "react-router-dom";
 
 
 function BomCreationModal(props: {
@@ -20,8 +21,9 @@ function BomCreationModal(props: {
     value: string,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     value1: string,
-    onChange1: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    onClick: () => Promise<void>
+    onChange1: (e: string) => void,
+    onClick: () => Promise<void>,
+    availableComponents: Iitems[],
 }) {
     return <Modal
         isOpen={props.open}
@@ -41,21 +43,26 @@ function BomCreationModal(props: {
                 onChange={props.onChange}
             />
             <FormLabel>Product</FormLabel>
-            <Input
-                type="text"
-                placeholder="Bom product"
-                size="md"
-                variant="outlined"
+
+            <select
                 value={props.value1}
-                onChange={props.onChange1}
-            />
+                onChange={(e) => props.onChange1(e.target.value)}
+                className="p-2 border border-gray-300 rounded-md"
+            >
+                <option value="">Select a Component</option>
+                {props.availableComponents.map((component: Iitems) => (
+                    <option key={component._id} value={component._id}>
+                        {component.name}
+                    </option>
+                ))}
+            </select>
         </form>
         <Button onClick={props.onClick}>Create</Button>
     </Modal>;
 }
 
 export const ListAllBoms = () => {
-    const [boms, setBoms] = useState([])
+    const [boms, setBoms] = useState<Ibom[]>([])
     const [selectedBom, setSelectedBom] = useState<Ibom | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isCreationModalOpen, setIsCreationModalOpen] = useState(false)
@@ -68,6 +75,22 @@ export const ListAllBoms = () => {
     const [availableComponents, setAvailableComponents] = useState([]); // State for available components
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [searchParams, setSearchParams] = useSearchParams();
+
+
+
+    const handleSearchParams = () => {
+        if (searchParams) {
+            const search = searchParams.get("id")
+            if (search && boms.length > 0) {
+                const bom = boms.find(bom => bom._id === search)
+                if (bom) {
+                    handleBomClick(bom)
+
+                }
+            }
+        }
+    }
 
     const handleBomClick = async (bom: Ibom) => {
         // Create a copy of the bom object to avoid directly mutating state
@@ -83,6 +106,9 @@ export const ListAllBoms = () => {
         bomCopy.components = await Promise.all(componentNamesPromises);
 
         setSelectedBom(bomCopy);
+        if (bomCopy._id !== undefined) {
+            setSearchParams({id: bomCopy._id})
+        }
         setIsModalOpen(true);
     };
 
@@ -91,12 +117,14 @@ export const ListAllBoms = () => {
     }
 
     const handleCloseModal = () => {
+        setSearchParams()
         setIsModalOpen(false)
     }
 
     const handleAddBomModalClose = () => {
         setIsCreationModalOpen(false)
     }
+
 
     const handleBomDelete = async (id: string | undefined) => {
         if (typeof id === "undefined") {
@@ -167,6 +195,11 @@ export const ListAllBoms = () => {
         fetchBoms();
         fetchAvailableComponents();
     }, [selectedBom]);
+
+
+    useEffect(() => {
+        handleSearchParams()
+    }, [boms]);
 
     const fetchBoms = async () => {
         instance.get('/bom/findAll').then(response => {
@@ -409,8 +442,8 @@ export const ListAllBoms = () => {
                     </Modal>
                     <BomCreationModal open={isCreationModalOpen} onRequestClose={handleAddBomModalClose}
                                       value={newBomName} onChange={(e) => setNewBomName(e.target.value)}
-                                      value1={newBomProduct} onChange1={(e) => setNewBomProduct(e.target.value)}
-                                      onClick={handleSubmitNewBom}
+                                      value1={newBomProduct} onChange1={(e) => setNewBomProduct(e)}
+                                      onClick={handleSubmitNewBom} availableComponents={availableComponents}
                     />
                 </div>
             </Sheet>
