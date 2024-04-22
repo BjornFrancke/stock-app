@@ -40,7 +40,7 @@ export const deleteItem = asyncHandler(async (req, res) => {
         return
     }
     const deletedItem = await Item.findByIdAndDelete(itemId);
-    res.status(200).json(deletedItem);
+    res.status(200).send(`${deletedItem?.name} was deleted`);
 })
 
 export const setItemStock = asyncHandler(async (req, res) => {
