@@ -8,7 +8,7 @@ import {Orders} from './pages/Orders';
 import {Customer} from './pages/Customer';
 import {Settings} from "./pages/Settings.tsx";
 import {Manufacturing} from "./pages/Manufacturing.tsx";
-import {Item} from "./pages/Item/:item.tsx";
+import {Item} from "./pages/Item/item.tsx";
 import {Login} from "./pages/Login.tsx";
 import {Profile} from "./pages/Profile.tsx";
 
