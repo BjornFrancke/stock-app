@@ -148,7 +148,7 @@ export function Manufacturing() {
                             {manuOrder?.dueDate != undefined && !isModalOpen && (
                                 <td>
                                     {
-                                        (new Date(manuOrder.dueDate).valueOf()) < Date.now() ?
+                                        (new Date(manuOrder.dueDate).valueOf()) < Date.now() && !isModalOpen ?
                                             <Chip color={"danger"} endDecorator={<BellAlertIcon
                                                 className={"h-3 w-3 text-red-300"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip> :
                                             <Chip color={"success"} endDecorator={<CalendarDaysIcon
@@ -274,7 +274,7 @@ export function Manufacturing() {
                             boxShadow: "lg",
                         }}
                     >
-                        <h1>Create a Manu</h1>
+                        <h1>Create a Manufacturing order</h1>
                         <form className={"space-y-4"}>
                             <div>
                                 <h1>BOM:</h1>
