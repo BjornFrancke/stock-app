@@ -1,5 +1,5 @@
 export interface Iitems {
-    _id? : string | undefined,
+    _id? : string,
     name: string,
     description?: string,
     stock: number,
