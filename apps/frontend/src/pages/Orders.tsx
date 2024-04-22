@@ -17,10 +17,11 @@ import ChipDelete from "@mui/joy/ChipDelete";
 import {Snackbar} from "@mui/joy";
 import IconButton from "@mui/joy/IconButton";
 import {instance} from "../services/backend-api/axiosConfig.ts";
+import {useSearchParams} from "react-router-dom";
 
 
 export function Orders() {
-    const [orders, setOrders] = useState([])
+    const [orders, setOrders] = useState<Iorder[]>([])
     const [selectedOrder, setSelectedOrder] = useState<Iorder | null>(null)
     const [isCreationModalOpen, setIsCreationModalOpen] = useState(false)
     const [isOrdersModalOpen, setIsOrdersModalOpen] = useState(false)
@@ -33,6 +34,7 @@ export function Orders() {
     const [isAddItemForm, setIsAddItemForm] = useState(false)
     const [errorMessage, setErrorMessage] = useState("Unknown error")
     const [isError, setIsError] = useState(false)
+    const [searchParams, setSearchParams] = useSearchParams();
 
     interface Iaddress {
         street: string,
@@ -47,6 +49,19 @@ export function Orders() {
         mailAdress: string,
         phoneNr?: string,
         address: Iaddress
+    }
+
+    const handleSearchParams = () => {
+        if (searchParams) {
+            const search = searchParams.get("id")
+            if (search && orders.length > 0) {
+                const order = orders.find(orders => orders._id === search)
+                if (order) {
+                    handleOrderClick(order)
+
+                }
+            }
+        }
     }
 
     const handleAddNewItem = async (orderId: string | undefined) => {
@@ -95,6 +110,9 @@ export function Orders() {
 
     const handleOrderClick = (order: Iorder) => {
         setSelectedOrder(order);
+        if (order._id !== undefined) {
+            setSearchParams({id: order._id})
+        }
         setIsOrdersModalOpen(true)
     }
 
@@ -131,6 +149,11 @@ export function Orders() {
         fetchAvailableItems()
         fetchAvailableCustomers()
     }, []);
+
+
+    useEffect(() => {
+        handleSearchParams();
+    }, [orders]);
 
     const fetchOrders = async () => {
         const response = await instance.get('/orders/findAll');
