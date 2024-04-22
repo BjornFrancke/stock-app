@@ -8,6 +8,7 @@ import {Ibom} from "../types.ts";
 import Chip from "@mui/joy/Chip";
 import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
 import {instance} from "../services/backend-api/axiosConfig.ts";
+import {useSearchParams} from "react-router-dom";
 
 
 export interface ImanufacturingOrder {
@@ -26,7 +27,7 @@ export interface ImanufacturingOrder {
 
 
 export function Manufacturing() {
-    const [manufacturingOrders, setManufacturingOrders] = useState([]);
+    const [manufacturingOrders, setManufacturingOrders] = useState<ImanufacturingOrder[]>([]);
     const [selectedOrder, setSelectedOrder] = useState<ImanufacturingOrder | null>()
     const [selectedOrderProduced, setSelectedOrderProduced] = useState<number>(0)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -35,11 +36,29 @@ export function Manufacturing() {
     const [newOrderBomId, setNewOrderBomId] = useState("")
     const [newOrderQuantity, setNewOrderQuantity] = useState(0)
     const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
+    const [searchParams, setSearchParams] = useSearchParams();
+
 
     const handleManufacturingOrderClick = (manuOrder: ImanufacturingOrder) => {
         setSelectedOrder(manuOrder)
         setSelectedOrderProduced(manuOrder.quantity?.produced || 0)
+        if (manuOrder._id !== undefined) {
+            setSearchParams({id: manuOrder._id})
+        }
         setIsModalOpen(true)
+    }
+
+    const handleSearchParams = () => {
+        if (searchParams) {
+            const search = searchParams.get("id")
+            if (search && manufacturingOrders.length > 0) {
+                const bom = manufacturingOrders.find(manufacturingOrders => manufacturingOrders._id === search)
+                if (bom) {
+                    handleManufacturingOrderClick(bom)
+
+                }
+            }
+        }
     }
 
     const handleOpenCreationModal = async () => {
@@ -111,6 +130,10 @@ export function Manufacturing() {
     useEffect(() => {
         fetchManufacturingOrders()
     }, []);
+
+    useEffect(() => {
+        handleSearchParams()
+    }, [manufacturingOrders]);
 
 
     return (
