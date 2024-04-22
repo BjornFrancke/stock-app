@@ -88,13 +88,22 @@ export const ListAllItems = () => {
             console.warn('Cannot delete an item without an id');
             return;
         }
-        await instance.delete(`/item/${id}`)
-        await fetchItems();
-        setAlert({
-            severity: "danger",
-            text: 'Deleted item',
-            open: true
+        await instance.delete(`/item/delete/${id}`).then(response => {
+                fetchItems();
+                setAlert({
+                    severity: "danger",
+                    text: response.data,
+                    open: true
+                })
+
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                            text: error.message,
+                            open: true
+            })
         })
+
     };
 
 
