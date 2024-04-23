@@ -9,6 +9,7 @@ import Chip from "@mui/joy/Chip";
 import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
+import {ProduceBtn} from "../components/manufacturing/ProduceBtn.tsx";
 
 
 export interface ImanufacturingOrder {
@@ -37,6 +38,7 @@ export function Manufacturing() {
     const [newOrderQuantity, setNewOrderQuantity] = useState(0)
     const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
     const [searchParams, setSearchParams] = useSearchParams();
+    const [produceState, setProduceState] = useState<"ready" | "producing" | "completed">( "ready")
 
 
     const handleManufacturingOrderClick = (manuOrder: ImanufacturingOrder) => {
@@ -44,7 +46,10 @@ export function Manufacturing() {
         setSelectedOrderProduced(manuOrder.quantity?.produced || 0)
         if (manuOrder._id !== undefined) {
             setSearchParams({id: manuOrder._id})
-        }
+        } if (manuOrder.isDone) {
+            setProduceState("completed")
+        } else
+        {setProduceState("ready")}
         setIsModalOpen(true)
     }
 
@@ -112,8 +117,12 @@ export function Manufacturing() {
         const reqData = {
             produce: toProduce
         }
+        setProduceState("producing")
         instance.patch(`/manuOrder/${bomId}`, reqData).then(response => {
             fetchManufacturingOrders()
+            if(selectedOrder?.isDone) {
+                setProduceState("completed")
+            } else {setProduceState("ready")}
                 console.log(response.data.message)
         }).catch(error => console.log(error))
     }
@@ -203,11 +212,7 @@ export function Manufacturing() {
                         <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.reference}</h1>
                     </div>
                     <div className={"flex space-x-2"}>
-                        {selectedOrder?.isDone ?
-                            <Button variant={"soft"} color={"success"} onClick={() => handleManuOrderProduce()}
-                                    size={"sm"}>Completed</Button>
-                            : <Button onClick={() => handleManuOrderProduce()} size={"sm"}>Produce</Button>
-                        }
+                        <ProduceBtn produceState={produceState} onClick={() => handleManuOrderProduce()}/>
                         <Button onClick={() => handleManuOrderCheck()} color={"neutral"} size={"sm"}>Check
                             availability</Button>
                         <Button color={"neutral"} size={"sm"}>Unreserve</Button>
