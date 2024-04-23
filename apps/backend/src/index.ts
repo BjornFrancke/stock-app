@@ -37,7 +37,6 @@ app.post('/', (req, res) => {
     console.log(req.body)
     res.json(req.body)
 })
-
 app.use('/item', itemRouter)
 app.use('/warehouse', warehouseRouter)
 app.use('/bom', bomRouter)
@@ -47,7 +46,5 @@ app.use("/manuOrder", manufacturingRouter)
 app.use("/user", userRoutes)
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Stock-app listening on port ${port}`)
 })
-
-getNewManuOrderNumber()
