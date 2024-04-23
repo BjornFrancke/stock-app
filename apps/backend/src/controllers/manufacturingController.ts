@@ -48,6 +48,7 @@ export const getManufacturingOrderById = asyncHandler (async (req, res) => {
 export const processManufacturingOrderById  = asyncHandler(async (req, res) => {
     try {
         await processManufacturingOrder(req.params.manufacturingOrder, req.body.produce)
+        res.status(200).json({message: `Produced`})
     } catch {
         res.status(500).send("Internal Server Error");
     }

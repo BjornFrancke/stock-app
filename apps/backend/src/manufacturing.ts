@@ -62,6 +62,9 @@ export async function processBom(bomId: ObjectId | string) {
 
 export async function processManufacturingOrder(orderId: ObjectId | string, toProduce: number) {
     const orderData = await ManufacturingOrder.findById(orderId)
+    if (0 >= toProduce) {
+        return
+    }
     if (!orderData) {
         return
     }
@@ -70,14 +73,14 @@ export async function processManufacturingOrder(orderId: ObjectId | string, toPr
         await processBom(bomId)
     }
 
-    if (toProduce === (orderData.quantity.toProduce - orderData.quantity.produced)) {
+    if ((toProduce + orderData.quantity.produced) === orderData.quantity.toProduce) {
         orderData.isDone = true
         orderData.doneDate = new Date();
-        orderData.quantity.produced = toProduce
+        orderData.quantity.produced += toProduce
         await orderData.save()
     }
     else {
-        orderData.quantity.produced = toProduce
+        orderData.quantity.produced += toProduce
         await orderData.save();
     }
 
