@@ -48,7 +48,7 @@ export const setItemStock = asyncHandler(async (req, res) => {
     const newStock = Number(req.params.newStock)
     try {
         const updatedItem = await setStock(itemId, newStock);
-        res.status(200).json(updatedItem);
+        res.status(200).json({message: `${updatedItem?.name}'s stock was updated`});
     } catch (error) {
         res.status(500).json({ message: "Failed to update item stock" });
     }
@@ -64,7 +64,7 @@ export const createItem = asyncHandler(async (req, res) => {
             }
         );
         const savedItem = await newItem.save();
-        res.json(savedItem);
+        res.status(201).json({message: `${savedItem?.name} was created`, ...savedItem});
     } catch {
         res.status(500).send("Internal Server Error");
     }
