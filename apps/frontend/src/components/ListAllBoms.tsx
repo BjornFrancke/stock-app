@@ -5,14 +5,13 @@ import Modal from 'react-modal';
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
 import Input from "@mui/joy/Input";
-import {XMarkIcon} from "@heroicons/react/16/solid";
-import IconButton from "@mui/joy/IconButton";
 import FormLabel from "@mui/joy/FormLabel";
 import ChipDelete from "@mui/joy/ChipDelete";
 import Sheet from "@mui/joy/Sheet";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {Alert, CircularProgress} from "@mui/joy";
 import {useSearchParams} from "react-router-dom";
+import {AlertMessage, Ialert} from "./AlertMessage.tsx";
 
 
 function BomCreationModal(props: {
@@ -32,7 +31,7 @@ function BomCreationModal(props: {
         className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
     >
         <h2>Create new BOM</h2>
-        <form>
+        <form className={"space-y-2"}>
             <FormLabel>Name</FormLabel>
             <Input
                 type="text"
@@ -47,9 +46,9 @@ function BomCreationModal(props: {
             <select
                 value={props.value1}
                 onChange={(e) => props.onChange1(e.target.value)}
-                className="p-2 border border-gray-300 rounded-md"
+                className="p-2 border border-gray-300 rounded-md w-full"
             >
-                <option value="">Select a Component</option>
+                <option value="">Select a Product</option>
                 {props.availableComponents.map((component: Iitems) => (
                     <option key={component._id} value={component._id}>
                         {component.name}
@@ -76,7 +75,7 @@ export const ListAllBoms = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [searchParams, setSearchParams] = useSearchParams();
-
+    const [alert, setAlert] = useState<Ialert>({open: false, text: '', severity: "success"})
 
 
     const handleSearchParams = () => {
@@ -90,6 +89,10 @@ export const ListAllBoms = () => {
                 }
             }
         }
+    }
+
+    const handleMessageClose = () => {
+        setAlert({...alert, open: false});
     }
 
     const handleBomClick = async (bom: Ibom) => {
@@ -119,6 +122,7 @@ export const ListAllBoms = () => {
     const handleCloseModal = () => {
         setSearchParams()
         setIsModalOpen(false)
+        setAddComponentForm(false)
     }
 
     const handleAddBomModalClose = () => {
@@ -131,8 +135,20 @@ export const ListAllBoms = () => {
             console.warn("Cannot find BOM")
             return
         }
-        await instance.delete(`/bom/delete/${id}`)
-        fetchBoms()
+        instance.delete(`/bom/delete/${id}`).then(response => {
+            setAlert({
+                severity: "danger",
+                text: response.data.message,
+                open: true
+            })
+            fetchBoms()
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message,
+                open: true
+            })
+        })
 
     }
 
@@ -141,11 +157,23 @@ export const ListAllBoms = () => {
             name: newBomName,
             product: newBomProduct
         };
-        await instance.post('/bom/create', bomData);
-        // After creating new item, fetch items again to refresh the list
-        fetchBoms();
-        setIsCreationModalOpen(false);
-        setNewBomName('');
+        instance.post('/bom/create', bomData).then(response => {
+            setAlert({
+                severity: "success",
+                text: response.data.message,
+                open: true
+            })
+            fetchBoms()
+            setNewBomName('')
+            setIsCreationModalOpen(false)
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message,
+                open: false
+            })
+        })
+
     };
 
     const handleSubmitNewComponent = async (id: string | undefined) => {
@@ -154,12 +182,19 @@ export const ListAllBoms = () => {
             return
         }
         const componentData = {componentId: newComponentId, componentAmount: newComponentAmount}
-        await instance.patch(`/bom/AddComponent/${id}`, componentData)
+        instance.patch(`/bom/AddComponent/${id}`, componentData).then(response => {
+           setAlert({
+               severity: "success",
+               text: response.data.message,
+               open: true
+           })
+            fetchBoms()
+            setNewComponentId("")
+            setNewComponentAmount(0)
+            setAddComponentForm(false)
+        })
             .catch(error => console.error("Failed to add component:", error));
-        fetchBoms()
-        setNewComponentId("")
-        setNewComponentAmount(0)
-        setAddComponentForm(false)
+
     }
 
     const handleRemoveComponent = async (bomId: string | undefined, componentId: string | undefined) => {
@@ -167,13 +202,22 @@ export const ListAllBoms = () => {
             console.warn("Invalid operation: BOM ID or Component ID is missing.");
             return;
         }
-        try {
-            await instance.delete(`/bom/removeComponent/${bomId}/${componentId}`)
-            setIsModalOpen(false)
+
+        instance.delete(`/bom/removeComponent/${bomId}/${componentId}`).then(response => {
+            setAlert({
+                severity: "danger",
+                text: response.data.message,
+                open: true
+            })
             fetchBoms();
-        } catch {
-            console.log("Failed to remove component:")
-        }
+
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message,
+                open: true
+            })
+        })
     }
 
     const handleComponentAmountChange = async (id: string | undefined) => {
@@ -251,6 +295,7 @@ export const ListAllBoms = () => {
                     boxShadow: "lg",
                 }}
             >
+                <AlertMessage alertContent={alert} onClose={() => handleMessageClose()}/>
                 <h1 className="text-xl mb-12">BOMs</h1>
                 {error && <Alert color={"danger"} variant={"solid"}>{error}</Alert>}
                 {loading && (
@@ -263,7 +308,7 @@ export const ListAllBoms = () => {
                         <tr>
                             <th>Name</th>
                             <th>Product</th>
-                            <th><Button variant={"outlined"} sx={{color: "#50A6A1"}}
+                            <th><Button variant={"outlined"}
                                         onClick={handleAddBomClick}>Create</Button>
                             </th>
                         </tr>
@@ -274,7 +319,7 @@ export const ListAllBoms = () => {
                                 <td onClick={() => handleBomClick(bom)}
                                     className=" underline cursor-pointer select-none">{bom.name}</td>
                                 <td>{findProductsName(bom)}</td>
-                                <td>{bom._id && !isModalOpen &&
+                                <td>{bom._id && !isModalOpen && !isCreationModalOpen &&
                                     <Chip
                                         variant="soft"
                                         color="danger"
@@ -383,9 +428,8 @@ export const ListAllBoms = () => {
                                                         ></Input>
                                                             <Button variant='outlined' size="sm" type='button'
                                                                     onClick={() => handleComponentAmountChange(selectedBom._id)}>Change</Button>
-                                                            <IconButton variant="outlined" size="sm" typeof="button"
-                                                                        onClick={() => setSelectedComponent(null)}><XMarkIcon
-                                                                className="h-6 w-6 text-blue-500"/></IconButton>
+                                                            <Button variant="outlined" size="sm" typeof="button"
+                                                                        onClick={() => setSelectedComponent(null)}>X</Button>
 
                                                         </form>
 
@@ -432,7 +476,7 @@ export const ListAllBoms = () => {
                                                         onChange={(e) => setNewComponentAmount(Number(e.target.value))}
                                                     />
                                             </td>
-                                            <td>
+                                            <td className={"space-x-1"}>
                                                         <Button
                                                             onClick={() => handleSubmitNewComponent(selectedBom._id)}>Add</Button>
                                                         <Button
