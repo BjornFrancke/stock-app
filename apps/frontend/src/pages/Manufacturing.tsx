@@ -85,6 +85,7 @@ export function Manufacturing() {
     }
 
     const handleCloseModal = () => {
+        setSearchParams()
         setIsModalOpen(false);
     }
 
@@ -107,11 +108,14 @@ export function Manufacturing() {
 
     const handleManuOrderProduce = async () => {
         const bomId = selectedOrder?._id
+        const toProduce = (selectedOrderProduced - (selectedOrder?.quantity?.produced || 0))
         const reqData = {
-            produce: selectedOrderProduced
+            produce: toProduce
         }
-        await instance.patch(`/manuOrder/${bomId}`, reqData)
-        fetchManufacturingOrders()
+        instance.patch(`/manuOrder/${bomId}`, reqData).then(response => {
+            fetchManufacturingOrders()
+                console.log(response.data.message)
+        }).catch(error => console.log(error))
     }
 
     const handleManuOrderCheck = async () => {
@@ -168,12 +172,12 @@ export function Manufacturing() {
                             <td>{manuOrder.product.name}</td>
                             <td>{manuOrder.bom.name}</td>
                             <td>{manuOrder.isDone ? "Done" : "Not done"}</td>
-                            {manuOrder?.dueDate != undefined && !isModalOpen && (
+                            {manuOrder?.dueDate != undefined && !isModalOpen && !isCreationModalOpen && (
                                 <td>
                                     {
                                         (new Date(manuOrder.dueDate).valueOf()) < Date.now() && !isModalOpen ?
                                             <Chip color={"danger"} endDecorator={<BellAlertIcon
-                                                className={"h-3 w-3 text-red-300"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip> :
+                                                className={"h-3 w-3 text-red-400"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip> :
                                             <Chip color={"success"} endDecorator={<CalendarDaysIcon
                                                 className={"h-3 w-3 text-green-300"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip>
                                     }
