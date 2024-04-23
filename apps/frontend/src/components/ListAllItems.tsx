@@ -26,9 +26,9 @@ export const ListAllItems = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const [alert, setAlert] = useState<Ialert>({
-            open: false,
-            text: '',
-            severity: 'success'
+        open: false,
+        text: '',
+        severity: 'success'
 
     })
     const [searchParams, setSearchParams] = useSearchParams();
@@ -72,14 +72,21 @@ export const ListAllItems = () => {
             console.warn('Cannot set stock of an item without an id')
             return
         }
-        await instance.patch(`/item/setStock/${id}/${newStockValue}`);
-        setIsModalOpen(false)
-        setShowChangeStockForm(false)
-        await fetchItems();
-        setAlert({
-            severity: 'success',
-            text: 'Stock updated',
-            open: true
+        instance.patch(`/item/setStock/${id}/${newStockValue}`)
+            .then(response => {
+                setAlert({
+                    severity: "success",
+                    text: response.data.message,
+                    open: true,
+                })
+                fetchItems()
+                setShowChangeStockForm(false)
+            }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message,
+                open: true
+            })
         })
     }
 
@@ -88,21 +95,21 @@ export const ListAllItems = () => {
             console.warn('Cannot delete an item without an id');
             return;
         }
-        await instance.delete(`/item/delete/${id}`).then(response => {
+        await instance.delete(`/item/delete/${id}`)
+            .then(response => {
                 fetchItems();
                 setAlert({
                     severity: "danger",
                     text: response.data,
                     open: true
                 })
-
-        }).catch(error => {
-            setAlert({
-                severity: "danger",
-                            text: error.message,
-                            open: true
+            }).catch(error => {
+                setAlert({
+                    severity: "danger",
+                    text: error.message,
+                    open: true
+                })
             })
-        })
 
     };
 
@@ -127,15 +134,27 @@ export const ListAllItems = () => {
             name: newItemName,
             stock: newItemStock
         };
-        await instance.post('/item/create', itemData);
-        await fetchItems();
-        setShowForm(false);
-        setNewItemName('');
-        setNewItemStock(0);
+        instance.post('/item/create', itemData).then(response => {
+            setAlert({
+                severity: "success",
+                text: response.data.message,
+                open: true,
+            })
+            fetchItems()
+            setNewItemName('');
+            setNewItemStock(0);
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message,
+                open: true
+            })
+        })
+
     };
 
     const handleMessageClose = () => {
-        setAlert({ ...alert, open: false });
+        setAlert({...alert, open: false});
     }
 
 
