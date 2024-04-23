@@ -10,6 +10,7 @@ import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
 import {ProduceBtn} from "../components/manufacturing/ProduceBtn.tsx";
+import {CircularProgress} from "@mui/joy";
 
 
 export interface ImanufacturingOrder {
@@ -39,6 +40,7 @@ export function Manufacturing() {
     const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
     const [searchParams, setSearchParams] = useSearchParams();
     const [produceState, setProduceState] = useState<"ready" | "producing" | "completed">( "ready")
+    const [loading, setLoading] = useState(true)
 
 
     const handleManufacturingOrderClick = (manuOrder: ImanufacturingOrder) => {
@@ -72,12 +74,14 @@ export function Manufacturing() {
     }
 
     const fetchManufacturingOrders = async () => {
-        try {
-            const response = await instance.get('/manuOrder');
-            setManufacturingOrders(response.data)
-        } catch (error) {
-            console.error(error);
-        }
+            instance.get('/manuOrder').then(response => {
+                setManufacturingOrders(response.data)
+                setLoading(false)
+            }).catch(error => {
+                console.error(error)
+            })
+
+
     }
 
     const fetchAvailableBoms = async () => {
@@ -161,6 +165,10 @@ export function Manufacturing() {
                 }}
             >
                 <h1 className={"text-xl mb-12"}>Manufacturing</h1>
+                {loading && (
+                    <CircularProgress/>
+
+                )}
                 <Table borderAxis={"both"}>
                     <thead>
                     <tr>
