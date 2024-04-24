@@ -4,13 +4,13 @@ import Sheet from "@mui/joy/Sheet";
 import Modal from "react-modal";
 import Button from "@mui/joy/Button";
 import Input from "@mui/joy/Input";
-import {Ibom} from "../types.ts";
 import Chip from "@mui/joy/Chip";
 import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
 import {ProduceBtn} from "../components/manufacturing/ProduceBtn.tsx";
 import {CircularProgress} from "@mui/joy";
+import {ManufacturingCreationModal} from "../components/manufacturing/ManufacturingCreationModal.tsx";
 
 
 export interface ImanufacturingOrder {
@@ -34,12 +34,8 @@ export function Manufacturing() {
     const [selectedOrderProduced, setSelectedOrderProduced] = useState<number>(0)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isCreationModalOpen, setIsCreationModalOpen] = useState(false)
-    const [availableBoms, setAvailableBoms] = useState([])
-    const [newOrderBomId, setNewOrderBomId] = useState("")
-    const [newOrderQuantity, setNewOrderQuantity] = useState(0)
-    const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
     const [searchParams, setSearchParams] = useSearchParams();
-    const [produceState, setProduceState] = useState<"ready" | "producing" | "completed">( "ready")
+    const [produceState, setProduceState] = useState<"ready" | "producing" | "completed">("ready")
     const [loading, setLoading] = useState(true)
 
 
@@ -48,10 +44,12 @@ export function Manufacturing() {
         setSelectedOrderProduced(manuOrder.quantity?.produced || 0)
         if (manuOrder._id !== undefined) {
             setSearchParams({id: manuOrder._id})
-        } if (manuOrder.isDone) {
+        }
+        if (manuOrder.isDone) {
             setProduceState("completed")
-        } else
-        {setProduceState("ready")}
+        } else {
+            setProduceState("ready")
+        }
         setIsModalOpen(true)
     }
 
@@ -69,28 +67,23 @@ export function Manufacturing() {
     }
 
     const handleOpenCreationModal = async () => {
-        await fetchAvailableBoms()
         setIsCreationModalOpen(true)
     }
 
-    const fetchManufacturingOrders = async () => {
-            instance.get('/manuOrder').then(response => {
-                setManufacturingOrders(response.data)
-                setLoading(false)
-            }).catch(error => {
-                console.error(error)
-            })
-
-
+    const handleCloseCreationModal = async () => {
+        await fetchManufacturingOrders()
+        setIsCreationModalOpen(false)
     }
 
-    const fetchAvailableBoms = async () => {
-        try {
-            const response = await instance.get('/bom/findAll');
-            setAvailableBoms(response.data)
-        } catch {
-            console.error("Could to fetch available Boms")
-        }
+    const fetchManufacturingOrders = async () => {
+        instance.get('/manuOrder').then(response => {
+            setManufacturingOrders(response.data)
+            setLoading(false)
+        }).catch(error => {
+            console.error(error)
+        })
+
+
     }
 
     const handleCloseModal = () => {
@@ -98,22 +91,6 @@ export function Manufacturing() {
         setIsModalOpen(false);
     }
 
-    const handleManuOrderCreation = async () => {
-        const newManuOrderData = {
-            bomId: newOrderBomId,
-            quantity: newOrderQuantity.valueOf(),
-            dueDate: newOrderDueDate
-        }
-
-        try {
-            await instance.post(`/manuOrder`, newManuOrderData)
-            setIsCreationModalOpen(false)
-            fetchManufacturingOrders()
-        } catch {
-            console.error("Could to create Manufacturing order")
-        }
-
-    }
 
     const handleManuOrderProduce = async () => {
         const bomId = selectedOrder?._id
@@ -124,24 +101,26 @@ export function Manufacturing() {
         setProduceState("producing")
         instance.patch(`/manuOrder/${bomId}`, reqData).then(response => {
             fetchManufacturingOrders()
-            if(selectedOrder?.isDone) {
+            if (selectedOrder?.isDone) {
                 setProduceState("completed")
-            } else {setProduceState("ready")}
-                console.log(response.data.message)
+            } else {
+                setProduceState("ready")
+            }
+            console.log(response.data.message)
         }).catch(error => console.log(error))
     }
 
     const handleManuOrderCheck = async () => {
         const id = selectedOrder?._id
         await instance.patch(`/manuOrder/check/${id}`)
-        fetchManufacturingOrders();
+        await fetchManufacturingOrders();
     }
 
     const handleManuOrderDelete = async () => {
         const id = selectedOrder?._id
         await instance.delete(`/manuOrder/${id}`);
         setIsModalOpen(false)
-        fetchManufacturingOrders();
+        await fetchManufacturingOrders();
     }
 
     useEffect(() => {
@@ -304,49 +283,7 @@ export function Manufacturing() {
                     className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-36 space-y-6"}
 
                 >
-                    <Sheet
-                        variant="outlined"
-                        sx={{
-                            maxWidth: 800,
-                            minWidth: 800,
-                            borderRadius: "md",
-                            p: 6,
-                            boxShadow: "lg",
-                        }}
-                    >
-                        <h1>Create a Manufacturing order</h1>
-                        <form className={"space-y-4"}>
-                            <div>
-                                <h1>BOM:</h1>
-                                <select
-                                    value={newOrderBomId}
-                                    onChange={(e) => setNewOrderBomId(e.target.value)}
-                                    className="p-2 border border-gray-300 rounded-md"
-                                >
-                                    <option value="">Select a BOM</option>
-                                    {availableBoms.map((bom: Ibom) => (
-                                        <option key={bom._id} value={bom._id}>
-                                            {bom.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <h1>Quantity</h1>
-                            <Input value={newOrderQuantity}
-                                   onChange={(e) => setNewOrderQuantity(e.target.valueAsNumber)} type={"number"}/>
-                            <div>
-                                <h1>Due Date</h1>
-                                <Input
-                                    placeholder="Date"
-                                    onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
-                                    type={"date"}
-                                />
-                            </div>
-                            <Button onClick={() => handleManuOrderCreation()}>Create</Button>
-
-
-                        </form>
-                    </Sheet>
+                    <ManufacturingCreationModal isOpen={() => handleCloseCreationModal()}/>
                 </Modal>
             </div>
         </>
