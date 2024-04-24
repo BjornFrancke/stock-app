@@ -146,7 +146,6 @@ export function Manufacturing() {
                 <h1 className={"text-xl mb-12"}>Manufacturing</h1>
                 {loading && (
                     <CircularProgress/>
-
                 )}
                 <Table borderAxis={"both"}>
                     <thead>
@@ -162,12 +161,12 @@ export function Manufacturing() {
                     {manufacturingOrders.map((manuOrder: ImanufacturingOrder) => (
                         <tr key={manuOrder._id}>
                             <td
-                                className=" underline cursor-pointer select-none"
+                                className="underline cursor-pointer select-none"
                                 onClick={() => handleManufacturingOrderClick(manuOrder)}
                             >{manuOrder.reference}</td>
                             <td>{manuOrder.product.name}</td>
                             <td>{manuOrder.bom.name}</td>
-                            <td>{manuOrder.isDone ? "Done" : "Not done"}</td>
+                            <td>{manuOrder.isDone ? <Chip color={"success"}>Done</Chip> : <Chip>Pending</Chip>}</td>
                             {manuOrder?.dueDate != undefined && !isModalOpen && !isCreationModalOpen && (
                                 <td>
                                     {
@@ -233,6 +232,7 @@ export function Manufacturing() {
                             <h1 className={" text-gray-500 my-auto"}>To Produce</h1>
                         </div>
                         <Table borderAxis={"x"}>
+                            <tbody>
                             <tr>
                                 <td>BOM</td>
                                 <td className={"underline select-none cursor-pointer"}>{selectedOrder?.bom.name}</td>
@@ -242,7 +242,7 @@ export function Manufacturing() {
                                 <td className={"underline select-none cursor-pointer"}>{selectedOrder?.product.name}</td>
 
                             </tr>
-
+                            </tbody>
                         </Table>
 
                     </Sheet>
