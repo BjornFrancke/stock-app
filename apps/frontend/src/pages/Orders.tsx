@@ -212,24 +212,17 @@ export function Orders() {
                                 </td>
                                 <td>{order.receptian}</td>
                                 <td>{new Date(order.dueDate).toLocaleDateString()}</td>
-                                {order.isDone && (
-                                    <td>
-                                        <Chip color="success">Done!</Chip>
-                                    </td>
-                                )}
-                                {!order.isDone && (
-                                    <td>
-                                        <Chip
-                                            onClick={() => handleMarkAsDone(order._id)}
-                                            endDecorator={
-                                                <CheckBadgeIcon className="h-3 w-3 text-black"/>
-                                            }
-                                        >
-                                            Not done!
-                                        </Chip>
-                                    </td>
-                                )}
-                                {order.isDone === null && <td>Null</td>}
+                                <td>
+                                    {order.isDone ?  <Chip color="success">Done!</Chip> : <Chip
+                                        onClick={() => handleMarkAsDone(order._id)}
+                                        endDecorator={
+                                            <CheckBadgeIcon className="h-3 w-3 text-black"/>
+                                        }
+                                    >
+                                        Not done!
+                                    </Chip>
+                                    }
+                                </td>
                                 <td>
                                     {" "}
                                     <Chip
