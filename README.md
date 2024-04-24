@@ -33,6 +33,15 @@ Fill out the config file
 Start the server
 
 ```bash
+  cd apps/backend
+  yarn dev
+  
+  cd apps/frontend
   yarn dev
 ```
 
+## TODO
+
+* [ ] Add sale price for items
+* [ ] Add option for multiple currencies
+* [ ] Add loading skeleton
