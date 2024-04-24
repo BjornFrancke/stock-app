@@ -16,13 +16,13 @@ import {Ialert} from "./AlertMessage.tsx"
 
 export const ListAllItems = () => {
     const [items, setItems] = useState<Iitems[]>([]);
-    const [showForm, setShowForm] = useState(false); // control form visibility
+    const [showForm, setShowForm] = useState(false);
     const [showChangeStockForm, setShowChangeStockForm] = useState(false)
-    const [newItemName, setNewItemName] = useState(''); // handle new item name
-    const [newItemStock, setNewItemStock] = useState(0); // handle new item stock amount
+    const [newItemName, setNewItemName] = useState('');
+    const [newItemStock, setNewItemStock] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [selectedItem, setSelectedItem] = useState<Iitems | null>(null) // Details of the clicked item
-    const [newStockValue, setNewStockValue] = useState(0) // handle new stock value
+    const [selectedItem, setSelectedItem] = useState<Iitems | null>(null)
+    const [newStockValue, setNewStockValue] = useState(0)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const [alert, setAlert] = useState<Ialert>({
