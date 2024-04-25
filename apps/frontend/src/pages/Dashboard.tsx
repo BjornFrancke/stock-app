@@ -3,7 +3,7 @@ import Card from "@mui/joy/Card";
 import {CardActions, CardContent, CircularProgress, SvgIcon, Typography} from "@mui/joy";
 import Button from "@mui/joy/Button";
 
-export function Home() {
+export function Dashboard() {
     return (
         <>
             <Sheet
