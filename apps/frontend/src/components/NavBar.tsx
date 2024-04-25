@@ -11,10 +11,6 @@ import {Dropdown, Menu, MenuButton, MenuItem} from "@mui/joy";
 
 export function NavBar() {
 
-    function handleLogout() {
-        console.log("Logging out...");
-        localStorage.removeItem("token");
-    }
 
     return <nav className="flex w-screen mx-auto justify-center space-x-64  shadow py-3">
         <Link to="/">
@@ -66,7 +62,7 @@ export function NavBar() {
                         <Link to="/settings"><MenuItem>
                             Language settings
                         </MenuItem></Link>
-                        <MenuItem onClick={() => handleLogout()}>Log out</MenuItem>
+                       <Link to="/logout"><MenuItem>Log out</MenuItem></Link>
                     </Menu>
 
 
