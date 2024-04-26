@@ -12,6 +12,7 @@ import {Item} from "./pages/Item/item.tsx";
 import {Login} from "./pages/Login.tsx";
 import {Profile} from "./pages/Profile.tsx";
 import {Logout} from "./pages/Logout.tsx";
+import {Admin} from "./pages/Admin.tsx";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                     <Route path="settings" element={<Settings/>}/>
                     <Route path="/item/:item" element={<Item/>}/>
                     <Route path="/profile" element={<Profile/>}/>
+                    <Route path="admin" element={<Admin/>}/>
                 </Route>
                 <Route path="login" element={<Login/>}/>
 
