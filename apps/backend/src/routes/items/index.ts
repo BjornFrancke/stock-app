@@ -1,6 +1,6 @@
 import express from "express";
 import {Item} from "../../items";
-import {createItem, deleteItem, getItems, getItemsById, setItemStock} from "../../controllers";
+import {createItem, deleteItem, getItems, getItemsById, setItemPrice, setItemStock} from "../../controllers";
 import {protect} from "../../middleware/authMiddleware";
 
 
@@ -21,6 +21,9 @@ itemRouter.route('/findById/:itemId')
 
 itemRouter.route('/setStock/:itemId/:newStock')
     .patch(protect, setItemStock)
+
+itemRouter.route('/setPrice/:itemId')
+    .patch(setItemPrice)
 
 
 itemRouter.route('/getNameById/:itemId')

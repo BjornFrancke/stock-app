@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler"
 import {Bom} from "../bom";
 
 
+
 const fetchAllItems = async (): Promise<Iitems[]> => {
     try {
         return await Item.find();
@@ -51,6 +52,26 @@ export const setItemStock = asyncHandler(async (req, res) => {
         res.status(200).json({message: `${updatedItem?.name}'s stock was updated`});
     } catch (error) {
         res.status(500).json({ message: "Failed to update item stock" });
+    }
+})
+
+export const setItemPrice = asyncHandler(async (req, res) => {
+    const itemId = req.params.itemId;
+    const newPrice = {
+        amount: Number(req.body.amount),
+        currency: req.body.currency
+    };
+    try {
+        const item = await Item.findById(itemId)
+        if (!item) {
+            res.status(404).json({message: "Item not found"});
+            return
+        }
+        item.salePrice = newPrice;
+        await item.save();
+        res.status(200).json({message: "Item was updated"})
+    } catch (error) {
+        res.status(500).json({ message: "Failed to update item price" });
     }
 })
 
