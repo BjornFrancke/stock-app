@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler"
 import {Order} from "../models/orders";
-import {orderMarkedAsDone} from "../orders";
+import {getNewOrderNumber, orderMarkedAsDone} from "../orders";
 import {ObjectId} from "mongodb";
 
 export const getOrders = asyncHandler(async (req, res) => {
@@ -14,10 +14,11 @@ export const getOrders = asyncHandler(async (req, res) => {
 
 export const createOrder = asyncHandler(async (req, res) => {
     const creationDate = Date.now()
+    const newOrderNumber = await getNewOrderNumber()
     try {
         const newOrder = new Order(
             {
-                orderNumber: req.body.orderNumber,
+                orderNumber: newOrderNumber,
                 items: [],
                 createtionDate: creationDate,
                 dueDate: req.body.dueDate,
