@@ -3,6 +3,10 @@ export interface Iitems {
     name: string,
     description?: string,
     stock: number,
+    salePrice: {
+        currency: string,
+        amount: number
+    }
 }
 
 export interface Ibom {
