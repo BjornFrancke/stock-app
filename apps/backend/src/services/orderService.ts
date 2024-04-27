@@ -1,6 +1,4 @@
-import {Order} from "./models/orders"
-import {Item} from "./models/item";
-
+import {Item, Order} from "../models";
 
 export async function getNewOrderNumber() {
     const latestOrder = await Order.findOne().sort({orderNumber: -1});
@@ -28,7 +26,7 @@ export async function orderMarkedAsDone(orderId: string) {
         if (selectedItem) {
             console.log(selectedItem.stock)
             console.log(orderData.items[index].amount)
-            if (selectedItem.stock < orderData.items[index].amount ) {
+            if (selectedItem.stock < orderData.items[index].amount) {
                 console.log("Insufficient stock for item: " + selectedItem.name)
                 return
             }

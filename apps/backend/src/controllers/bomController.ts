@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler"
-import {processBom} from "../manufacturing";
 import {Bom, Item} from "../models";
+import {processBom} from "../services/manufacturingService";
 
 
 export const getBoms = asyncHandler(async (req, res) => {

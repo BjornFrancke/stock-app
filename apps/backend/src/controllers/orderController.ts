@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import {Order} from "../models";
-import {getNewOrderNumber, orderMarkedAsDone} from "../orders";
 import {ObjectId} from "mongodb";
+import {getNewOrderNumber, orderMarkedAsDone} from "../services/orderService";
 
 export const getOrders = asyncHandler(async (req, res) => {
     try {

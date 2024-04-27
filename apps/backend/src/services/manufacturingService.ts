@@ -1,12 +1,9 @@
 import {ObjectId} from "mongodb";
-import {Ibom} from "./types";
-import {isStockSufficient, reduceStock} from "./items";
-import {ManufacturingOrder} from "./models/manufacturingOrder";
-import {Bom} from "./models/bom";
-import {Item} from "./models/item";
+import {Ibom} from "../types";
+import {Bom, Item, ManufacturingOrder} from "../models";
+import {isStockSufficient, reduceStock} from "./itemService";
 
-
-async function markManufacturingOrderAsDone (orderId : ObjectId) : Promise<void> {
+async function markManufacturingOrderAsDone(orderId: ObjectId): Promise<void> {
     const manuOrder = await ManufacturingOrder.findById(orderId);
 
 
@@ -86,10 +83,11 @@ export async function processManufacturingOrder(orderId: ObjectId | string, toPr
 
 }
 
-export async function getNewManuOrderNumber(){
+export async function getNewManuOrderNumber() {
     const latestManuOrder = await ManufacturingOrder.findOne().sort({reference: -1});
     return latestManuOrder ? latestManuOrder.reference + 1 : 1;
 }
+
 export async function getBOMComponentStatus(bomId: ObjectId, toProduce: number) {
     const bomData: Ibom | null = await Bom.findById(bomId);
     const componentStatus = []
@@ -100,33 +98,32 @@ export async function getBOMComponentStatus(bomId: ObjectId, toProduce: number) 
     const components = bomData.components;
     for (let i = 0; i < components.length; i++) {
         const component = components[i];
-        if (component.id){
+        if (component.id) {
             const itemData = await Item.findById(component.id);
-        const isAvailable = await isStockSufficient(itemData, component.amount * toProduce);
-        if (!isAvailable) {
-            componentStatus.push(
-                {
-                    _id: component.id,
-                    name: itemData?.name,
-                    required: component.amount * toProduce,
-                    status: false
-                }
-            )
-        } else {
-            componentStatus.push(
-                {
-                    _id: component.id,
-                    name: itemData?.name,
-                    required: component.amount * toProduce,
-                    status: true
-                })
-        }
+            const isAvailable = await isStockSufficient(itemData, component.amount * toProduce);
+            if (!isAvailable) {
+                componentStatus.push(
+                    {
+                        _id: component.id,
+                        name: itemData?.name,
+                        required: component.amount * toProduce,
+                        status: false
+                    }
+                )
+            } else {
+                componentStatus.push(
+                    {
+                        _id: component.id,
+                        name: itemData?.name,
+                        required: component.amount * toProduce,
+                        status: true
+                    })
+            }
         }
     }
     return componentStatus
 
 }
-
 
 async function checkManufacturingOrderAvailability(id: string) {
     const manufacturingOrder = await ManufacturingOrder.findById(id)
@@ -178,4 +175,3 @@ export async function createManufacturingOrder(bomId: ObjectId | string, quantit
     console.log(productData?.name)
     return await newManufacturingOrder.save();
 }
-

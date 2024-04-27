@@ -1,6 +1,11 @@
 import asyncHandler from "express-async-handler"
 import {ManufacturingOrder} from "../models";
-import {createManufacturingOrder, getBOMComponentStatus, processManufacturingOrder} from "../manufacturing";
+
+import {
+    createManufacturingOrder,
+    getBOMComponentStatus,
+    processManufacturingOrder
+} from "../services/manufacturingService";
 
 export const getAllManufacturingOrders = asyncHandler(async (req, res) => {
     try {
