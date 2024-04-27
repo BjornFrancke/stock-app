@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler"
 import {Order} from "../models/orders";
 import {orderMarkedAsDone} from "../orders";
+import {ObjectId} from "mongodb";
 
 export const getOrders = asyncHandler(async (req, res) => {
     try {
@@ -47,8 +48,13 @@ export const markOrderAsDone = asyncHandler(async (req, res) => {
 
 export const addItemToOrder = asyncHandler(async (req, res) => {
     const orderId = req.params.orderId;
-    const itemId = req.body.itemId
+    const itemId: ObjectId = req.body.itemId
+    const name = req.body.name
     const amount = Number(req.body.amount);
+    const salesPrice: {amount: number, currency: string} = {
+        amount: Number(req.body.salesPrice.amount),
+        currency: req.body.salesPrice.currency
+    }
 
     if (!amount) {
         res.status(400).send("Item amount is required");
@@ -63,7 +69,7 @@ export const addItemToOrder = asyncHandler(async (req, res) => {
             return
         }
 
-        const newItem = { _id: itemId, amount: amount };
+        const newItem = { _id: itemId, name: name, amount: amount, salesPrice: salesPrice };
         order.items.push(newItem);
 
         const updatedOrder = await order.save();

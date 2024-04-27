@@ -26,7 +26,7 @@ export interface Icomponent {
 export interface Iorder {
     _id?: string | undefined
     orderNumber: number,
-    items?: {_id?: string | undefined, amount: number}[]
+    items?: {_id?: string | undefined, name: string, amount: number, salesPrice: {amount: number, currency: string }}[],
     createtionDate: Date,
     dueDate: Date | string,
     receptian?: string,
