@@ -1,16 +1,19 @@
 import express from "express";
+import {protect} from "../middleware/authMiddleware";
 import {
-    addComponent, createBom,
+    addComponent,
+    createBom,
     deleteBom,
     getBomById,
     getBomDetails,
-    getBoms, manufactureBom,
+    getBoms,
+    manufactureBom,
     removeComponent,
     setComponentAmount
-} from "../../controllers";
-import {protect} from "../../middleware/authMiddleware";
+} from "../controllers";
 
-const bomRouter = express.Router()
+
+export const bomRouter = express.Router()
 
 bomRouter.route('/findAll')
     .get(protect, getBoms)
@@ -39,4 +42,3 @@ bomRouter.route('/create')
 bomRouter.route('/manufacture/:bomId')
     .patch(protect, manufactureBom)
 
-export default bomRouter

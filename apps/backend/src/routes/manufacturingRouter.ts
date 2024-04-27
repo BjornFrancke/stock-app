@@ -1,14 +1,16 @@
 import express from "express";
+import {protect} from "../middleware/authMiddleware";
 import {
     checkManufacturingOrderById,
     createManuOrder,
     deleteManufacturingOrder,
     getAllManufacturingOrders,
-    getManufacturingOrderById, processManufacturingOrderById
-} from "../../controllers";
-import {protect} from "../../middleware/authMiddleware";
+    getManufacturingOrderById,
+    processManufacturingOrderById
+} from "../controllers";
 
-const manufacturingRouter = express.Router()
+
+export const manufacturingRouter = express.Router()
 
 manufacturingRouter.route('/')
     .get(protect, getAllManufacturingOrders)
@@ -22,4 +24,3 @@ manufacturingRouter.route('/:manufacturingOrder')
 manufacturingRouter.route('/check/:manufacturingOrder')
     .patch(protect, checkManufacturingOrderById)
 
-export default manufacturingRouter

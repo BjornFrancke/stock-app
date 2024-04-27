@@ -13,12 +13,6 @@ export interface Iitems {
     }
 }
 
-export interface Iwarehouse {
-    name: string,
-    prefix: string,
-    address: Iaddress,
-    items: [id: ObjectId]
-}
 
 export interface Iaddress {
     street: string,

@@ -1,10 +1,10 @@
 import express from "express";
-import {Item} from "../../items";
-import {createItem, deleteItem, getItems, getItemsById, setItemPrice, setItemStock} from "../../controllers";
-import {protect} from "../../middleware/authMiddleware";
+import {protect} from "../middleware/authMiddleware";
+import {createItem, deleteItem, getItems, getItemsById, setItemPrice, setItemStock} from "../controllers";
+import {Item} from "../items";
 
 
-const itemRouter = express.Router()
+export const itemRouter = express.Router()
 
 itemRouter.route('/findAll')
     .get(protect, getItems)
@@ -42,7 +42,7 @@ itemRouter.route('/getNameById/:itemId')
 
 itemRouter.route('/update/:itemId')
     .patch(async (req, res) => {
-        try{
+        try {
             const id = req.params.itemId
             const updatedData = req.body
             const options = {new: true}
@@ -52,13 +52,8 @@ itemRouter.route('/update/:itemId')
             )
             res.send(results)
         } catch (error) {
-            res.status(400).json({ message: error})
+            res.status(400).json({message: error})
         }
     })
 
 
-
-
-
-
-export default itemRouter
