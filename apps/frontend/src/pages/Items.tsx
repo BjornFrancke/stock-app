@@ -10,8 +10,7 @@ import {ArrowsPointingOutIcon, PencilSquareIcon} from '@heroicons/react/16/solid
 import Sheet from "@mui/joy/Sheet";
 import {Link, useSearchParams} from "react-router-dom";
 import {instance} from "../services/backend-api/axiosConfig.ts";
-import {AlertMessage} from "../components/AlertMessage.tsx";
-import {Ialert} from "../components/AlertMessage.tsx"
+import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
 
 
 export const Items = () => {
@@ -22,6 +21,7 @@ export const Items = () => {
     const [newItemStock, setNewItemStock] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState<Iitems | null>(null)
+    const [newPrice, setNewPrice] = useState(-1)
     const [newStockValue, setNewStockValue] = useState(0)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
@@ -127,6 +127,29 @@ export const Items = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false)
         setSearchParams()
+    }
+
+    const handleSubmitNewPrice = () => {
+        const itemId = selectedItem?._id
+        const salePrice = {
+            amount: newPrice,
+            currency: "DKK"
+        }
+        instance.patch(`/item/setPrice/${itemId}`, salePrice).then(response => {
+            setAlert({
+                severity: "success",
+                text: response.data.message,
+                open: true,
+            })
+            fetchItems()
+            setNewPrice(-1)
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message,
+                open: true
+            })
+        })
     }
 
     const handleSubmitNewItem = async () => {
@@ -327,7 +350,29 @@ export const Items = () => {
                                     </tr>
                                     <tr>
                                         <td>Price</td>
-                                        <td>{selectedItem.salePrice.amount} {selectedItem.salePrice.currency === "DKK" ? (<>kr.</>) : (<></>)}</td>
+
+                                        {newPrice >= 0 ? (
+                                                <td>
+                                                    <form className={"flex space-x-1"}>
+                                                        <Input
+                                                            size={"sm"}
+                                                            type={"number"}
+                                                            value={newPrice}
+                                                            onChange={(e) => setNewPrice(e.target.valueAsNumber)}
+                                                        />
+                                                        <Button size={"sm"} onClick={() => handleSubmitNewPrice()}>
+                                                            Change
+                                                        </Button>
+                                                        <Button size={"sm"} variant={"outlined"} color={"danger"}
+                                                                onClick={() => setNewPrice(-1)}>
+                                                            X
+                                                        </Button>
+                                                    </form>
+
+                                                </td>
+                                            ) :
+                                            <td onClick={() => setNewPrice(selectedItem.salePrice.amount)}>{selectedItem.salePrice.amount} {selectedItem.salePrice.currency === "DKK" ? (<>kr.</>) : (<></>)}</td>
+                                        }
                                     </tr>
 
 
