@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config'
 import asyncHandler from "express-async-handler";
-import {User} from "../models/userModel";
+import {User} from "../models";
 import bcrypt from "bcryptjs";
 import {ExtendedRequest} from "../types"
 

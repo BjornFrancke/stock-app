@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import {Order} from "../models/orders";
+import {Order} from "../models";
 import {getNewOrderNumber, orderMarkedAsDone} from "../orders";
 import {ObjectId} from "mongodb";
 

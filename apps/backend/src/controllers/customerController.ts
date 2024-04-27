@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import {Customer} from "../models/customers";
+import {Customer} from "../models";
 
 export const getCustomers = asyncHandler(async (req, res) => {
     try {
