@@ -27,19 +27,22 @@ export function Orders() {
     const [isOrdersModalOpen, setIsOrdersModalOpen] = useState(false)
     const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
     const [newOrderRecipient, setNewOrderRecipient] = useState("")
-    const [newItemToAddAmount, setNewItemToAddAmount] = useState(0)
-    const [newItemToAddId, setNewItemToAddId] = useState("")
-    const [newItemName, setNewItemName] = useState("")
-    const [availableItems, setAvailableItems] = useState<Iitems[]>([]); // State for available components
+    const [availableItems, setAvailableItems] = useState<Iitems[]>([]);
     const [availableCustomers, setAvailableCustomers] = useState([]);
     const [isAddItemForm, setIsAddItemForm] = useState(false)
     const [errorMessage, setErrorMessage] = useState("Unknown error")
     const [isError, setIsError] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
-    const [newItemSalePrice, setNewItemSalePrice] = useState({
+    const [newItemData, setNewItemData] = useState({
+        itemId: "",
+        name: "",
         amount: 0,
-        currency: ""
+        salesPrice: {
+            amount: 0,
+            currency: ""
+        }
     })
+
 
     interface Iaddress {
         street: string,
@@ -70,26 +73,25 @@ export function Orders() {
     }
 
     const handleAddNewItem = async (orderId: string | undefined) => {
-        if (!selectedOrder || !newItemToAddAmount) {
+        if (!selectedOrder) {
             handleErrorMessage(400, "Please fill in all fields")
             return;
         }
 
-        const newItemData = {
-            itemId: newItemToAddId,
-            name: newItemName,
-            amount: newItemToAddAmount,
+        const newItemDataToSubmit = {
+            itemId: newItemData.itemId,
+            name: newItemData.name,
+            amount: newItemData.amount,
             salesPrice: {
-                amount: newItemSalePrice.amount,
-                currency: newItemSalePrice.currency
+                amount: newItemData.salesPrice.amount,
+                currency: newItemData.salesPrice.currency
             }
         };
 
         try {
-            await instance.patch(`/orders/${orderId}/additem`, newItemData);
+            await instance.patch(`/orders/${orderId}/additem`, newItemDataToSubmit);
             fetchOrders();
-            setNewItemToAddAmount(0);
-            setNewItemToAddId("")
+            setNewItemData(newItemData)
             setIsOrdersModalOpen(false);
             setIsAddItemForm(false)
         } catch (error) {
@@ -177,15 +179,17 @@ export function Orders() {
     };
 
     const handleNewItemChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setNewItemToAddId(e.target.value)
         console.log(e.target.value)
-        const newItemData = await availableItems.find(item => item._id === e.target.value);
-        if (newItemData) {
-            console.log(newItemData.salePrice.amount);
-            setNewItemName(newItemData.name)
-            setNewItemSalePrice({
-                amount: newItemData.salePrice.amount,
-                currency: newItemData.salePrice.currency
+        const newItem = availableItems.find(item => item._id === e.target.value);
+        if (newItem) {
+            setNewItemData({
+                ...newItemData,
+                itemId: e.target.value,
+                name: newItem.name,
+                salesPrice: {
+                    amount: newItem.salePrice.amount,
+                    currency: newItem.salePrice.currency
+                }
             })
         }
 
@@ -484,7 +488,7 @@ export function Orders() {
                                             <td className="flex">
                                                 <form className="flex space-x-2">
                                                     <select
-                                                        value={newItemToAddId}
+                                                        value={newItemData.itemId}
                                                         onChange={(e) => handleNewItemChange(e)}
                                                         className="pl-1 border border-gray-300 rounded-md"
                                                     >
@@ -495,12 +499,15 @@ export function Orders() {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                    <p>{newItemSalePrice.amount}</p>
                                                     <input
                                                         type="number"
                                                         className="pl-1 border max-w-16 border-gray-300 rounded-md"
-                                                        value={newItemToAddAmount}
-                                                        onChange={(e) => setNewItemToAddAmount(e.target.valueAsNumber)}
+                                                        name={"amount"}
+                                                        value={newItemData.amount}
+                                                        onChange={(e) => setNewItemData({
+                                                            ...newItemData,
+                                                            amount: e.target.valueAsNumber
+                                                        })}
                                                     />
                                                     <Button
                                                         onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
