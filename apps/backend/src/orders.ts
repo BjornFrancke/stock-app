@@ -1,12 +1,10 @@
-import { Item } from "./items"
-import { Order } from "./models/orders"
-
+import {Item} from "./items"
+import {Order} from "./models/orders"
 
 
 export async function getNewOrderNumber() {
     const latestOrder = await Order.findOne().sort({orderNumber: -1});
-    const newOrderNumber = latestOrder ? latestOrder.orderNumber + 1 : 1;
-    return newOrderNumber
+    return latestOrder ? latestOrder.orderNumber + 1 : 1
 }
 
 export async function orderMarkedAsDone(orderId: string) {
