@@ -10,11 +10,11 @@ import {ArrowsPointingOutIcon, PencilSquareIcon} from '@heroicons/react/16/solid
 import Sheet from "@mui/joy/Sheet";
 import {Link, useSearchParams} from "react-router-dom";
 import {instance} from "../services/backend-api/axiosConfig.ts";
-import {AlertMessage} from "./AlertMessage.tsx";
-import {Ialert} from "./AlertMessage.tsx"
+import {AlertMessage} from "../components/AlertMessage.tsx";
+import {Ialert} from "../components/AlertMessage.tsx"
 
 
-export const ListAllItems = () => {
+export const Items = () => {
     const [items, setItems] = useState<Iitems[]>([]);
     const [showForm, setShowForm] = useState(false);
     const [showChangeStockForm, setShowChangeStockForm] = useState(false)

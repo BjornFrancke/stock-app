@@ -1,6 +1,6 @@
 import './index.css'
-import {ListAllItems} from "./components/ListAllItems";
-import {ListAllBoms} from './components/ListAllBoms';
+import {Items} from "./pages/Items.tsx";
+import {Boms} from './pages/Boms.tsx';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Layout from './Layout';
 import {Dashboard} from './pages/Dashboard.tsx';
@@ -21,8 +21,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Layout/>}>
                     <Route index element={<Dashboard/>}/>
-                    <Route path="items" element={<ListAllItems/>}/>
-                    <Route path="boms" element={<ListAllBoms/>}/>
+                    <Route path="items" element={<Items/>}/>
+                    <Route path="boms" element={<Boms/>}/>
                     <Route path="manufacturing" element={<Manufacturing/>}/>
                     <Route path="orders" element={<Orders/>}/>
                     <Route path="customer" element={<Customer/>}/>
