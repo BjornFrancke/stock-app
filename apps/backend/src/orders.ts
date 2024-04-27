@@ -1,6 +1,13 @@
 import { Item } from "./items"
 import { Order } from "./models/orders"
-import * as console from "console";
+
+
+
+export async function getNewOrderNumber() {
+    const latesOrder = await Order.findOne().sort({orderNumber: -1});
+    const newOrderNumber = latesOrder ? latesOrder.orderNumber + 1 : 1;
+    return newOrderNumber
+}
 
 export async function orderMarkedAsDone(orderId: string) {
     console.log("Function called")
