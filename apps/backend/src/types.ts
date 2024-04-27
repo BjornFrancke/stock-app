@@ -7,6 +7,10 @@ export interface Iitems {
     name: string,
     description?: string,
     stock: number,
+    salePrice: {
+        currency: string,
+        amount: number
+    }
 }
 
 export interface Iwarehouse {
@@ -32,7 +36,7 @@ export interface Ibom {
 
 export interface Iorder {
     orderNumber: number,
-    items: [{_id: ObjectId, amount: number}]
+    items: [{_id: ObjectId, amount: number, salesPrice: {amount: number, currency: string }}],
     createtionDate: Date,
     dueDate: Date,
     receptian?: string,

@@ -3,7 +3,7 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
 import Chip from "@mui/joy/Chip";
 import {
@@ -27,14 +27,22 @@ export function Orders() {
     const [isOrdersModalOpen, setIsOrdersModalOpen] = useState(false)
     const [newOrderDueDate, setNewOrderDueDate] = useState<Date | null>(null)
     const [newOrderRecipient, setNewOrderRecipient] = useState("")
-    const [newItemToAddAmount, setNewItemToAddAmount] = useState(0)
-    const [newItemToAddId, setNewItemToAddId] = useState("")
-    const [availableItems, setAvailableItems] = useState([]); // State for available components
+    const [availableItems, setAvailableItems] = useState<Iitems[]>([]);
     const [availableCustomers, setAvailableCustomers] = useState([]);
     const [isAddItemForm, setIsAddItemForm] = useState(false)
     const [errorMessage, setErrorMessage] = useState("Unknown error")
     const [isError, setIsError] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
+    const [newItemData, setNewItemData] = useState({
+        itemId: "",
+        name: "",
+        amount: 0,
+        salesPrice: {
+            amount: 0,
+            currency: ""
+        }
+    })
+
 
     interface Iaddress {
         street: string,
@@ -65,21 +73,25 @@ export function Orders() {
     }
 
     const handleAddNewItem = async (orderId: string | undefined) => {
-        if (!selectedOrder || !newItemToAddAmount) {
+        if (!selectedOrder) {
             handleErrorMessage(400, "Please fill in all fields")
             return;
         }
 
-        const newItemData = {
-            itemId: newItemToAddId,
-            amount: newItemToAddAmount
+        const newItemDataToSubmit = {
+            itemId: newItemData.itemId,
+            name: newItemData.name,
+            amount: newItemData.amount,
+            salesPrice: {
+                amount: newItemData.salesPrice.amount,
+                currency: newItemData.salesPrice.currency
+            }
         };
 
         try {
-            await instance.patch(`/orders/${orderId}/additem`, newItemData);
+            await instance.patch(`/orders/${orderId}/additem`, newItemDataToSubmit);
             fetchOrders();
-            setNewItemToAddAmount(0);
-            setNewItemToAddId("")
+            setNewItemData(newItemData)
             setIsOrdersModalOpen(false);
             setIsAddItemForm(false)
         } catch (error) {
@@ -87,6 +99,11 @@ export function Orders() {
             handleErrorMessage(500, "Failed to add item")
         }
     };
+
+    const handleOrderModalClose = () => {
+        setSearchParams()
+        setIsOrdersModalOpen(false)
+    }
 
     const handleSubmitNewOrder = async () => {
         const orderData = {
@@ -160,6 +177,23 @@ export function Orders() {
         setOrders(response.data);
 
     };
+
+    const handleNewItemChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(e.target.value)
+        const newItem = availableItems.find(item => item._id === e.target.value);
+        if (newItem) {
+            setNewItemData({
+                ...newItemData,
+                itemId: e.target.value,
+                name: newItem.name,
+                salesPrice: {
+                    amount: newItem.salePrice.amount,
+                    currency: newItem.salePrice.currency
+                }
+            })
+        }
+
+    }
 
     const fetchAvailableItems = async () => {
         const response = await instance.get('/item/findAll');
@@ -314,7 +348,7 @@ export function Orders() {
                         aria-labelledby="modal-title"
                         aria-describedby="modal-desc"
                         open={isOrdersModalOpen}
-                        onClose={() => setIsOrdersModalOpen(false)}
+                        onClose={() => handleOrderModalClose()}
                         sx={{
                             display: "flex",
                             justifyContent: "center",
@@ -417,7 +451,7 @@ export function Orders() {
                                 <Table borderAxis={"both"}
                                        sx={{
                                            bgcolor: "white",
-                                           '& tr > *:first-child': {bgcolor: 'white'},
+                                           '& tr > *:first-of-type': {bgcolor: 'white'},
                                            '& th[scope="col"]': {bgcolor: 'white'},
                                            '& td': {bgcolor: 'white'},
                                        }}>
@@ -436,10 +470,10 @@ export function Orders() {
                                         selectedOrder.items.map((item, index) => (
                                             <tr key={item._id}>
                                                 <td>{index + 1}</td>
-                                                <td>{item._id} </td>
+                                                <td>{item.name ? (item.name) : item._id}</td>
                                                 <td>{item.amount}</td>
-                                                <td>0</td>
-                                                <td>0</td>
+                                                <td>{item.salesPrice?.amount}</td>
+                                                <td>{item.salesPrice.amount * item.amount}</td>
                                                 <td><EllipsisVerticalIcon className={"w-6 h-6 text-gray-500"}/></td>
                                             </tr>
                                         ))
@@ -454,8 +488,8 @@ export function Orders() {
                                             <td className="flex">
                                                 <form className="flex space-x-2">
                                                     <select
-                                                        value={newItemToAddId}
-                                                        onChange={(e) => setNewItemToAddId(e.target.value)}
+                                                        value={newItemData.itemId}
+                                                        onChange={(e) => handleNewItemChange(e)}
                                                         className="pl-1 border border-gray-300 rounded-md"
                                                     >
                                                         <option value="">Select a Component</option>
@@ -468,8 +502,12 @@ export function Orders() {
                                                     <input
                                                         type="number"
                                                         className="pl-1 border max-w-16 border-gray-300 rounded-md"
-                                                        value={newItemToAddAmount}
-                                                        onChange={(e) => setNewItemToAddAmount(e.target.valueAsNumber)}
+                                                        name={"amount"}
+                                                        value={newItemData.amount}
+                                                        onChange={(e) => setNewItemData({
+                                                            ...newItemData,
+                                                            amount: e.target.valueAsNumber
+                                                        })}
                                                     />
                                                     <Button
                                                         onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
