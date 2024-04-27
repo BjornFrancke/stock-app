@@ -1,5 +1,5 @@
-import {Item} from "./items"
 import {Order} from "./models/orders"
+import {Item} from "./models/item";
 
 
 export async function getNewOrderNumber() {

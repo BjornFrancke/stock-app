@@ -1,18 +1,10 @@
-import {Schema, model, HydratedDocument, Error} from "mongoose"
-import {Iitems, ItemsModel} from "./types";
+import {Error} from "mongoose"
 
-export const itemSchema = new Schema<Iitems, ItemsModel>({
-    name: {type: String},
-    description: {type: String},
-    stock: {type: Number},
-    salePrice: {
-        amount: {type: Number, default: 0},
-        currency: {type: String},
-    }
-})
+import {Item} from "./models/item";
 
 
-export const Item: ItemsModel = model<Iitems, ItemsModel>('Item', itemSchema)
+
+
 
 export const setStock = async (itemId: string, newStock: number) => {
     const item = await Item.findById(itemId);

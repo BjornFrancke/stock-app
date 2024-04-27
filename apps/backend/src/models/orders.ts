@@ -1,5 +1,5 @@
 import { model } from "mongoose";
-import { orderSchema } from "../schema/orders";
+import { orderSchema } from "../schema/orderSchema";
 import { Iorder, OrderModel } from "../types";
 
 

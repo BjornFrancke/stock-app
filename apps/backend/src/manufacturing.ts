@@ -1,8 +1,9 @@
 import {ObjectId} from "mongodb";
-import {Bom} from "./bom";
 import {Ibom} from "./types";
-import {isStockSufficient, Item, reduceStock} from "./items";
+import {isStockSufficient, reduceStock} from "./items";
 import {ManufacturingOrder} from "./models/manufacturingOrder";
+import {Bom} from "./models/bom";
+import {Item} from "./models/item";
 
 
 async function markManufacturingOrderAsDone (orderId : ObjectId) : Promise<void> {

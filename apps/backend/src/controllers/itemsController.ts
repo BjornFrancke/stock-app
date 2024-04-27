@@ -1,7 +1,8 @@
-import {Item, setStock} from "../items";
+import {setStock} from "../items";
 import {Iitems} from "../types";
 import asyncHandler from "express-async-handler"
-import {Bom} from "../bom";
+import {Item} from "../models/item";
+import {Bom} from "../models/bom";
 
 
 

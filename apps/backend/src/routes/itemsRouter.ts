@@ -1,7 +1,7 @@
 import express from "express";
 import {protect} from "../middleware/authMiddleware";
 import {createItem, deleteItem, getItems, getItemsById, setItemPrice, setItemStock} from "../controllers";
-import {Item} from "../items";
+import {Item} from "../models/item";
 
 
 export const itemRouter = express.Router()
