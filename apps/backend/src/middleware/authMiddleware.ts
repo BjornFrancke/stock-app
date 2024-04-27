@@ -1,11 +1,10 @@
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import asyncHandler from "express-async-handler";
-import {jtwSecret} from "../controllers";
 import {User} from "../models/userModel";
 import {Request, Response, NextFunction} from 'express';
 import {ExtendedRequest, Iuser} from "../types";
 
-
+const jtwSecret = process.env.JWT_SECRET_KEY || "secret"
 
 export const protect = asyncHandler(async (req: ExtendedRequest, res : Response, next: NextFunction) => {
     let token
