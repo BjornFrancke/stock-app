@@ -291,7 +291,7 @@ export const Boms = () => {
                     </Table>
                     <Modal
                         isOpen={isModalOpen}
-                        onRequestClose={handleCloseModal}
+                        onRequestClose={() => handleCloseModal()}
                         contentLabel="BOM Details"
                         className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-28 space-y-6"}
                     >
