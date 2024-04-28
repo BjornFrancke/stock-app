@@ -7,17 +7,19 @@ import React, {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
 import Chip from "@mui/joy/Chip";
 import {
-    CheckBadgeIcon, EllipsisVerticalIcon,
+    CheckBadgeIcon,
+    EllipsisVerticalIcon,
     ExclamationTriangleIcon,
     PlusIcon,
     PrinterIcon,
     XMarkIcon
 } from "@heroicons/react/16/solid";
 import ChipDelete from "@mui/joy/ChipDelete";
-import {Snackbar} from "@mui/joy";
+import {CircularProgress, Snackbar} from "@mui/joy";
 import IconButton from "@mui/joy/IconButton";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
+import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
 
 
 export function Orders() {
@@ -33,6 +35,8 @@ export function Orders() {
     const [errorMessage, setErrorMessage] = useState("Unknown error")
     const [isError, setIsError] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
+    const [loading, setLoading] = useState(true)
+    const [alert, setAlert] = useState<Ialert>({open: false, text: '', severity: "success"})
     const [newItemData, setNewItemData] = useState({
         itemId: "",
         name: "",
@@ -58,6 +62,11 @@ export function Orders() {
         phoneNr?: string,
         address: Iaddress
     }
+
+    const handleMessageClose = () => {
+        setAlert({...alert, open: false});
+    }
+
 
     const handleSearchParams = () => {
         if (searchParams) {
@@ -157,7 +166,20 @@ export function Orders() {
             handleErrorMessage(400, 'Cannot delete an item without an id')
             return;
         }
-        await instance.delete(`/orders/delete/${id}`);
+        instance.delete(`/orders/delete/${id}`).then(results => {
+            setAlert({
+                severity: "warning",
+                text: results.data.message,
+                open: true
+            })
+        }).catch(error => {
+            setAlert({
+                    severity: "danger",
+                    text: error.message,
+                    open: true
+                }
+            )
+        })
         fetchOrders();
     };
 
@@ -173,8 +195,16 @@ export function Orders() {
     }, [orders]);
 
     const fetchOrders = async () => {
-        const response = await instance.get('/orders/findAll');
-        setOrders(response.data);
+        instance.get('/orders/findAll').then(results => {
+            setOrders(results.data)
+            setLoading(false)
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error,
+                open: true
+            })
+        })
 
     };
 
@@ -218,7 +248,11 @@ export function Orders() {
                 }}
             >
 
+                <AlertMessage alertContent={alert} onClose={() => handleMessageClose()}/>
+                {loading && (
+                    <CircularProgress/>
 
+                )}
                 <h1 className="text-xl">Orders</h1>
                 <div className="flex w-full justify-center mt-12">
 
@@ -247,7 +281,7 @@ export function Orders() {
                                 <td>{order.receptian}</td>
                                 <td>{new Date(order.dueDate).toLocaleDateString()}</td>
                                 <td>
-                                    {order.isDone ?  <Chip color="success">Done!</Chip> : <Chip
+                                    {order.isDone ? <Chip color="success">Done!</Chip> : <Chip
                                         onClick={() => handleMarkAsDone(order._id)}
                                         endDecorator={
                                             <CheckBadgeIcon className="h-3 w-3 text-black"/>
@@ -300,46 +334,46 @@ export function Orders() {
                         >
                             <div className={"w-48 space-y-8"}>
                                 <h1 className={"text-[#50A6A1] text-xl"}>New order</h1>
-                            <form className={"mb-4 flex flex-col justify-between w-fit"}>
-                                <div className={"flex space-x-2"}>
-                                    <div className={"flex mb-4 space-x-2"}>
-                                    <h2 className={"my-auto"}>Customer:</h2>
-                                <select
-                                    value={newOrderRecipient}
-                                    onChange={(e) => setNewOrderRecipient(e.target.value)}
-                                    className="border border-gray-300 rounded-md p-2"
-                                >
-                                    <option value="">Select a Customer</option>
-                                    {availableCustomers.map((customer: Icustomer) => (
-                                        <option key={customer.name} value={customer.name}>
-                                            {customer.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                <form className={"mb-4 flex flex-col justify-between w-fit"}>
+                                    <div className={"flex space-x-2"}>
+                                        <div className={"flex mb-4 space-x-2"}>
+                                            <h2 className={"my-auto"}>Customer:</h2>
+                                            <select
+                                                value={newOrderRecipient}
+                                                onChange={(e) => setNewOrderRecipient(e.target.value)}
+                                                className="border border-gray-300 rounded-md p-2"
+                                            >
+                                                <option value="">Select a Customer</option>
+                                                {availableCustomers.map((customer: Icustomer) => (
+                                                    <option key={customer.name} value={customer.name}>
+                                                        {customer.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={"flex space-x-2 min-w-full mb-4"}>
-                                    <h2 className={"my-auto text-nowrap"}>Due date:</h2>
-                                    <div className={"w-48"}>
-                                <Input
-                                    type="date"
-                                    placeholder="Date"
-                                    onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
-                                    className="px-2 border border-gray-300  w-48"
-                                />
+                                    <div className={"flex space-x-2 min-w-full mb-4"}>
+                                        <h2 className={"my-auto text-nowrap"}>Due date:</h2>
+                                        <div className={"w-48"}>
+                                            <Input
+                                                type="date"
+                                                placeholder="Date"
+                                                onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
+                                                className="px-2 border border-gray-300  w-48"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={"space-x-2"}>
-                                <Button onClick={handleSubmitNewOrder}>Submit</Button>
-                                <Button
-                                    onClick={() => setIsCreationModalOpen(false)}
-                                    color="danger"
-                                    variant="outlined"
-                                >
-                                    Cancel
-                                </Button>
-                                </div>
-                            </form>
+                                    <div className={"space-x-2"}>
+                                        <Button onClick={handleSubmitNewOrder}>Submit</Button>
+                                        <Button
+                                            onClick={() => setIsCreationModalOpen(false)}
+                                            color="danger"
+                                            variant="outlined"
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </form>
                             </div>
                         </Sheet>
                     </Modal>
@@ -483,51 +517,51 @@ export function Orders() {
                                     )}
 
 
-                                        {isAddItemForm && (
+                                    {isAddItemForm && (
 
-                                            <tr>
-                                                <td>{selectedOrder?.items && selectedOrder.items.length + 1}</td>
-                                                <td className="">
-                                                    <select
-                                                        value={newItemData.itemId}
+                                        <tr>
+                                            <td>{selectedOrder?.items && selectedOrder.items.length + 1}</td>
+                                            <td className="">
+                                                <select
+                                                    value={newItemData.itemId}
 
-                                                        onChange={(e) => handleNewItemChange(e)}
-                                                        className="border p-2 pl-1 border-gray-300 rounded-md"
-                                                    >
-                                                        <option value="">Select a Component</option>
-                                                        {availableItems.map((item: Iitems) => (
-                                                            <option key={item._id} value={item._id}>
-                                                                {item.name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type="number"
-                                                        className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
-                                                        name={"amount"}
-                                                        value={newItemData.amount}
-                                                        onChange={(e) => setNewItemData({
-                                                            ...newItemData,
-                                                            amount: e.target.valueAsNumber
-                                                        })}
-                                                    />
-                                                </td>
-                                                <td>{newItemData.salesPrice.amount}</td>
-                                                <td>
-                                                    {newItemData.salesPrice.amount * newItemData.amount}
-                                                </td>
-                                                <td>
-                                                    <Button
-                                                        onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
-                                                    <Button variant={"plain"}
-                                                            onClick={() => setIsAddItemForm(false)}>X</Button>
-                                                </td>
+                                                    onChange={(e) => handleNewItemChange(e)}
+                                                    className="border p-2 pl-1 border-gray-300 rounded-md"
+                                                >
+                                                    <option value="">Select a Component</option>
+                                                    {availableItems.map((item: Iitems) => (
+                                                        <option key={item._id} value={item._id}>
+                                                            {item.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                    name={"amount"}
+                                                    value={newItemData.amount}
+                                                    onChange={(e) => setNewItemData({
+                                                        ...newItemData,
+                                                        amount: e.target.valueAsNumber
+                                                    })}
+                                                />
+                                            </td>
+                                            <td>{newItemData.salesPrice.amount}</td>
+                                            <td>
+                                                {newItemData.salesPrice.amount * newItemData.amount}
+                                            </td>
+                                            <td>
+                                                <Button
+                                                    onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
+                                                <Button variant={"plain"}
+                                                        onClick={() => setIsAddItemForm(false)}>X</Button>
+                                            </td>
 
-                                            </tr>
+                                        </tr>
 
-                                        )}
+                                    )}
 
                                     </tbody>
                                 </Table>
