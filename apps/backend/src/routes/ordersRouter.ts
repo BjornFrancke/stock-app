@@ -1,6 +1,13 @@
 import express from "express";
 import {protect} from "../middleware/authMiddleware";
-import {addItemToOrder, createOrder, deleteOrder, getOrders, markOrderAsDone} from "../controllers";
+import {
+    addItemToOrder,
+    calculateOrderSubTotal,
+    createOrder,
+    deleteOrder,
+    getOrders,
+    markOrderAsDone
+} from "../controllers";
 
 export const ordersRouter = express.Router()
 
@@ -20,4 +27,7 @@ ordersRouter.route('/:orderId/additem')
 
 ordersRouter.route('/delete/:orderId')
     .delete(protect, deleteOrder)
+
+ordersRouter.route('/orderSubtotal/:orderId')
+    .get(protect, calculateOrderSubTotal)
 

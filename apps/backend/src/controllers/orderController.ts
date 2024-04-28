@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import {Order} from "../models";
 import {ObjectId} from "mongodb";
-import {getNewOrderNumber, orderMarkedAsDone} from "../services/orderService";
+import {getNewOrderNumber, getOrderSubTotal, orderMarkedAsDone} from "../services/orderService";
 
 export const getOrders = asyncHandler(async (req, res) => {
     try {
@@ -91,4 +91,9 @@ export const deleteOrder = asyncHandler(async (req, res) => {
     } catch {
         res.status(500).send("Internal Server Error");
     }
+})
+
+export const calculateOrderSubTotal = asyncHandler(async (req, res) => {
+    const sub = await getOrderSubTotal(req.params.orderId)
+    res.json({subtotal: {amount: sub}})
 })

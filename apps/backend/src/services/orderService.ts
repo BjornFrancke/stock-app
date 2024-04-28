@@ -5,6 +5,29 @@ export async function getNewOrderNumber() {
     return latestOrder ? latestOrder.orderNumber + 1 : 1
 }
 
+export async function getOrderSubTotal(orderId: string) {
+    if (!orderId) {
+        return
+    }
+    console.log("function runned")
+    const orderData = await Order.findById(orderId)
+    if (orderData && orderData.items.length > 0) {
+        console.log("yes")
+        orderData.subTotal = {amount: 0, currency: "", vat: 0}
+        let subTotalAmount = 0
+        for (let index = 0; orderData.items.length > index; index++) {
+            const itemData = orderData.items[index]
+            console.log(itemData.salesPrice.amount)
+            subTotalAmount += (itemData.salesPrice.amount * itemData.amount)
+            console.log(subTotalAmount)
+        }
+        orderData.subTotal.amount = subTotalAmount
+        await orderData.save()
+        return subTotalAmount
+    }
+
+}
+
 export async function orderMarkedAsDone(orderId: string) {
     console.log("Function called")
     const orderData = await Order.findById(orderId)
