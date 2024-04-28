@@ -326,10 +326,6 @@ export function Orders() {
                                 />
                                     </div>
                                 </div>
-
-                                {newOrderDueDate != null && (
-                                    <h2>{newOrderDueDate.getTime() / 1000}</h2>
-                                )}
                                 <div className={"space-x-2"}>
                                 <Button variant={"outlined"} sx={{color: "#50A6A1"}} onClick={handleSubmitNewOrder}>Submit</Button>
                                 <Button
