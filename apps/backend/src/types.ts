@@ -34,6 +34,11 @@ export interface Iorder {
     createtionDate: Date,
     dueDate: Date,
     receptian?: string,
+    subTotal?: {
+        amount: number,
+        currency: string,
+        vat?: number
+    },
     isDone?: boolean
 }
 

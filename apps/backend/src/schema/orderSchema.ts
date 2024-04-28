@@ -8,6 +8,11 @@ export const orderSchema = new Schema<Iorder, OrderModel>({
     createtionDate: Date,
     dueDate: Date,
     receptian: String,
+    subTotal: {
+        amount: Number,
+        currency: String,
+        vat: Number
+    },
     isDone: Boolean
 })
 
