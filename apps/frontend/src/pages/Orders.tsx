@@ -300,13 +300,14 @@ export function Orders() {
                         >
                             <div className={"w-48 space-y-8"}>
                                 <h1 className={"text-[#50A6A1] text-xl"}>New order</h1>
-                            <form className={"space-y-4 flex flex-col justify-between"}>
+                            <form className={"mb-4 flex flex-col justify-between w-fit"}>
                                 <div className={"flex space-x-2"}>
+                                    <div className={"flex mb-4 space-x-2"}>
                                     <h2 className={"my-auto"}>Customer:</h2>
                                 <select
                                     value={newOrderRecipient}
                                     onChange={(e) => setNewOrderRecipient(e.target.value)}
-                                    className="p-2 border border-gray-300 rounded-md min-w-full"
+                                    className="border border-gray-300 rounded-md p-2"
                                 >
                                     <option value="">Select a Customer</option>
                                     {availableCustomers.map((customer: Icustomer) => (
@@ -315,19 +316,21 @@ export function Orders() {
                                         </option>
                                     ))}
                                 </select>
+                                    </div>
                                 </div>
-                                <div className={"flex space-x-2 min-w-full"}>
+                                <div className={"flex space-x-2 min-w-full mb-4"}>
                                     <h2 className={"my-auto text-nowrap"}>Due date:</h2>
-                                    <div className={"min-w-full"}>
+                                    <div className={"w-48"}>
                                 <Input
                                     type="date"
                                     placeholder="Date"
                                     onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
+                                    className="px-2 border border-gray-300  w-48"
                                 />
                                     </div>
                                 </div>
                                 <div className={"space-x-2"}>
-                                <Button variant={"outlined"} sx={{color: "#50A6A1"}} onClick={handleSubmitNewOrder}>Submit</Button>
+                                <Button onClick={handleSubmitNewOrder}>Submit</Button>
                                 <Button
                                     onClick={() => setIsCreationModalOpen(false)}
                                     color="danger"
@@ -479,14 +482,17 @@ export function Orders() {
                                         </tr>
                                     )}
 
-                                    <tr>
+
                                         {isAddItemForm && (
-                                            <td className="flex">
-                                                <form className="flex space-x-2">
+
+                                            <tr>
+                                                <td>{selectedOrder?.items && selectedOrder.items.length + 1}</td>
+                                                <td className="">
                                                     <select
                                                         value={newItemData.itemId}
+
                                                         onChange={(e) => handleNewItemChange(e)}
-                                                        className="pl-1 border border-gray-300 rounded-md"
+                                                        className="border p-2 pl-1 border-gray-300 rounded-md"
                                                     >
                                                         <option value="">Select a Component</option>
                                                         {availableItems.map((item: Iitems) => (
@@ -495,9 +501,11 @@ export function Orders() {
                                                             </option>
                                                         ))}
                                                     </select>
+                                                </td>
+                                                <td>
                                                     <input
                                                         type="number"
-                                                        className="pl-1 border max-w-16 border-gray-300 rounded-md"
+                                                        className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
                                                         name={"amount"}
                                                         value={newItemData.amount}
                                                         onChange={(e) => setNewItemData({
@@ -505,16 +513,22 @@ export function Orders() {
                                                             amount: e.target.valueAsNumber
                                                         })}
                                                     />
+                                                </td>
+                                                <td>{newItemData.salesPrice.amount}</td>
+                                                <td>
+                                                    {newItemData.salesPrice.amount * newItemData.amount}
+                                                </td>
+                                                <td>
                                                     <Button
                                                         onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
                                                     <Button variant={"plain"}
                                                             onClick={() => setIsAddItemForm(false)}>X</Button>
+                                                </td>
 
-                                                </form>
-                                            </td>
+                                            </tr>
 
                                         )}
-                                    </tr>
+
                                     </tbody>
                                 </Table>
                             </div>
