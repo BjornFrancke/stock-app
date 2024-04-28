@@ -38,5 +38,5 @@ app.use("/manuOrder", manufacturingRouter)
 app.use("/user", userRouter)
 
 app.listen(port, () => {
-    console.log(`Stock-app listening on port ${port}`)
+    console.log(`\u001b[36m-> Stock-app listening on port \u001b[37m \u001b[4m${port}\u001b[0m  🚀`)
 })
