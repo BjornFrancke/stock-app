@@ -24,15 +24,19 @@ export interface Icomponent {
 }
 
 export interface Iorder {
-    _id?: string | undefined
-    orderNumber: number,
-    items?: {_id?: string | undefined, name: string, amount: number, salesPrice: {amount: number, currency: string }}[],
-    createtionDate: Date,
-    dueDate: Date | string,
+    _id: string
+    orderNumber?: number,
+    items: [{_id?: string, name: string, amount: number, salesPrice: {amount: number, currency: string }}],
+    createtionDate?: Date,
+    dueDate: Date,
     receptian?: string,
+    subTotal?: {
+        amount: number,
+        currency: string,
+        vat?: number
+    },
     isDone?: boolean
 }
-
 export interface Icustomer {
     _id: string,
     name: string,

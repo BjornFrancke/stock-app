@@ -138,8 +138,12 @@ export function Orders() {
         setSelectedOrder(order);
         if (order._id !== undefined) {
             setSearchParams({id: order._id})
+            instance.get(`/orders/orderSubtotal/${order._id}`).then(() => {
+                setIsOrdersModalOpen(true)
+            }).catch(error => {
+                console.log(error.message)
+            })
         }
-        setIsOrdersModalOpen(true)
     }
 
     const handleErrorMessage = (code: number, message: string) => {
@@ -565,6 +569,16 @@ export function Orders() {
 
                                     </tbody>
                                 </Table>
+                                <div className={"w-[30%] ml-auto"}>
+                                <Table>
+                                    <tbody>
+                                    <tr>
+                                        <td >Subtotal</td>
+                                        <td style={{width: '20%'}}>{selectedOrder?.subTotal?.amount}</td>
+                                    </tr>
+                                    </tbody>
+                                </Table>
+                                </div>
                             </div>
 
 
