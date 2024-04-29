@@ -38,12 +38,12 @@ export const markOrderAsDone = asyncHandler(async (req, res) => {
     try {
         if (orderId) {
             const updatedOrder = await orderMarkedAsDone(orderId)
-            res.status(400).send(updatedOrder)
+            res.status(200).json({message: "Order marked as done"})
         } else {
-            res.status(404).send("error")
+            res.status(404).json({message: "Order was not found"})
         }
-    } catch {
-        res.status(500).send("Internal Server Error");
+    } catch (error) {
+        res.status(500).json({message: error});
     }
 })
 
