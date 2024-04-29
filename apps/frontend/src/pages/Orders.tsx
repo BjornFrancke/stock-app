@@ -209,14 +209,30 @@ export function Orders() {
         setIsError(false)
         setErrorMessage("")
     }
-    const handleMarkAsDone = async (id: string | undefined) => {
-        if (typeof id === 'undefined') {
-            console.warn('ID is undefined');
-            handleErrorMessage(400, 'ID is undefined')
+    const handleMarkAsDone = async (orderToMark: Iorder | null) => {
+        if (!orderToMark) {
+            setAlert({
+                severity: "danger",
+                text: "Item is null",
+                open: true
+            })
             return;
         }
-        await instance.patch(`/orders/markAsDone/${id}`);
-        await fetchOrders();
+        instance.patch(`/orders/markAsDone/${orderToMark._id}`).then(restults => {
+            setAlert({
+                severity: "success",
+                text: restults.data.message,
+                open: true
+            })
+            fetchOrders()
+            handleOrderClick(orderToMark)
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message,
+                open: true
+            })
+        })
     };
     const handleDelete = async (id: string | undefined) => {
         if (typeof id === 'undefined') {
@@ -341,7 +357,7 @@ export function Orders() {
                                 <td>{new Date(order.dueDate).toLocaleDateString()}</td>
                                 <td>
                                     {order.isDone ? <Chip color="success">Done!</Chip> : <Chip
-                                        onClick={() => handleMarkAsDone(order._id)}
+                                        onClick={() => handleMarkAsDone(order || null)}
                                         endDecorator={
                                             <CheckBadgeIcon className="h-3 w-3 text-black"/>
                                         }
@@ -498,7 +514,7 @@ export function Orders() {
                                     {!selectedOrder?.isDone && (
                                         <div
                                             className={"bg-[#616161] bg-opacity-50 border-2 border-[#616161] w-fit h-fit px-3 py-0.5 rounded text-xs select-none cursor-pointer"}
-                                            onClick={() => handleMarkAsDone(selectedOrder?._id)}>
+                                            onClick={() => handleMarkAsDone(selectedOrder || null)}>
                                             Not Sent
                                         </div>
                                     )}
