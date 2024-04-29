@@ -52,8 +52,10 @@ export const addItemToOrder = asyncHandler(async (req, res) => {
     const itemId: ObjectId = req.body.itemId
     const name = req.body.name
     const amount = Number(req.body.amount);
-    const salesPrice: {amount: number, currency: string} = {
+    const salesPrice: {amount: number, vat: number, discount: number, currency: string} = {
         amount: Number(req.body.salesPrice.amount),
+        vat: req.body.salesPrice.vat,
+        discount: req.body.salesPrice.discount,
         currency: req.body.salesPrice.currency
     }
 
