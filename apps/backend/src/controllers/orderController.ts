@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import {Order} from "../models";
+import {Item, Order} from "../models";
 import {ObjectId} from "mongodb";
 import {getNewOrderNumber, getOrderSubTotal, orderMarkedAsDone} from "../services/orderService";
 
@@ -45,6 +45,36 @@ export const markOrderAsDone = asyncHandler(async (req, res) => {
     } catch {
         res.status(500).send("Internal Server Error");
     }
+})
+
+export const updatedItemInOrder = asyncHandler(async (req, res) => {
+   console.log("function called")
+    const orderId = req.params.orderId
+    const itemData = await Item.findById(req.params.itemId)
+    const amount = req.body.amount
+    const salesPriceAmount = req.body.salesPriceAmount
+    const vat = req.body.vat
+    const discount = req.body.discount
+    const orderData = await Order.findById(orderId)
+    if (!orderData || !itemData) {
+        res.status(404).json({error: "Not found"})
+        return
+    }
+    console.log(itemData.name)
+    for (let index = 0; orderData.items.length > index; index++) {
+        console.log(orderData.items[index]._id)
+        if (orderData.items[index]._id.toString() === itemData._id.toString()) {
+            console.log("item found")
+            orderData.items[index].amount = amount;
+            orderData.items[index].salesPrice.amount = salesPriceAmount;
+            orderData.items[index].salesPrice.vat = vat;
+            orderData.items[index].salesPrice.discount = discount;
+            await orderData.save()
+            res.status(200).json({message: "Item updated"})
+        }
+    }
+    res.status(404).json({ error: 'Item not found in order' });
+    return
 })
 
 export const addItemToOrder = asyncHandler(async (req, res) => {

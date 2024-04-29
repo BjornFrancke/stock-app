@@ -6,7 +6,7 @@ import {
     createOrder,
     deleteOrder,
     getOrders,
-    markOrderAsDone
+    markOrderAsDone, updatedItemInOrder
 } from "../controllers";
 
 export const ordersRouter = express.Router()
@@ -23,6 +23,9 @@ ordersRouter.route('/markAsDone/:orderId')
 
 ordersRouter.route('/:orderId/additem')
     .patch(protect, addItemToOrder);
+
+ordersRouter.route('/:orderId/updateItem/:itemId')
+    .patch(protect, updatedItemInOrder)
 
 
 ordersRouter.route('/delete/:orderId')
