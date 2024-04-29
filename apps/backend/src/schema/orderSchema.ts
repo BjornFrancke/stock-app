@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 
 export const orderSchema = new Schema<Iorder, OrderModel>({
     orderNumber: Number,
-    items: [{_id: ObjectId, name: String, amount: Number, salesPrice: { amount: Number, currency: String }}],
+    items: [{_id: ObjectId, name: String, amount: Number, salesPrice: { amount: Number, vat: Number, discount: Number, currency: String }}],
     createtionDate: Date,
     dueDate: Date,
     receptian: String,
