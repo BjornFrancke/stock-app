@@ -36,6 +36,8 @@ export function Orders() {
     const [isError, setIsError] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
     const [loading, setLoading] = useState(true)
+    const [newItemVat, setNewItemVat] = useState(0)
+    const [newItemDiscount, setNewItemDiscount] = useState(0)
     const [alert, setAlert] = useState<Ialert>({open: false, text: '', severity: "success"})
     const [newItemData, setNewItemData] = useState({
         itemId: "",
@@ -43,6 +45,7 @@ export function Orders() {
         amount: 0,
         salesPrice: {
             amount: 0,
+            vat: 0,
             currency: ""
         }
     })
@@ -93,6 +96,8 @@ export function Orders() {
             amount: newItemData.amount,
             salesPrice: {
                 amount: newItemData.salesPrice.amount,
+                vat: newItemVat,
+                discount: newItemDiscount,
                 currency: newItemData.salesPrice.currency
             }
         };
@@ -103,6 +108,7 @@ export function Orders() {
             setNewItemData(newItemData)
             setIsOrdersModalOpen(false);
             setIsAddItemForm(false)
+            setNewItemVat(0)
         } catch (error) {
             console.error("Failed to add item:", error);
             handleErrorMessage(500, "Failed to add item")
@@ -222,6 +228,7 @@ export function Orders() {
                 name: newItem.name,
                 salesPrice: {
                     amount: newItem.salePrice.amount,
+                    vat: newItemVat,
                     currency: newItem.salePrice.currency
                 }
             })
@@ -494,11 +501,13 @@ export function Orders() {
                                        }}>
                                     <thead>
                                     <tr>
-                                        <th style={{width: '10%'}} scope="col">#</th>
-                                        <th style={{width: '30%'}} scope="col">ID</th>
-                                        <th style={{width: '15%'}} scope="col">Quantity</th>
-                                        <th style={{width: '20%'}} scope="col">Unit price(DKK)</th>
-                                        <th style={{width: '20%'}} scope="col">Total(DKK)</th>
+                                        <th style={{width: '5%'}} scope="col">#</th>
+                                        <th style={{width: '25%'}} scope="col">Name</th>
+                                        <th style={{width: '10%'}} scope="col">Quantity</th>
+                                        <th style={{width: '10%'}} scope="col">Vat</th>
+                                        <th style={{width: '15%'}} scope="col">Unit price(DKK)</th>
+                                        <th style={{width: '10%'}} scope="col">Discount</th>
+                                        <th style={{width: '15%'}} scope="col">Total(DKK)</th>
                                         <th style={{width: '5%'}} scope="col"></th>
                                     </tr>
                                     </thead>
@@ -509,7 +518,9 @@ export function Orders() {
                                                 <td>{index + 1}</td>
                                                 <td>{item.name ? (item.name) : item._id}</td>
                                                 <td>{item.amount}</td>
+                                                <td>{item.salesPrice.vat || 0}</td>
                                                 <td>{item.salesPrice?.amount}</td>
+                                                <td>{item.salesPrice.discount || 0} kr.</td>
                                                 <td>{item.salesPrice.amount * item.amount}</td>
                                                 <td><EllipsisVerticalIcon className={"w-6 h-6 text-gray-500"}/></td>
                                             </tr>
@@ -552,7 +563,19 @@ export function Orders() {
                                                     })}
                                                 />
                                             </td>
+                                            <td>
+                                                <input type={"number"} value={newItemVat}
+                                                       step={0.05}
+                                                       max={1}
+                                                       className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+
+
+                                                       onChange={(e) => setNewItemVat(e.target.valueAsNumber)}/>
+                                            </td>
                                             <td>{newItemData.salesPrice.amount}</td>
+                                            <td><input type={"number"} value={newItemDiscount}
+                                                       className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                       onChange={(e) => setNewItemDiscount(e.target.valueAsNumber)}/></td>
                                             <td>
                                                 {newItemData.salesPrice.amount * newItemData.amount}
                                             </td>
@@ -570,14 +593,25 @@ export function Orders() {
                                     </tbody>
                                 </Table>
                                 <div className={"w-[30%] ml-auto"}>
-                                <Table>
-                                    <tbody>
-                                    <tr>
-                                        <td >Subtotal</td>
-                                        <td style={{width: '20%'}}>{selectedOrder?.subTotal?.amount}</td>
-                                    </tr>
-                                    </tbody>
-                                </Table>
+                                    <Table borderAxis={"none"}>
+                                        <tbody className={"space-y-2"}>
+                                        <tr>
+                                            <td>Subtotal</td>
+                                            <td style={{
+                                                width: '25%',
+                                                textAlign: "right"
+                                            }}>{selectedOrder?.subTotal?.amount + " kr."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vat</td>
+                                            <td style={{width: '20%', textAlign: "right"}}>xxx kr.</td>
+                                        </tr>
+                                        <tr className={"font-bold"}>
+                                            <td>Total</td>
+                                            <td style={{width: '20%', textAlign: "right"}}>xxx kr.</td>
+                                        </tr>
+                                        </tbody>
+                                    </Table>
                                 </div>
                             </div>
 
