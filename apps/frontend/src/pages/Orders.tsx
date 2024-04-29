@@ -37,6 +37,7 @@ export function Orders() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [loading, setLoading] = useState(true)
     const [newItemVat, setNewItemVat] = useState(0)
+    const [selectedItemIndex, setSelectedItemIndex] = useState(-1)
     const [newItemDiscount, setNewItemDiscount] = useState(0)
     const [alert, setAlert] = useState<Ialert>({open: false, text: '', severity: "success"})
     const [newItemData, setNewItemData] = useState({
@@ -49,7 +50,19 @@ export function Orders() {
             currency: ""
         }
     })
+    const [updatedItemData, setUpdatedItemData] = useState({
+        amount: 0,
+        salesPriceAmount: 0,
+        vat: 0,
+        discount: 0
+    })
 
+    const handleUpdatedItemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUpdatedItemData({
+            ...updatedItemData,
+            [e.target.name]: e.target.valueAsNumber
+        })
+    }
 
     interface Iaddress {
         street: string,
@@ -84,6 +97,17 @@ export function Orders() {
         }
     }
 
+    const handleSelectItemIndex = (index: number) => {
+        setSelectedItemIndex(index)
+        const itemInfo = selectedOrder?.items[index]
+        setUpdatedItemData({
+            amount: itemInfo?.amount || 0,
+            salesPriceAmount: itemInfo?.salesPrice.amount || 0,
+            vat: itemInfo?.salesPrice.vat || 0,
+            discount: itemInfo?.salesPrice.discount || 0
+        })
+    }
+
     const handleAddNewItem = async (orderId: string | undefined) => {
         if (!selectedOrder) {
             handleErrorMessage(400, "Please fill in all fields")
@@ -114,6 +138,30 @@ export function Orders() {
             handleErrorMessage(500, "Failed to add item")
         }
     };
+
+    const handleUpdateItemData = async (itemId: string) => {
+        const itemDataToUpdate = {
+            amount: updatedItemData.amount,
+            salesPriceAmount: updatedItemData.salesPriceAmount,
+            vat: updatedItemData.vat,
+            discount: updatedItemData.discount
+        }
+        instance.patch(`/orders/${selectedOrder?._id}/updateItem/${itemId}`, itemDataToUpdate).then(results => {
+            setAlert({
+                severity: "success",
+                text: results.data.message,
+                open: true
+            })
+            fetchOrders()
+            setSelectedItemIndex(-1)
+        }).catch(error => {
+            setAlert({
+                severity: "danger",
+                text: error.message.data,
+                open: true
+            })
+        })
+    }
 
     const handleOrderModalClose = () => {
         setSearchParams()
@@ -514,17 +562,67 @@ export function Orders() {
                                     <tbody>
                                     {selectedOrder && selectedOrder.items && selectedOrder.items.length > 0 ? (
                                         selectedOrder.items.map((item, index) => (
-                                            <tr key={item._id}>
-                                                <td>{index + 1}</td>
-                                                <td>{item.name ? (item.name) : item._id}</td>
-                                                <td>{item.amount}</td>
-                                                <td>{item.salesPrice.vat || 0}</td>
-                                                <td>{item.salesPrice?.amount}</td>
-                                                <td>{item.salesPrice.discount || 0} kr.</td>
-                                                <td>{item.salesPrice.amount * item.amount}</td>
-                                                <td><EllipsisVerticalIcon className={"w-6 h-6 text-gray-500"}/></td>
-                                            </tr>
+                                            <>
+                                                {selectedItemIndex === index ? (
+                                                    <tr key={item._id}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.name ? (item.name) : item._id}</td>
+                                                        <td><input
+                                                            className="p-1 py-0 border max-w-10 border-gray-300 rounded-md"
+                                                            value={updatedItemData.amount}
+                                                            name={"amount"}
+                                                            onChange={(e) => handleUpdatedItemChange(e)}
+                                                            type={"number"}/></td>
+                                                        <td><input
+                                                            className="p-1 py-0 border max-w-16 border-gray-300 rounded-md"
+                                                            value={updatedItemData.vat}
+                                                            name={"vat"}
+                                                            onChange={(e) => handleUpdatedItemChange(e)}
+                                                            type={"number"}
+                                                            step={0.05}
+                                                            min={0}
+                                                            max={1}
+                                                        /></td>
+                                                        <td><input
+                                                            className="p-1 py-0 border max-w-16 border-gray-300 rounded-md"
+                                                            value={updatedItemData.salesPriceAmount}
+                                                            name={"salesPriceAmount"}
+                                                            onChange={(e) => handleUpdatedItemChange(e)}
+                                                            type={"number"}
+                                                        /></td>
+                                                        <td><input
+                                                            className="p-1 py-0 border max-w-16 border-gray-300 rounded-md"
+                                                            value={updatedItemData.discount}
+                                                            name={"discount"}
+                                                            onChange={(e) => handleUpdatedItemChange(e)}
+                                                            type={"number"}
+                                                        /></td>
+                                                        <td>{item.salesPrice.amount * item.amount}</td>
+                                                        <td className={"flex justify-between px-1"}>
+                                                            <p onClick={() => handleUpdateItemData(item._id || "")}>Y</p>
+                                                            <p onClick={() => setSelectedItemIndex(-1)}>X</p></td>
+                                                    </tr>
+                                                ) : (
+                                                    <tr key={item._id}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.name ? (item.name) : item._id}</td>
+                                                        <td>{item.amount}</td>
+                                                        <td>{item.salesPrice.vat || 0}</td>
+                                                        <td>{item.salesPrice?.amount}</td>
+                                                        <td>{item.salesPrice.discount || 0} kr.</td>
+                                                        <td>{item.salesPrice.amount * item.amount}</td>
+                                                        <td><EllipsisVerticalIcon
+                                                            onClick={() => handleSelectItemIndex(index)}
+                                                            className={"w-6 h-6 text-gray-500"}/></td>
+                                                    </tr>
+                                                )}
+                                            </>
+
+
+
+
                                         ))
+
                                     ) : (
                                         <tr>
                                             <td>No items</td>
