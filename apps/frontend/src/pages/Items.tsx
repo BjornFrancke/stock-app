@@ -42,7 +42,7 @@ export const Items = () => {
     }, [items]);
 
     const fetchItems = async () => {
-        instance.get('/item/findAll').then(response => {
+        instance.get('/item').then(response => {
             setItems(response.data);
             setLoading(false);
         }).catch(error => {
@@ -72,7 +72,7 @@ export const Items = () => {
             console.warn('Cannot set stock of an item without an id')
             return
         }
-        instance.patch(`/item/setStock/${id}/${newStockValue}`)
+        instance.patch(`/item/${id}/stock/${newStockValue}`)
             .then(response => {
                 setAlert({
                     severity: "success",
@@ -95,7 +95,7 @@ export const Items = () => {
             console.warn('Cannot delete an item without an id');
             return;
         }
-        await instance.delete(`/item/delete/${id}`)
+        await instance.delete(`/item/${id}`)
             .then(response => {
                 fetchItems();
                 setAlert({
@@ -135,7 +135,7 @@ export const Items = () => {
             amount: newPrice,
             currency: "DKK"
         }
-        instance.patch(`/item/setPrice/${itemId}`, salePrice).then(response => {
+        instance.patch(`/item/${itemId}/price`, salePrice).then(response => {
             setAlert({
                 severity: "success",
                 text: response.data.message,
@@ -157,7 +157,7 @@ export const Items = () => {
             name: newItemName,
             stock: newItemStock
         };
-        instance.post('/item/create', itemData).then(response => {
+        instance.post('/item', itemData).then(response => {
             setAlert({
                 severity: "success",
                 text: response.data.message,

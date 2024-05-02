@@ -89,7 +89,7 @@ export const Boms = () => {
             console.warn("Cannot find BOM")
             return
         }
-        instance.delete(`/bom/delete/${id}`).then(response => {
+        instance.delete(`/bom/${id}`).then(response => {
             setAlert({
                 severity: "danger",
                 text: response.data.message,
@@ -111,7 +111,7 @@ export const Boms = () => {
             name: newBomName,
             product: newBomProduct
         };
-        instance.post('/bom/create', bomData).then(response => {
+        instance.post('/bom', bomData).then(response => {
             setAlert({
                 severity: "success",
                 text: response.data.message,
@@ -136,7 +136,7 @@ export const Boms = () => {
             return
         }
         const componentData = {componentId: newComponentId, componentAmount: newComponentAmount}
-        instance.patch(`/bom/AddComponent/${id}`, componentData).then(response => {
+        instance.post(`/bom/${id}/component`, componentData).then(response => {
            setAlert({
                severity: "success",
                text: response.data.message,
@@ -157,7 +157,7 @@ export const Boms = () => {
             return;
         }
 
-        instance.delete(`/bom/removeComponent/${bomId}/${componentId}`).then(response => {
+        instance.delete(`/bom/${bomId}/component/${componentId}`).then(response => {
             setAlert({
                 severity: "danger",
                 text: response.data.message,
@@ -210,7 +210,7 @@ export const Boms = () => {
     }, [boms]);
 
     const fetchBoms = async () => {
-        instance.get('/bom/findAll').then(response => {
+        instance.get('/bom').then(response => {
             setBoms(response.data)
             setLoading(false)
         }).catch(error => setError(error))
@@ -218,7 +218,7 @@ export const Boms = () => {
 
     const fetchAvailableComponents = async () => {
         try {
-            const response = await instance.get('/item/findAll');
+            const response = await instance.get('/item');
             setAvailableComponents(response.data);
         } catch {
             console.error("Could to fetch availableComponents")
@@ -230,7 +230,7 @@ export const Boms = () => {
             if (!componentId) {
                 console.error('No component id provided')
             }
-            const response = await instance.get(`/item/getNameById/${componentId}`);
+            const response = await instance.get(`/item/${componentId}`);
             return response.data;
         } catch {
             console.error("Failed to fetch component name:");

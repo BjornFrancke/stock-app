@@ -127,7 +127,7 @@ export function Orders() {
         };
 
         try {
-            await instance.patch(`/orders/${orderId}/additem`, newItemDataToSubmit);
+            await instance.post(`/orders/${orderId}/item`, newItemDataToSubmit);
             fetchOrders();
             setNewItemData(newItemData)
             setIsOrdersModalOpen(false);
@@ -146,7 +146,7 @@ export function Orders() {
             vat: updatedItemData.vat,
             discount: updatedItemData.discount
         }
-        instance.patch(`/orders/${selectedOrder?._id}/updateItem/${itemId}`, itemDataToUpdate).then(results => {
+        instance.patch(`/orders/${selectedOrder?._id}/item/${itemId}`, itemDataToUpdate).then(results => {
             setAlert({
                 severity: "success",
                 text: results.data.message,
@@ -179,7 +179,7 @@ export function Orders() {
             handleErrorMessage(400, "Please fill in all fields")
             return
         }
-        await instance.post('/orders/create', orderData)
+        await instance.post('/orders', orderData)
 
         fetchOrders()
         setIsCreationModalOpen(false)
@@ -240,7 +240,7 @@ export function Orders() {
             handleErrorMessage(400, 'Cannot delete an item without an id')
             return;
         }
-        instance.delete(`/orders/delete/${id}`).then(results => {
+        instance.delete(`/orders/${id}`).then(results => {
             setAlert({
                 severity: "warning",
                 text: results.data.message,
@@ -269,7 +269,7 @@ export function Orders() {
     }, [orders]);
 
     const fetchOrders = async () => {
-        instance.get('/orders/findAll').then(results => {
+        instance.get('/orders').then(results => {
             setOrders(results.data)
             setLoading(false)
         }).catch(error => {
@@ -301,12 +301,12 @@ export function Orders() {
     }
 
     const fetchAvailableItems = async () => {
-        const response = await instance.get('/item/findAll');
+        const response = await instance.get('/item');
         setAvailableItems(response.data);
     };
 
     const fetchAvailableCustomers = async () => {
-        const response = await instance.get('/customer/findAll');
+        const response = await instance.get('/customer');
         setAvailableCustomers(response.data);
     };
 
@@ -339,7 +339,7 @@ export function Orders() {
                             <th>Due date</th>
                             <th>Status</th>
                             <th>
-                                <Button variant={"outlined"} sx={{color: "#50A6A1"}}
+                                <Button variant={"outlined"}
                                         onClick={() => setIsCreationModalOpen(true)}>
                                     Add Order
                                 </Button>
@@ -635,8 +635,6 @@ export function Orders() {
                                             </>
 
 
-
-
                                         ))
 
                                     ) : (
@@ -689,7 +687,8 @@ export function Orders() {
                                             <td>{newItemData.salesPrice.amount}</td>
                                             <td><input type={"number"} value={newItemDiscount}
                                                        className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
-                                                       onChange={(e) => setNewItemDiscount(e.target.valueAsNumber)}/></td>
+                                                       onChange={(e) => setNewItemDiscount(e.target.valueAsNumber)}/>
+                                            </td>
                                             <td>
                                                 {newItemData.salesPrice.amount * newItemData.amount}
                                             </td>

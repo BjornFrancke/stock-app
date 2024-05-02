@@ -45,7 +45,7 @@ export function Customer() {
         };
 
         try {
-            await instance.post('/customer/create', customerData);
+            await instance.post('/customer', customerData);
             fetchCustomers();
             setNewCustomer(newCustomer) // Sets state to initial state
             setIsNewCustomerModalOpen(false);
@@ -61,7 +61,7 @@ export function Customer() {
                 console.error("Customer ID is undefined")
                 return
             }
-            await instance.delete(`/customer/delete/${customerId}`)
+            await instance.delete(`/customer/${customerId}`)
             fetchCustomers()
             setIsModalOpen(false)
         } catch {
@@ -80,7 +80,7 @@ export function Customer() {
 
 
     const fetchCustomers = async () => {
-        const response = await instance.get('/customer/findAll');
+        const response = await instance.get('/customer');
         setCustomers(response.data);
     };
 

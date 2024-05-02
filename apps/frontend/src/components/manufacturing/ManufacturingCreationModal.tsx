@@ -44,7 +44,7 @@ export const ManufacturingCreationModal: React.FC<Props> = ({isOpen}) => {
 
     const fetchAvailableBoms = async () => {
             console.log("fetchAvailableBoms")
-            instance.get('/bom/findAll').then(response => {
+            instance.get('/bom').then(response => {
                 setAvailableBoms(response.data)
             }).catch(error => {
             console.log(error.message)}

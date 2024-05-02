@@ -15,29 +15,28 @@ import {
 
 export const bomRouter = express.Router()
 
-bomRouter.route('/findAll')
+bomRouter.route('/')
     .get(protect, getBoms)
+    .post(protect, createBom)
 
-bomRouter.route('/findById/:bomId')
+
+bomRouter.route('/:bomId')
     .get(protect, getBomById)
+    .delete(protect, deleteBom)
+
+bomRouter.route('/:bomId/component')
+    .post(protect, addComponent)
+
+bomRouter.route('/:bomId/component/:componentId')
+    .delete(protect, removeComponent)
 
 bomRouter.route('/bomDetailsById/:bomId')
     .get(protect, getBomDetails);
 
-bomRouter.route('/delete/:bomId')
-    .delete(protect, deleteBom)
 
-bomRouter.route('/addComponent/:bomId')
-    .patch(protect, addComponent)
-
-bomRouter.route('/removeComponent/:bomId/:componentId')
-    .delete(protect, removeComponent)
 
 bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
     .patch(protect, setComponentAmount)
-
-bomRouter.route('/create')
-    .post(protect, createBom)
 
 bomRouter.route('/manufacture/:bomId')
     .patch(protect, manufactureBom)

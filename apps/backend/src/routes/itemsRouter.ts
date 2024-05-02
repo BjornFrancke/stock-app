@@ -1,28 +1,23 @@
 import express from "express";
 import {protect} from "../middleware/authMiddleware";
 import {createItem, deleteItem, getItems, getItemsById, setItemPrice, setItemStock} from "../controllers";
-import {Item} from "../models/item";
+import {Item} from "../models";
 
 
 export const itemRouter = express.Router()
 
-itemRouter.route('/findAll')
+itemRouter.route('/')
     .get(protect, getItems)
-
-itemRouter.route('/delete/:itemId')
-    .delete(protect, deleteItem)
-
-itemRouter.route('/create')
     .post(protect, createItem)
 
-
-itemRouter.route('/findById/:itemId')
+itemRouter.route('/:itemId')
     .get(protect, getItemsById)
+    .delete(protect, deleteItem)
 
-itemRouter.route('/setStock/:itemId/:newStock')
+itemRouter.route('/:itemId/stock/:newStock')
     .patch(protect, setItemStock)
 
-itemRouter.route('/setPrice/:itemId')
+itemRouter.route('/:itemId/price')
     .patch(setItemPrice)
 
 

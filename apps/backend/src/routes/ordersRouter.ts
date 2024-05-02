@@ -12,24 +12,21 @@ import {
 export const ordersRouter = express.Router()
 
 
-ordersRouter.route('/findAll')
+ordersRouter.route('/')
     .get(protect, getOrders)
-
-ordersRouter.route('/create')
     .post(protect, createOrder)
+
+ordersRouter.route('/:orderId')
+    .delete(protect, deleteOrder)
 
 ordersRouter.route('/markAsDone/:orderId')
     .patch(protect, markOrderAsDone)
 
-ordersRouter.route('/:orderId/additem')
-    .patch(protect, addItemToOrder);
+ordersRouter.route('/:orderId/item')
+    .post(protect, addItemToOrder);
 
-ordersRouter.route('/:orderId/updateItem/:itemId')
+ordersRouter.route('/:orderId/item/:itemId')
     .patch(protect, updatedItemInOrder)
-
-
-ordersRouter.route('/delete/:orderId')
-    .delete(protect, deleteOrder)
 
 ordersRouter.route('/orderSubtotal/:orderId')
     .get(protect, calculateOrderSubTotal)

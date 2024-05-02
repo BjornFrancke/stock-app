@@ -5,16 +5,16 @@ import {createCustomer, deleteCustomer, getCustomerById, getCustomers} from "../
 
 export const customerRouter = express.Router()
 
-customerRouter.route('/findAll')
+customerRouter.route('/')
     .get(protect, getCustomers)
+    .post(protect, createCustomer)
 
 
-customerRouter.route('/findById/:customerId')
+
+customerRouter.route('/:customerId')
     .get(protect, getCustomerById)
-
-customerRouter.route('/delete/:customerId')
     .delete(protect, deleteCustomer)
 
-customerRouter.route('/create')
-    .post(protect, createCustomer)
+
+
 
