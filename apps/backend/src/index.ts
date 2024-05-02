@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import {appPort, DATABASE_URL} from "./config";
 import cors from "cors"
 import {bomRouter, customerRouter, itemRouter, manufacturingRouter, ordersRouter, userRouter} from "./routes";
+import pc from "picocolors"
+import * as console from "node:console";
+
 
 mongoose.connect(DATABASE_URL)
 const database = mongoose.connection
@@ -12,8 +15,9 @@ database.on('error', (error) => {
 })
 
 database.once('connected', () => {
-    console.log('Database Connected');
+    console.log(`${pc.cyan(`➜ Database connected`)}`)
 })
+
 
 
 const app = express()
@@ -38,5 +42,8 @@ app.use("/manuOrder", manufacturingRouter)
 app.use("/user", userRouter)
 
 app.listen(port, () => {
-    console.log(`\u001b[36m-> Stock-app listening on port \u001b[37m \u001b[4m${port}\u001b[0m  🚀`)
+    console.clear()
+    console.log(`${pc.bgWhite(`${pc.black('                 Stock-app backend                 ')}`)}`)
+    console.log(" ")
+    console.log(`${pc.cyan(`➜ Listening on port ${pc.underline(`${pc.white(`${port}`)}`)}`)} 🚀`)
 })
