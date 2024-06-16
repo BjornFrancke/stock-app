@@ -69,13 +69,26 @@ export interface Iuser {
     name: string,
     email: string,
     password: string,
-    token: string
+    token: string,
+    organisation?: ObjectId[]
+}
+
+export interface Iorganisation {
+    _id?: ObjectId,
+    name: string,
+    users:[{_id?: ObjectId, name: string, admin?: boolean}],
+    items: ObjectId[],
+    orders: ObjectId[],
+    customers: ObjectId[],
+    manufacturingOrders: ObjectId[],
+    boms: ObjectId[]
 }
 
 export interface ExtendedRequest extends Request {
     user?: Iuser
 }
 
+export type OrganisationModel = Model<Iorganisation>
 export type CustomerModel = Model<Icustomer>
 export type ItemsModel = Model<Iitems>
 export type BomModel = Model<Ibom>
