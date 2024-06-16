@@ -4,7 +4,6 @@ import {appPort, DATABASE_URL} from "./config";
 import cors from "cors"
 import {bomRouter, customerRouter, itemRouter, manufacturingRouter, ordersRouter, userRouter} from "./routes";
 import pc from "picocolors"
-import * as console from "node:console";
 
 
 mongoose.connect(DATABASE_URL)
