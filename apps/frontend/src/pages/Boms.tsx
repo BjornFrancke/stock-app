@@ -33,6 +33,7 @@ export const Boms = () => {
 
 
     const handleSearchParams = () => {
+        console.log("HandleSearchParagms")
         if (searchParams) {
             const search = searchParams.get("id")
             if (search && boms.length > 0) {
@@ -52,10 +53,13 @@ export const Boms = () => {
     const handleBomClick = async (bom: Ibom) => {
         // Create a copy of the bom object to avoid directly mutating state
         const bomCopy = {...bom, components: [...bom.components]};
+        console.log("Bom copied")
 
         // Fetch component names in parallel
         const componentNamesPromises = bomCopy.components.map(async (component) => {
+            console.log("Component copied" + component.id + component.name)
             const name = await fetchComponentNameById(component.id);
+            console.log("Component name", component.name)
             return {...component, name}; // Create a new component object including the name
         });
 
@@ -138,11 +142,11 @@ export const Boms = () => {
         }
         const componentData = {componentId: newComponentId, componentAmount: newComponentAmount}
         instance.post(`/bom/${id}/component`, componentData).then(response => {
-           setAlert({
-               severity: "success",
-               text: response.data.message,
-               open: true
-           })
+            setAlert({
+                severity: "success",
+                text: response.data.message,
+                open: true
+            })
             fetchBoms()
             setNewComponentId("")
             setNewComponentAmount(0)
@@ -208,9 +212,10 @@ export const Boms = () => {
 
     useEffect(() => {
         handleSearchParams()
-    }, [boms, handleSearchParams]);
+    }, [boms]);
 
     const fetchBoms = async () => {
+        console.log("fetchBoms")
         instance.get('/bom').then(response => {
             setBoms(response.data)
             setLoading(false)
@@ -218,6 +223,7 @@ export const Boms = () => {
     };
 
     const fetchAvailableComponents = async () => {
+        console.log("Fetch available components")
         try {
             const response = await instance.get('/item')
             console.log("fetchAvailableComponents", response.data)
@@ -228,13 +234,16 @@ export const Boms = () => {
     };
 
     const fetchComponentNameById = async (componentId: string | undefined) => {
+        console.log("fetchComponentNameById", componentId)
         try {
             if (!componentId) {
                 console.error('No component id provided')
-                return ""
             }
-            const response = await instance.get(`/item/${componentId}`);
-            return response.data;
+            const componentName = instance.get(`/item/${componentId}`).then(response => {
+                console.log(response.data.name)
+                return response.data.name
+            }).catch(error => setError(error))
+            return componentName
         } catch {
             console.error("Failed to fetch component name:");
             return "";
@@ -256,7 +265,7 @@ export const Boms = () => {
                 <h1 className="text-xl mb-12">BOMs</h1>
                 {error && <Alert color={"danger"} variant={"solid"}>{error}</Alert>}
                 {loading && (
-                   <CircularProgress/>
+                    <CircularProgress/>
 
                 )}
                 <div>
@@ -386,7 +395,7 @@ export const Boms = () => {
                                                             <Button variant='outlined' size="sm" type='button'
                                                                     onClick={() => handleComponentAmountChange(selectedBom._id)}>Change</Button>
                                                             <Button variant="outlined" size="sm" typeof="button"
-                                                                        onClick={() => setSelectedComponent(null)}>X</Button>
+                                                                    onClick={() => setSelectedComponent(null)}>X</Button>
 
                                                         </form>
 
@@ -425,19 +434,19 @@ export const Boms = () => {
                                             </td>
                                             <td>
 
-                                                    <Input
-                                                        type="number"
-                                                        placeholder="Value"
-                                                        variant="outlined"
-                                                        value={newComponentAmount}
-                                                        onChange={(e) => setNewComponentAmount(Number(e.target.value))}
-                                                    />
+                                                <Input
+                                                    type="number"
+                                                    placeholder="Value"
+                                                    variant="outlined"
+                                                    value={newComponentAmount}
+                                                    onChange={(e) => setNewComponentAmount(Number(e.target.value))}
+                                                />
                                             </td>
                                             <td className={"space-x-1"}>
-                                                        <Button
-                                                            onClick={() => handleSubmitNewComponent(selectedBom._id)}>Add</Button>
-                                                        <Button
-                                                            onClick={() => setAddComponentForm(false)}>X</Button>
+                                                <Button
+                                                    onClick={() => handleSubmitNewComponent(selectedBom._id)}>Add</Button>
+                                                <Button
+                                                    onClick={() => setAddComponentForm(false)}>X</Button>
 
                                             </td>
 
