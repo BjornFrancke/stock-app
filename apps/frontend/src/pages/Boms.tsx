@@ -69,6 +69,7 @@ export const Boms = () => {
         setIsModalOpen(true);
     };
 
+
     const handleAddBomClick = () => {
         setIsCreationModalOpen(true)
     }
@@ -99,7 +100,7 @@ export const Boms = () => {
         }).catch(error => {
             setAlert({
                 severity: "danger",
-                text: error.message,
+                text: error.message || JSON.stringify(error),
                 open: true
             })
         })
@@ -123,7 +124,7 @@ export const Boms = () => {
         }).catch(error => {
             setAlert({
                 severity: "danger",
-                text: error.message,
+                text: error.message || JSON.stringify(error),
                 open: false
             })
         })
@@ -168,7 +169,7 @@ export const Boms = () => {
         }).catch(error => {
             setAlert({
                 severity: "danger",
-                text: error.message,
+                text: error.message || JSON.stringify(error),
                 open: true
             })
         })
@@ -202,12 +203,12 @@ export const Boms = () => {
     useEffect(() => {
         fetchBoms();
         fetchAvailableComponents();
-    }, [selectedBom]);
+    }, []);
 
 
     useEffect(() => {
         handleSearchParams()
-    }, [boms]);
+    }, [boms, handleSearchParams]);
 
     const fetchBoms = async () => {
         instance.get('/bom').then(response => {
@@ -218,7 +219,8 @@ export const Boms = () => {
 
     const fetchAvailableComponents = async () => {
         try {
-            const response = await instance.get('/item');
+            const response = await instance.get('/item')
+            console.log("fetchAvailableComponents", response.data)
             setAvailableComponents(response.data);
         } catch {
             console.error("Could to fetch availableComponents")
@@ -229,6 +231,7 @@ export const Boms = () => {
         try {
             if (!componentId) {
                 console.error('No component id provided')
+                return ""
             }
             const response = await instance.get(`/item/${componentId}`);
             return response.data;
