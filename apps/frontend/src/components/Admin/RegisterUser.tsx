@@ -1,6 +1,7 @@
 import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
 import {useState} from "react";
+import axios from "axios";
 
 export function RegisterUser() {
     const [newUser, setNewUser] = useState({
@@ -18,10 +19,22 @@ export function RegisterUser() {
     }
 
 
+
+
     const handleRegisterUser = () => {
         if (newUser.password === newUser.password2) {
             console.log("Matches")
             console.log("User registered successfully");
+            const userData = {
+                name: newUser.name,
+                email: newUser.email,
+            password: newUser.password
+            }
+            axios.post('http://localhost:3000/user/register', userData).then(results => {
+                console.log(results.data)
+            }).catch(error => {
+                console.log(error)
+            })
 
         } else {
             console.log("Passwords do not match");
