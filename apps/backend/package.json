@@ -1,5 +1,5 @@
 {
-  "name": "stock",
+  "name": "stock-backend",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Bjorn Francke <bjorn@francke.dev>",
@@ -14,7 +14,7 @@
     "dev": "nodemon src/index.ts",
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "docker:build": "docker build -t stock-app ."
+    "docker:build": "docker build -t stock-backend ."
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
