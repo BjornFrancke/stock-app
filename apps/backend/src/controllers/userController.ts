@@ -87,3 +87,8 @@ export const getLoggedInUser = asyncHandler(async (req: ExtendedRequest, res) =>
     })
 
 })
+
+export const listAllUsers = asyncHandler(async (req, res) => {
+    const users = await User.find()
+    res.status(200).json(users)
+})
