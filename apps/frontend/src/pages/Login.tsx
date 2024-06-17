@@ -1,14 +1,14 @@
 import Sheet from "@mui/joy/Sheet";
 import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {CssVarsProvider} from "@mui/joy";
 import theme from "../theme.ts";
 
 
-export function Login () {
+export function Login() {
     const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
     const [loginCredentials, setLoginCredentials] = useState({
         email: "",
@@ -37,6 +37,19 @@ export function Login () {
         navigate("/items");
     }
 
+    const checkIfLoginIsPossible = async () => {
+        axios.get("http://localhost:3000/user/checkIfLoginIsPossible").then((response) => {
+            console.log(response.data.status)
+            if (response.data.message === "No users exist") {
+                navigate("/setup");
+            }
+        })
+    }
+
+    useEffect(() => {
+        checkIfLoginIsPossible()
+    }, []);
+
     return (
         <>
             <CssVarsProvider theme={theme}/>
@@ -61,25 +74,28 @@ export function Login () {
 
                 </div>
                 <div className={"w-[80%] mx-auto space-y-4"}>
-                <form className={"space-y-2"}>
+                    <form className={"space-y-2"}>
 
                         <Input
                             type="text"
                             name={"email"}
                             placeholder="email"
+                            autoComplete={"email"}
                             value={loginCredentials.email}
                             onChange={(e) => handleChange(e)}
                         />
                         <Input
                             type="password"
                             name={"password"}
+                            autoComplete={"current-password"}
                             placeholder="password"
                             value={loginCredentials.password}
                             onChange={(e) => handleChange(e)}
                         />
-                </form>
-                <Button className={"w-full"} loading={isLoggingIn} variant={"soft"} onClick={() => handleLogin()}>Submit</Button>
-</div>
+                    </form>
+                    <Button className={"w-full"} loading={isLoggingIn} variant={"soft"}
+                            onClick={() => handleLogin()}>Submit</Button>
+                </div>
             </Sheet>
         </>
     )

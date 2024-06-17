@@ -30,3 +30,13 @@ export const protect = asyncHandler(async (req: ExtendedRequest, res : Response,
     }
 
 })
+
+export const firstLaunch = async (req: ExtendedRequest, res : Response, next: NextFunction) => {
+    const users = await User.find()
+    if (users.length === 0) {
+        next()
+    }
+    else {
+        res.status(401).send("At least one user already exists");
+    }
+}

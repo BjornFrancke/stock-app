@@ -92,3 +92,13 @@ export const listAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find()
     res.status(200).json(users)
 })
+
+export const checkIfAUserExists = asyncHandler(async (req, res) => {
+    const users = await User.find()
+    if (users.length === 0) {
+        res.status(200).json({"message": "No users exist"});
+    }
+    else {
+        res.status(200).json({"message": "At least one user has already exists"})
+    }
+})

@@ -2,8 +2,25 @@ import Sheet from "@mui/joy/Sheet";
 import Card from "@mui/joy/Card";
 import {CardActions, CardContent, CircularProgress, SvgIcon, Typography} from "@mui/joy";
 import Button from "@mui/joy/Button";
+import {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 
 export function Dashboard() {
+const navigate = useNavigate()
+
+    const checkLoginStatus = () => {
+        const token = localStorage.getItem("token")
+        console.log(token)
+        if (!token) {
+            console.log("Token not found");
+            navigate("/login")
+        }
+    }
+
+    useEffect(() => {
+        checkLoginStatus()
+    }, []);
+
     return (
         <>
             <Sheet

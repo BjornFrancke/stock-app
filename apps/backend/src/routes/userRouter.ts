@@ -1,6 +1,6 @@
 import express from "express";
-import {getLoggedInUser, listAllUsers, loginUser, registerUser} from "../controllers";
-import {protect} from "../middleware/authMiddleware";
+import {checkIfAUserExists, getLoggedInUser, listAllUsers, loginUser, registerUser} from "../controllers";
+import {firstLaunch, protect} from "../middleware/authMiddleware";
 
 export const userRouter = express.Router();
 
@@ -15,4 +15,7 @@ userRouter.route('/me')
 
 userRouter.route('/users')
     .get(listAllUsers)
+
+userRouter.route('/checkIfLoginIsPossible')
+    .get(firstLaunch, checkIfAUserExists)
 
