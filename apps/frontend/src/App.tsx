@@ -14,6 +14,7 @@ import {Profile} from "./pages/Profile.tsx";
 import {Logout} from "./pages/Logout.tsx";
 import {Admin} from "./pages/Admin.tsx";
 import {SetupPage} from "./pages/Setup.tsx";
+import {Bom} from "./pages/Bom/bom.tsx";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                     <Route path="customer" element={<Customer/>}/>
                     <Route path="settings" element={<Settings/>}/>
                     <Route path="/item/:item" element={<Item/>}/>
+                    <Route path="/bom/:bom" element={<Bom/>}/>
                     <Route path="/profile" element={<Profile/>}/>
                     <Route path="admin" element={<Admin/>}/>
                     <Route path="setup" element={<SetupPage/>}/>

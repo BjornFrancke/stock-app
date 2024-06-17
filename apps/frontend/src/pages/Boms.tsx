@@ -9,9 +9,10 @@ import ChipDelete from "@mui/joy/ChipDelete";
 import Sheet from "@mui/joy/Sheet";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {Alert, CircularProgress} from "@mui/joy";
-import {useSearchParams} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
 import {BomCreationModal} from "../components/BomCreationModal.tsx";
+import {ArrowsPointingOutIcon} from "@heroicons/react/16/solid";
 
 
 export const Boms = () => {
@@ -33,7 +34,6 @@ export const Boms = () => {
 
 
     const handleSearchParams = () => {
-        console.log("HandleSearchParagms")
         if (searchParams) {
             const search = searchParams.get("id")
             if (search && boms.length > 0) {
@@ -53,13 +53,10 @@ export const Boms = () => {
     const handleBomClick = async (bom: Ibom) => {
         // Create a copy of the bom object to avoid directly mutating state
         const bomCopy = {...bom, components: [...bom.components]};
-        console.log("Bom copied")
 
         // Fetch component names in parallel
         const componentNamesPromises = bomCopy.components.map(async (component) => {
-            console.log("Component copied" + component.id + component.name)
             const name = await fetchComponentNameById(component.id);
-            console.log("Component name", component.name)
             return {...component, name}; // Create a new component object including the name
         });
 
@@ -307,11 +304,17 @@ export const Boms = () => {
                         contentLabel="BOM Details"
                         className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-28 space-y-6"}
                     >
-                        <div className={"flex space-x-2"}>
+                        <div className={"flex justify-between"}>
+                            <div className={"flex space-x-2"}>
 
-                            <h1 className={"text-[#50A6A1] text-2xl"}>BOM</h1>
-                            <h1 className={"text-2xl text-gray-500"}>{selectedBom?.name}</h1>
+                                <h1 className={"text-[#50A6A1] text-2xl"}>BOM</h1>
+                                <h1 className={"text-2xl text-gray-500"}>{selectedBom?.name}</h1>
 
+                            </div>
+                            <div>
+                                <Link to={`http://localhost:5173/bom/${selectedBom?._id}`}><ArrowsPointingOutIcon
+                                    className={"h-6 w-6 text-gray-500 my-auto"}/></Link>
+                            </div>
                         </div>
                         <div className={"flex space-x-2"}>
                             <Button onClick={() => handleBomDelete(selectedBom?._id)} color={"danger"}

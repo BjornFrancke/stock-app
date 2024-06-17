@@ -13,7 +13,7 @@ export const getBoms = asyncHandler(async (req, res) => {
 })
 
 export const getBomById = asyncHandler(async (req, res) => {
-    const bomId = req.params.id;
+    const bomId = req.params.bomId;
     try {
         const data = await Bom.findById(bomId);
         if (data) {
