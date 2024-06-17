@@ -313,6 +313,10 @@ export const Boms = () => {
                             <h1 className={"text-2xl text-gray-500"}>{selectedBom?.name}</h1>
 
                         </div>
+                        <div className={"flex space-x-2"}>
+                            <Button onClick={() => handleBomDelete(selectedBom?._id)} color={"danger"}
+                                    size={"sm"}>Delete</Button>
+                        </div>
                         <Sheet
                             variant="outlined"
                             sx={{
