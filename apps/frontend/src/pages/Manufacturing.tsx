@@ -7,7 +7,7 @@ import Input from "@mui/joy/Input";
 import Chip from "@mui/joy/Chip";
 import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
 import {instance} from "../services/backend-api/axiosConfig.ts";
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {ProduceBtn} from "../components/manufacturing/ProduceBtn.tsx";
 import {CircularProgress} from "@mui/joy";
 import {ManufacturingCreationModal} from "../components/manufacturing/ManufacturingCreationModal.tsx";
@@ -38,6 +38,7 @@ export function Manufacturing() {
     const [produceState, setProduceState] = useState<"ready" | "producing" | "completed">("ready")
     const [loading, setLoading] = useState(true)
 
+    const navigate = useNavigate()
 
     const handleManufacturingOrderClick = (manuOrder: ImanufacturingOrder) => {
         setSelectedOrder(manuOrder)
@@ -131,6 +132,11 @@ export function Manufacturing() {
         handleSearchParams()
     }, [manufacturingOrders]);
 
+
+    function handleNavigateToProduct(productId: string) {
+        console.log(productId)
+        navigate(`/item/${productId}`)
+    }
 
     return (
         <>
@@ -239,7 +245,8 @@ export function Manufacturing() {
                             </tr>
                             <tr>
                                 <td>Product</td>
-                                <td className={"underline select-none cursor-pointer"}>{selectedOrder?.product.name}</td>
+                                <td onClick={() => handleNavigateToProduct(selectedOrder?.product.productId || "")}
+                                    className={"underline select-none cursor-pointer"}>{selectedOrder?.product.name}</td>
 
                             </tr>
                             </tbody>
