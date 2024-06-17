@@ -15,7 +15,7 @@ export function Item() {
     }, [item]);
 
     const fetchItemData = async () => {
-        const response = await instance.get(`/item/findById/${item}`);
+        const response = await instance.get(`/item/${item}`);
         setItemData(response.data);
     };
     return (
