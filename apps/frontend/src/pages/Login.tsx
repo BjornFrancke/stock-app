@@ -8,7 +8,7 @@ import {CssVarsProvider} from "@mui/joy";
 import theme from "../theme.ts";
 
 
-export function Login () {
+export function Login() {
     const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
     const [loginCredentials, setLoginCredentials] = useState({
         email: "",
@@ -74,7 +74,7 @@ export function Login () {
 
                 </div>
                 <div className={"w-[80%] mx-auto space-y-4"}>
-                <form className={"space-y-2"}>
+                    <form className={"space-y-2"}>
 
                         <Input
                             type="text"
@@ -92,9 +92,10 @@ export function Login () {
                             value={loginCredentials.password}
                             onChange={(e) => handleChange(e)}
                         />
-                </form>
-                <Button className={"w-full"} loading={isLoggingIn} variant={"soft"} onClick={() => handleLogin()}>Submit</Button>
-</div>
+                    </form>
+                    <Button className={"w-full"} loading={isLoggingIn} variant={"soft"}
+                            onClick={() => handleLogin()}>Submit</Button>
+                </div>
             </Sheet>
         </>
     )
