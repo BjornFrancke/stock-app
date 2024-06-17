@@ -137,6 +137,10 @@ export function Manufacturing() {
         console.log(productId)
         navigate(`/item/${productId}`)
     }
+    function handleNavigateToBom(bomId: string) {
+        console.log(bomId)
+        navigate(`/bom/${bomId}`)
+    }
 
     return (
         <>
@@ -241,7 +245,7 @@ export function Manufacturing() {
                             <tbody>
                             <tr>
                                 <td>BOM</td>
-                                <td className={"underline select-none cursor-pointer"}>{selectedOrder?.bom.name}</td>
+                                <td onClick={() => handleNavigateToBom(selectedOrder?.bom.bomId || "")} className={"underline select-none cursor-pointer"}>{selectedOrder?.bom.name}</td>
                             </tr>
                             <tr>
                                 <td>Product</td>
