@@ -1,7 +1,7 @@
 import Sheet from "@mui/joy/Sheet";
 import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {CssVarsProvider} from "@mui/joy";
@@ -37,6 +37,19 @@ export function Login () {
         navigate("/items");
     }
 
+    const checkIfLoginIsPossible = async () => {
+        axios.get("http://localhost:3000/user/checkIfLoginIsPossible").then((response) => {
+            console.log(response.data.status)
+            if (response.data.message === "No users exist") {
+                navigate("/setup");
+            }
+        })
+    }
+
+    useEffect(() => {
+        checkIfLoginIsPossible()
+    }, []);
+
     return (
         <>
             <CssVarsProvider theme={theme}/>
@@ -67,12 +80,14 @@ export function Login () {
                             type="text"
                             name={"email"}
                             placeholder="email"
+                            autoComplete={"email"}
                             value={loginCredentials.email}
                             onChange={(e) => handleChange(e)}
                         />
                         <Input
                             type="password"
                             name={"password"}
+                            autoComplete={"current-password"}
                             placeholder="password"
                             value={loginCredentials.password}
                             onChange={(e) => handleChange(e)}
