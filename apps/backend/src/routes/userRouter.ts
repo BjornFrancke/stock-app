@@ -18,4 +18,6 @@ userRouter.route('/users')
 
 userRouter.route('/checkIfLoginIsPossible')
     .get(firstLaunch, checkIfAUserExists)
+userRouter.route("/setup")
+    .post(firstLaunch, registerUser)
 
