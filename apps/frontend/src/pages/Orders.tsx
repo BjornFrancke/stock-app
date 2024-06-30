@@ -716,12 +716,16 @@ export function Orders() {
                                             }}>{selectedOrder?.subTotal?.amount + " kr."}</td>
                                         </tr>
                                         <tr>
-                                            <td>Vat</td>
+                                            <td>Discount</td>
+                                            <td style={{width: '20%', textAlign: "right"}}>{selectedOrder?.subTotal?.discount}</td>
+                                        </tr>
+                                        <tr>
+                                        <td>Vat</td>
                                             <td style={{width: '20%', textAlign: "right"}}>xxx kr.</td>
                                         </tr>
                                         <tr className={"font-bold"}>
                                             <td>Total</td>
-                                            <td style={{width: '20%', textAlign: "right"}}>xxx kr.</td>
+                                            <td style={{width: '20%', textAlign: "right"}}>{selectedOrder?.subTotal?.total} kr.</td>
                                         </tr>
                                         </tbody>
                                     </Table>

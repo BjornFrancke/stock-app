@@ -1,8 +1,30 @@
 import {Item, Order} from "../models";
+import {Iorder} from "../types";
 
 export async function getNewOrderNumber() {
     const latestOrder = await Order.findOne().sort({orderNumber: -1});
     return latestOrder ? latestOrder.orderNumber + 1 : 1
+}
+
+
+async function getOrderLineDiscount(orderData: Iorder ) {
+
+    if (!orderData) {
+        throw new Error("order data doesn't exist");
+    }
+    console.log(orderData.items.length)
+    let totalDiscount = 0;
+    for (let index = 0; index < orderData.items.length; index++) {
+        if (!orderData.items[index].salesPrice.discount) {
+            return
+        }
+        else {
+            console.log("before" + totalDiscount);
+            totalDiscount = totalDiscount + (orderData.items[index].salesPrice.discount * orderData.items[index].amount);
+            console.log("after" + totalDiscount);
+        }
+    }
+    return totalDiscount;
 }
 
 export async function getOrderSubTotal(orderId: string) {
@@ -21,7 +43,12 @@ export async function getOrderSubTotal(orderId: string) {
             subTotalAmount += (itemData.salesPrice.amount * itemData.amount)
             console.log(subTotalAmount)
         }
+        const totalDiscount = await getOrderLineDiscount(orderData)
         orderData.subTotal.amount = subTotalAmount
+        orderData.subTotal.discount = totalDiscount
+        if (totalDiscount) {
+            orderData.subTotal.total = subTotalAmount - totalDiscount
+        }
         await orderData.save()
         return subTotalAmount
     }
