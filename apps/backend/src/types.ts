@@ -30,7 +30,7 @@ export interface Ibom {
 
 export interface Iorder {
     orderNumber: number,
-    items: [{_id: ObjectId, amount: number, salesPrice: {amount: number, vat?: number, discount?: number, currency: string }}],
+    items: [{_id: ObjectId, amount: number, salesPrice: {amount: number, vat?: number, discount: number, currency: string }}],
     createtionDate: Date,
     dueDate: Date,
     receptian?: string,
@@ -39,6 +39,7 @@ export interface Iorder {
         currency: string,
         vat?: number,
         discount?: number,
+        total?: number
     },
     isDone?: boolean
 }

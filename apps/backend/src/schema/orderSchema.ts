@@ -12,7 +12,8 @@ export const orderSchema = new Schema<Iorder, OrderModel>({
         amount: Number,
         currency: String,
         vat: Number,
-        discount: Number
+        discount: Number,
+        total: Number
     },
     isDone: Boolean
 })

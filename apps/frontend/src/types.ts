@@ -19,8 +19,14 @@ export interface Ibom {
 export interface Icomponent {
     id: string | undefined,
     _id?: string | undefined,
-    name?: string
-    amount: number
+    name?: string,
+    amount: number,
+    salePrice?: {
+        currency?: string,
+        amount?: number
+    }
+
+
 }
 
 export interface Iorder {
@@ -33,7 +39,9 @@ export interface Iorder {
     subTotal?: {
         amount: number,
         currency: string,
-        vat?: number
+        vat?: number,
+        discount?: number,
+        total?: number
     },
     isDone?: boolean
 }
