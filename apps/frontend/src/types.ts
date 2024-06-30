@@ -67,3 +67,15 @@ export interface Iuser {
     password: string,
     token: string
 }
+
+
+export interface Iorganisation {
+    _id?: string,
+    name: string,
+    users?:[{_id?: string, name: string, admin?: boolean}],
+    items?: string[],
+    orders?: string[],
+    customers?: string[],
+    manufacturingOrders?: string[],
+    boms?: string[]
+}
