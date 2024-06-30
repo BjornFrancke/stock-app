@@ -615,9 +615,10 @@ export function Orders() {
                                                             type={"number"}
                                                         /></td>
                                                         <td>{item.salesPrice.amount * item.amount}</td>
-                                                        <td className={"flex justify-between px-1"}>
-                                                            <p onClick={() => handleUpdateItemData(item._id || "")}>Y</p>
-                                                            <p onClick={() => setSelectedItemIndex(-1)}>X</p></td>
+                                                        <td className={"flex justify-between p-0"}>
+                                                            <a className={"bg-green-500 text-black text-opacity-40 rounded-bl rounded-tl w-1/2 p-1 select-none hover:cursor-pointer"} onClick={() => handleUpdateItemData(item._id || "")}>Y</a>
+                                                            <a className={"bg-red-500 text-black text-opacity-40 rounded-br rounded-tr w-1/2 p-1 select-none hover:cursor-pointer"} onClick={() => setSelectedItemIndex(-1)}>X</a>
+                                                        </td>
                                                     </tr>
                                                 ) : (
                                                     <tr key={item._id}>
