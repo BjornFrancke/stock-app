@@ -2,7 +2,15 @@ import express from "express";
 import mongoose from "mongoose";
 import {appPort, DATABASE_URL} from "./config";
 import cors from "cors"
-import {bomRouter, customerRouter, itemRouter, manufacturingRouter, ordersRouter, userRouter} from "./routes";
+import {
+    bomRouter,
+    customerRouter,
+    itemRouter,
+    manufacturingRouter,
+    ordersRouter,
+    organisationRouter,
+    userRouter
+} from "./routes";
 import pc from "picocolors"
 
 
@@ -16,7 +24,6 @@ database.on('error', (error) => {
 database.once('connected', () => {
     console.log(`${pc.cyan(`➜ Database connected`)}`)
 })
-
 
 
 const app = express()
@@ -39,6 +46,7 @@ app.use('/orders', ordersRouter)
 app.use('/customer', customerRouter)
 app.use("/manuOrder", manufacturingRouter)
 app.use("/user", userRouter)
+app.use("/organisation", organisationRouter)
 
 app.listen(port, () => {
     console.clear()
