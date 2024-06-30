@@ -35,15 +35,20 @@ export const createOrder = asyncHandler(async (req, res) => {
 
 export const markOrderAsDone = asyncHandler(async (req, res) => {
     const orderId = req.params.orderId
-    try {
-        if (orderId) {
-            const updatedOrder = await orderMarkedAsDone(orderId)
-            res.status(200).json({message: "Order marked as done"})
-        } else {
-            res.status(404).json({message: "Order was not found"})
-        }
-    } catch (error) {
-        res.status(500).json({message: error});
+    console.log("running markOrderAsDone");
+    console.log(orderId)
+    if (orderId) {
+        await orderMarkedAsDone(orderId).then((result) => {
+            console.log(result.message + result.statusCode)
+            res.status(result.statusCode).json({message: result.message})
+            return
+        }).catch(error => {
+            res.status(500).send({message: error.message});
+            return
+        })
+    } else {
+        res.status(404).json({message: "Order was not found"})
+        return
     }
 })
 
@@ -122,6 +127,28 @@ export const deleteOrder = asyncHandler(async (req, res) => {
         res.json(deletedOrder)
     } catch {
         res.status(500).send("Internal Server Error");
+    }
+})
+
+export const removeItemFromOrder = asyncHandler(async (req, res) => {
+    const orderId = req.params.orderId;
+    const itemId = req.params.itemId;
+    try {
+        const order = await Order.findById(orderId);
+        if (!order) {
+            res.status(404).json({ message: "Order not found" });
+            return;
+        }
+        const itemIndex = order.items.findIndex((item) => item._id.toString() === itemId);
+        if (itemIndex === -1) {
+            res.status(404).json({ message: "Item not found in order" });
+            return;
+        }
+        order.items.splice(itemIndex, 1);
+        await order.save();
+        res.status(200).json({ message: "Item removed from order" });
+    } catch (error) {
+        res.status(500).json({ message: error });
     }
 })
 

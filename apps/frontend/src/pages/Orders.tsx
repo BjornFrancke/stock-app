@@ -218,18 +218,19 @@ export function Orders() {
             })
             return;
         }
-        instance.patch(`/orders/markAsDone/${orderToMark._id}`).then(restults => {
+        instance.patch(`/orders/markAsDone/${orderToMark._id}`).then(results => {
             setAlert({
                 severity: "success",
-                text: restults.data.message,
+                text: results.data.message,
                 open: true
             })
+
             fetchOrders()
             handleOrderClick(orderToMark)
-        }).catch(error => {
+        }).catch((error) => {
             setAlert({
                 severity: "danger",
-                text: error.message,
+                text: error.response.data.message,
                 open: true
             })
         })
@@ -717,15 +718,22 @@ export function Orders() {
                                         </tr>
                                         <tr>
                                             <td>Discount</td>
-                                            <td style={{width: '20%', textAlign: "right"}}>{selectedOrder?.subTotal?.discount}</td>
+                                            <td style={{
+                                                width: '20%',
+                                                textAlign: "right"
+                                            }}>{selectedOrder?.subTotal?.discount}</td>
                                         </tr>
                                         <tr>
-                                        <td>Vat</td>
+                                            <td>Vat</td>
                                             <td style={{width: '20%', textAlign: "right"}}>xxx kr.</td>
                                         </tr>
                                         <tr className={"font-bold"}>
                                             <td>Total</td>
-                                            <td style={{width: '20%', textAlign: "right"}}>{selectedOrder?.subTotal?.total} kr.</td>
+                                            <td style={{
+                                                width: '20%',
+                                                textAlign: "right"
+                                            }}>{selectedOrder?.subTotal?.total} kr.
+                                            </td>
                                         </tr>
                                         </tbody>
                                     </Table>

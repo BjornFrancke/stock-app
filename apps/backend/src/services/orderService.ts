@@ -1,5 +1,6 @@
 import {Item, Order} from "../models";
 import {Iorder} from "../types";
+import {isStockSufficient} from "./itemService";
 
 export async function getNewOrderNumber() {
     const latestOrder = await Order.findOne().sort({orderNumber: -1});
@@ -7,7 +8,7 @@ export async function getNewOrderNumber() {
 }
 
 
-async function getOrderLineDiscount(orderData: Iorder ) {
+async function getOrderLineDiscount(orderData: Iorder) {
 
     if (!orderData) {
         throw new Error("order data doesn't exist");
@@ -17,8 +18,7 @@ async function getOrderLineDiscount(orderData: Iorder ) {
     for (let index = 0; index < orderData.items.length; index++) {
         if (!orderData.items[index].salesPrice.discount) {
             return
-        }
-        else {
+        } else {
             console.log("before" + totalDiscount);
             totalDiscount = totalDiscount + (orderData.items[index].salesPrice.discount * orderData.items[index].amount);
             console.log("after" + totalDiscount);
@@ -55,41 +55,45 @@ export async function getOrderSubTotal(orderId: string) {
 
 }
 
-export async function orderMarkedAsDone(orderId: string) {
-    console.log("Function called")
-    const orderData = await Order.findById(orderId)
+
+export async function canOrderBeMarkedAsDone(orderData: Iorder): Promise<boolean> {
     if (!orderData) {
-        console.log("Order not found")
-        return
+        return false
     }
-    if (orderData.isDone) {
-        console.log("Order is already been processed")
-        return
-    }
-    if (!orderData.items) {
-        console.log("Order doesn't contain any items")
-        return
-    }
-    for (let index = 0; orderData.items.length >= index; index += 1) {
+    for (let index = 0; orderData.items.length > index; index++) {
         const itemId = orderData.items[index]._id
         const selectedItem = await Item.findById(itemId)
         if (selectedItem) {
+            console.log(selectedItem.name)
             console.log(selectedItem.stock)
             console.log(orderData.items[index].amount)
-            if (selectedItem.stock < orderData.items[index].amount) {
-                console.log("Insufficient stock for item: " + selectedItem.name)
-                return
+            if (!(await isStockSufficient(selectedItem, orderData.items[index].amount))) {
+                return false
             }
-            selectedItem.stock = selectedItem.stock - orderData.items[index].amount
-            await selectedItem.save()
-            orderData.isDone = true
-            console.log(orderData.isDone)
-            await orderData.save()
-        } else {
-            console.log("Item was not found")
         }
     }
+    return true
 
-    return orderData
+}
+
+export async function orderMarkedAsDone(orderId: string): Promise<{ statusCode: number, message: string }> {
+    const orderData = await Order.findById(orderId)
+    if (!orderData) {
+        return {statusCode: 404, message: "Order not found"};
+    }
+    if (orderData.isDone) {
+        return {statusCode: 404, message: "Order is already processed"};
+    }
+    if (!orderData.items) {
+        return {statusCode: 404, message: "Order doesn't contain any items!"};
+    }
+    if (!(await canOrderBeMarkedAsDone(orderData))) {
+        console.log("canOrderBeMarkedAsDone = false")
+        return {statusCode: 404, message: "Stock is not sufficient"};
+    }
+
+    orderData.isDone = true
+    orderData.save()
+    return {statusCode: 200, message: "Success"}
 
 }
