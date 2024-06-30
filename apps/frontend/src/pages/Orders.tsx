@@ -725,7 +725,7 @@ export function Orders() {
                                         </tr>
                                         <tr>
                                             <td>Vat</td>
-                                            <td style={{width: '20%', textAlign: "right"}}>xxx kr.</td>
+                                            <td style={{width: '20%', textAlign: "right"}}>{selectedOrder?.subTotal?.vat} kr.</td>
                                         </tr>
                                         <tr className={"font-bold"}>
                                             <td>Total</td>
