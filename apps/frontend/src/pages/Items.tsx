@@ -224,7 +224,7 @@ export const Items = () => {
                                 <td onClick={() => handleItemClick(item)}
                                     className={"underline cursor-pointer"}>{item.name}</td>
                                 <td>{item.stock}</td>
-                                <td>{item.salePrice.amount} {item.salePrice.currency === "DKK" ? (<>kr.</>) : (<></>)}</td>
+                                <td>{item.salePrice?.amount} {item.salePrice?.currency === "DKK" ? (<>kr.</>) : (<></>)}</td>
                                 <td>{item._id && !isModalOpen &&
                                     <Chip
                                         variant="soft"
@@ -371,7 +371,7 @@ export const Items = () => {
 
                                                 </td>
                                             ) :
-                                            <td onClick={() => setNewPrice(selectedItem.salePrice.amount)}>{selectedItem.salePrice.amount} {selectedItem.salePrice.currency === "DKK" ? (<>kr.</>) : (<></>)}</td>
+                                            <td onClick={() => setNewPrice(selectedItem.salePrice.amount)}>{selectedItem.salePrice?.amount} {selectedItem.salePrice?.currency === "DKK" ? (<>kr.</>) : (<></>)}</td>
                                         }
                                     </tr>
 
