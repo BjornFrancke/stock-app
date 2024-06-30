@@ -37,7 +37,8 @@ export interface Iorder {
     subTotal?: {
         amount: number,
         currency: string,
-        vat?: number
+        vat?: number,
+        discount?: number,
     },
     isDone?: boolean
 }
