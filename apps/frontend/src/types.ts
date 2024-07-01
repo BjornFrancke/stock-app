@@ -70,7 +70,7 @@ export interface Iuser {
 
 
 export interface Iorganisation {
-    _id?: string,
+    _id: string,
     name: string,
     users?:[{_id?: string, name: string, admin?: boolean}],
     items?: string[],

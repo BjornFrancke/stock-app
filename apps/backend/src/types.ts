@@ -78,12 +78,12 @@ export interface Iuser {
 export interface Iorganisation {
     _id?: ObjectId,
     name: string,
-    users?:[{_id?: ObjectId, name: string, admin?: boolean}],
-    items?: ObjectId[],
-    orders?: ObjectId[],
-    customers?: ObjectId[],
-    manufacturingOrders?: ObjectId[],
-    boms?: ObjectId[]
+    users: {_id: ObjectId, name: string, admin: boolean}[],
+    items: ObjectId[],
+    orders: ObjectId[],
+    customers: ObjectId[],
+    manufacturingOrders: ObjectId[],
+    boms: ObjectId[]
 }
 
 export interface ExtendedRequest extends Request {
