@@ -164,7 +164,7 @@ export function Manufacturing() {
                         <th>Product</th>
                         <th>BOM</th>
                         <th>Status</th>
-                        <th><Button onClick={() => handleOpenCreationModal()}>Create</Button></th>
+                        <th><Button variant={"outlined"} onClick={() => handleOpenCreationModal()}>Create</Button></th>
                     </tr>
                     </thead>
                     <tbody>
