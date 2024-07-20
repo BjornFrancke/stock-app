@@ -483,7 +483,9 @@ export function Orders() {
                                     <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.orderNumber}</h1>
                                 </div>
                                 <div className={"flex"}>
-                                    <XMarkIcon className={"h-6 w-6 text-gray-500"}/>
+                                   <a onClick={() => setIsOrdersModalOpen(false)}>
+                                    <XMarkIcon className={"h-6 w-6 text-gray-500"} />
+                                   </a>
 
                                 </div>
                             </div>
