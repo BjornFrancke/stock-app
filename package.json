@@ -1,0 +1,15 @@
+{
+  "name": "Stock-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:BjornFrancke/stock-app.git",
+  "author": "Bjorn Francke <bjorn@francke.dev>",
+  "private": "true",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "yarn workspace stock-frontend dev & yarn workspace stock-backend dev"
+  }
+}
+
