@@ -23,7 +23,14 @@ export const createOrder = asyncHandler(async (req, res) => {
                 createtionDate: creationDate,
                 dueDate: req.body.dueDate,
                 receptian: req.body.receptian,
-                isDone: false
+                isDone: false,
+                subTotal: {
+                    amount: 0,
+                    currency: "DKK",
+                    discount: 0,
+                    total: 0,
+                    vat: 0,
+                }
             }
         );
         const savedOrder = await newOrder.save();

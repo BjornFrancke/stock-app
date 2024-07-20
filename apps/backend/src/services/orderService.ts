@@ -9,16 +9,12 @@ export async function getNewOrderNumber() {
 
 
 async function getOrderLineDiscount(orderData: Iorder) {
-
     if (!orderData) {
         throw new Error("order data doesn't exist");
     }
-    console.log(orderData.items.length)
     let totalDiscount = 0;
     for (let index = 0; index < orderData.items.length; index++) {
-        if (!orderData.items[index].salesPrice.discount) {
-            return
-        } else {
+        if (orderData.items[index].salesPrice.discount) {
             console.log("before" + totalDiscount);
             totalDiscount = totalDiscount + (orderData.items[index].salesPrice.discount * orderData.items[index].amount);
             console.log("after" + totalDiscount);
@@ -51,7 +47,7 @@ export async function getOrderSubTotal(orderId: string) {
     const orderData = await Order.findById(orderId)
     if (orderData && orderData.items.length > 0) {
         console.log("yes")
-        orderData.subTotal = {amount: 0, currency: "", vat: 0}
+        orderData.subTotal = {amount: 0, currency: "", vat: 0, discount: 0}
         let subTotalAmount = 0
         for (let index = 0; orderData.items.length > index; index++) {
             const itemData = orderData.items[index]
@@ -62,6 +58,7 @@ export async function getOrderSubTotal(orderId: string) {
         const totalDiscount = await getOrderLineDiscount(orderData)
         const totalVat = await getOrderVatTotal(orderData)
         orderData.subTotal.discount = totalDiscount
+        console.log("Total discount" + totalDiscount)
         orderData.subTotal.amount = subTotalAmount
         orderData.subTotal.vat = totalVat
         if (totalDiscount) {

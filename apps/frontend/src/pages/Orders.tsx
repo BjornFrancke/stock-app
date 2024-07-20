@@ -396,6 +396,7 @@ export function Orders() {
                             justifyContent: "center",
                             alignItems: "center",
                         }}
+                        className={"focus:outline-none"}
                     >
                         <Sheet
                             variant="outlined"
@@ -482,7 +483,9 @@ export function Orders() {
                                     <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.orderNumber}</h1>
                                 </div>
                                 <div className={"flex"}>
-                                    <XMarkIcon className={"h-6 w-6 text-gray-500"}/>
+                                   <a onClick={() => setIsOrdersModalOpen(false)}>
+                                    <XMarkIcon className={"h-6 w-6 text-gray-500"} />
+                                   </a>
 
                                 </div>
                             </div>
@@ -639,10 +642,19 @@ export function Orders() {
 
                                         ))
 
-                                    ) : (
+                                    ) : !isAddItemForm ? (
                                         <tr>
-                                            <td>No items</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
+                                    ) : (
+                                        <></>
                                     )}
 
 
