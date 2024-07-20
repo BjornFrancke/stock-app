@@ -639,7 +639,7 @@ export function Orders() {
 
                                         ))
 
-                                    ) : (
+                                    ) : !isAddItemForm ? (
                                         <tr>
                                             <td></td>
                                             <td></td>
@@ -650,6 +650,8 @@ export function Orders() {
                                             <td></td>
                                             <td></td>
                                         </tr>
+                                    ) : (
+                                        <></>
                                     )}
 
 
