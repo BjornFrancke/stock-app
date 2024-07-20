@@ -641,7 +641,14 @@ export function Orders() {
 
                                     ) : (
                                         <tr>
-                                            <td>No items</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                     )}
 
