@@ -396,6 +396,7 @@ export function Orders() {
                             justifyContent: "center",
                             alignItems: "center",
                         }}
+                        className={"focus:outline-none"}
                     >
                         <Sheet
                             variant="outlined"
