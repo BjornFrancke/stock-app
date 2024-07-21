@@ -19,8 +19,7 @@ import IconButton from "@mui/joy/IconButton";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
-import {OrderCreationModal} from "../components/Orders/orderCreationModal.tsx";
-
+import {OrderCreationModal} from "../components/Orders";
 
 export function Orders() {
     const [orders, setOrders] = useState<Iorder[]>([])
@@ -64,12 +63,12 @@ export function Orders() {
         })
     }
 
-  /*  interface Iaddress {
-        street: string,
-        zip: number,
-        city: string,
-        country: string
-    }*/
+    /*  interface Iaddress {
+          street: string,
+          zip: number,
+          city: string,
+          country: string
+      }*/
     const handleMessageClose = () => {
         setAlert({...alert, open: false});
     }
@@ -415,9 +414,9 @@ export function Orders() {
                                     <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.orderNumber}</h1>
                                 </div>
                                 <div className={"flex"}>
-                                   <a onClick={() => setIsOrdersModalOpen(false)}>
-                                    <XMarkIcon className={"h-6 w-6 text-gray-500"} />
-                                   </a>
+                                    <a onClick={() => setIsOrdersModalOpen(false)}>
+                                        <XMarkIcon className={"h-6 w-6 text-gray-500"}/>
+                                    </a>
 
                                 </div>
                             </div>
@@ -551,8 +550,10 @@ export function Orders() {
                                                         /></td>
                                                         <td>{item.salesPrice.amount * item.amount}</td>
                                                         <td className={"flex justify-between p-0"}>
-                                                            <a className={"bg-green-500 text-black text-opacity-40 rounded-bl rounded-tl w-1/2 p-1 select-none hover:cursor-pointer"} onClick={() => handleUpdateItemData(item._id || "")}>Y</a>
-                                                            <a className={"bg-red-500 text-black text-opacity-40 rounded-br rounded-tr w-1/2 p-1 select-none hover:cursor-pointer"} onClick={() => setSelectedItemIndex(-1)}>X</a>
+                                                            <a className={"bg-green-500 text-black text-opacity-40 rounded-bl rounded-tl w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                               onClick={() => handleUpdateItemData(item._id || "")}>Y</a>
+                                                            <a className={"bg-red-500 text-black text-opacity-40 rounded-br rounded-tr w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                               onClick={() => setSelectedItemIndex(-1)}>X</a>
                                                         </td>
                                                     </tr>
                                                 ) : (
@@ -670,7 +671,11 @@ export function Orders() {
                                         </tr>
                                         <tr>
                                             <td>Vat</td>
-                                            <td style={{width: '20%', textAlign: "right"}}>{selectedOrder?.subTotal?.vat} kr.</td>
+                                            <td style={{
+                                                width: '20%',
+                                                textAlign: "right"
+                                            }}>{selectedOrder?.subTotal?.vat} kr.
+                                            </td>
                                         </tr>
                                         <tr className={"font-bold"}>
                                             <td>Total</td>
