@@ -669,7 +669,7 @@ export function Orders() {
                                             <td style={{
                                                 width: '20%',
                                                 textAlign: "right"
-                                            }}>{selectedOrder?.subTotal?.discount}</td>
+                                            }}>{selectedOrder?.subTotal?.discount + " kr."}</td>
                                         </tr>
                                         <tr>
                                             <td>Vat</td>
