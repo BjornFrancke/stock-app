@@ -1,5 +1,4 @@
 import Button from "@mui/joy/Button";
-import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
@@ -20,6 +19,7 @@ import IconButton from "@mui/joy/IconButton";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
+import {OrderCreationModal} from "../components/Orders/orderCreationModal.tsx";
 
 
 export function Orders() {
@@ -64,21 +64,12 @@ export function Orders() {
         })
     }
 
-    interface Iaddress {
+  /*  interface Iaddress {
         street: string,
         zip: number,
         city: string,
         country: string
-    }
-
-    interface Icustomer {
-        _id?: string,
-        name: string,
-        mailAdress: string,
-        phoneNr?: string,
-        address: Iaddress
-    }
-
+    }*/
     const handleMessageClose = () => {
         setAlert({...alert, open: false});
     }
@@ -385,75 +376,16 @@ export function Orders() {
                         ))}
                         </tbody>
                     </Table>
-
-                    <Modal
-                        aria-labelledby="modal-title"
-                        aria-describedby="modal-desc"
+                    <OrderCreationModal
                         open={isCreationModalOpen}
                         onClose={() => setIsCreationModalOpen(false)}
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        className={"focus:outline-none"}
-                    >
-                        <Sheet
-                            variant="outlined"
-                            sx={{
-                                maxWidth: 800,
-                                minWidth: 800,
-                                minHeight: 400,
-                                borderRadius: "md",
-                                p: 6,
-                                boxShadow: "lg",
-                            }}
-                        >
-                            <div className={"w-48 space-y-8"}>
-                                <h1 className={"text-[#50A6A1] text-xl"}>New order</h1>
-                                <form className={"mb-4 flex flex-col justify-between w-fit"}>
-                                    <div className={"flex space-x-2"}>
-                                        <div className={"flex mb-4 space-x-2"}>
-                                            <h2 className={"my-auto"}>Customer:</h2>
-                                            <select
-                                                value={newOrderRecipient}
-                                                onChange={(e) => setNewOrderRecipient(e.target.value)}
-                                                className="border border-gray-300 rounded-md p-2"
-                                            >
-                                                <option value="">Select a Customer</option>
-                                                {availableCustomers.map((customer: Icustomer) => (
-                                                    <option key={customer.name} value={customer.name}>
-                                                        {customer.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className={"flex space-x-2 min-w-full mb-4"}>
-                                        <h2 className={"my-auto text-nowrap"}>Due date:</h2>
-                                        <div className={"w-48"}>
-                                            <Input
-                                                type="date"
-                                                placeholder="Date"
-                                                onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
-                                                className="px-2 border border-gray-300  w-48"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className={"space-x-2"}>
-                                        <Button onClick={handleSubmitNewOrder}>Submit</Button>
-                                        <Button
-                                            onClick={() => setIsCreationModalOpen(false)}
-                                            color="danger"
-                                            variant="outlined"
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </div>
-                                </form>
-                            </div>
-                        </Sheet>
-                    </Modal>
+                        recipient={newOrderRecipient}
+                        onRecipientChange={setNewOrderRecipient}
+                        availableCustomers={availableCustomers}
+                        onSubmit={handleSubmitNewOrder}
+                        onChangeDate={setNewOrderDueDate}
+                    />
+
                     <Modal
                         aria-labelledby="modal-title"
                         aria-describedby="modal-desc"
