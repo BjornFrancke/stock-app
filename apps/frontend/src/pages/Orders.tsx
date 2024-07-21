@@ -118,7 +118,7 @@ export function Orders() {
 
         try {
             await instance.post(`/orders/${orderId}/item`, newItemDataToSubmit);
-            fetchOrders();
+            await fetchOrders();
             setNewItemData(newItemData)
             setIsOrdersModalOpen(false);
             setIsAddItemForm(false)
@@ -171,7 +171,7 @@ export function Orders() {
         }
         await instance.post('/orders', orderData)
 
-        fetchOrders()
+        await fetchOrders()
         setIsCreationModalOpen(false)
         setNewOrderDueDate(null)
         setNewOrderRecipient("")
@@ -245,7 +245,7 @@ export function Orders() {
                 }
             )
         })
-        fetchOrders();
+        await fetchOrders();
     };
 
     useEffect(() => {
