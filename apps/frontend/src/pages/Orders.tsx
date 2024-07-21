@@ -600,7 +600,7 @@ export function Orders() {
                                                     value={newItemData.itemId}
 
                                                     onChange={(e) => handleNewItemChange(e)}
-                                                    className="border p-2 pl-1 border-gray-300 rounded-md"
+                                                    className="border p-2 py-1 pl-1 border-gray-300 rounded-md"
                                                 >
                                                     <option value="">Select a Component</option>
                                                     {availableItems.map((item: Iitems) => (
@@ -613,7 +613,7 @@ export function Orders() {
                                             <td>
                                                 <input
                                                     type="number"
-                                                    className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                    className="p-1 py-1 border max-w-16 border-gray-300 rounded-md"
                                                     name={"amount"}
                                                     value={newItemData.amount}
                                                     onChange={(e) => setNewItemData({
@@ -626,24 +626,26 @@ export function Orders() {
                                                 <input type={"number"} value={newItemVat}
                                                        step={0.05}
                                                        max={1}
-                                                       className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                       className="p-1 py-1 border max-w-16 border-gray-300 rounded-md"
 
 
                                                        onChange={(e) => setNewItemVat(e.target.valueAsNumber)}/>
                                             </td>
                                             <td>{newItemData.salesPrice.amount}</td>
                                             <td><input type={"number"} value={newItemDiscount}
-                                                       className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                       className="p-1 py-1 border max-w-16 border-gray-300 rounded-md"
                                                        onChange={(e) => setNewItemDiscount(e.target.valueAsNumber)}/>
                                             </td>
                                             <td>
                                                 {newItemData.salesPrice.amount * newItemData.amount}
                                             </td>
                                             <td>
-                                                <Button
-                                                    onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
-                                                <Button variant={"plain"}
-                                                        onClick={() => setIsAddItemForm(false)}>X</Button>
+                                                <a role={"button"}
+                                                   className={"bg-green-500 text-black text-opacity-40 rounded-bl rounded-tl w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                   onClick={() => handleAddNewItem(selectedOrder?._id)}>Y</a>
+                                                <a role={"button"}
+                                                   className={"bg-red-500 text-black text-opacity-40 rounded-tr rounded-br w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                   onClick={() => setIsAddItemForm(false)}>X</a>
                                             </td>
 
                                         </tr>
