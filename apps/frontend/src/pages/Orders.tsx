@@ -398,7 +398,7 @@ export function Orders() {
                     >
                         <Sheet
                             variant="outlined"
-                            className="space-y-10 bg-[#D7D7D7]"
+                            className="space-y-10 bg-[#D7D7D7] focus:outline-none"
                             sx={{
                                 width: "80%",
                                 borderRadius: "sm",
