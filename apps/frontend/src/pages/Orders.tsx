@@ -3,15 +3,8 @@ import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
 import React, {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
-import {
-    EllipsisVerticalIcon,
-    ExclamationTriangleIcon,
-    PlusIcon,
-    PrinterIcon,
-    XMarkIcon
-} from "@heroicons/react/16/solid";
-import {CircularProgress, Snackbar} from "@mui/joy";
-import IconButton from "@mui/joy/IconButton";
+import {EllipsisVerticalIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/react/16/solid";
+import {CircularProgress} from "@mui/joy";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
@@ -27,8 +20,6 @@ export function Orders() {
     const [availableItems, setAvailableItems] = useState<Iitems[]>([]);
     const [availableCustomers, setAvailableCustomers] = useState([]);
     const [isAddItemForm, setIsAddItemForm] = useState(false)
-    const [errorMessage, setErrorMessage] = useState("Unknown error")
-    const [isError, setIsError] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
     const [loading, setLoading] = useState(true)
     const [newItemVat, setNewItemVat] = useState(0)
@@ -90,7 +81,11 @@ export function Orders() {
 
     const handleAddNewItem = async (orderId: string | undefined) => {
         if (!selectedOrder) {
-            handleErrorMessage(400, "Please fill in all fields")
+            setAlert({
+                open: true,
+                severity: "warning",
+                text: "Please fill in all fields"
+            })
             return;
         }
 
@@ -114,8 +109,12 @@ export function Orders() {
             setIsAddItemForm(false)
             setNewItemVat(0)
         } catch (error) {
+            setAlert({
+                open: true,
+                severity: "warning",
+                text: "Failed to add item"
+            })
             console.error("Failed to add item:", error);
-            handleErrorMessage(500, "Failed to add item")
         }
     };
 
@@ -156,7 +155,11 @@ export function Orders() {
 
         }
         if (orderData.receptian === "" || !orderData.dueDate) {
-            handleErrorMessage(400, "Please fill in all fields")
+            setAlert({
+                severity: "danger",
+                text: "Please fill in all fields",
+                open: true
+            })
             return
         }
         await instance.post('/orders', orderData)
@@ -180,15 +183,6 @@ export function Orders() {
         }
     }
 
-    const handleErrorMessage = (code: number, message: string) => {
-        setIsError(true)
-        setErrorMessage(`${code}: ${message}`)
-    }
-
-    const handleErrorDismiss = () => {
-        setIsError(false)
-        setErrorMessage("")
-    }
     const handleMarkAsDone = async (orderToMark: Iorder | null) => {
         if (!orderToMark) {
             setAlert({
@@ -218,7 +212,11 @@ export function Orders() {
     const handleDelete = async (id: string | undefined) => {
         if (typeof id === 'undefined') {
             console.warn('Cannot delete an item without an id');
-            handleErrorMessage(400, 'Cannot delete an item without an id')
+            setAlert({
+                severity: "danger",
+                text: "Cannot delete an item with an ID",
+                open: true
+            })
             return;
         }
         instance.delete(`/orders/${id}`).then(results => {
@@ -307,7 +305,6 @@ export function Orders() {
                 <AlertMessage alertContent={alert} onClose={() => handleMessageClose()}/>
                 {loading && (
                     <CircularProgress/>
-
                 )}
                 <h1 className="text-xl">Orders</h1>
                 <div className="flex w-full justify-center mt-12">
@@ -640,16 +637,6 @@ export function Orders() {
 
 
                 </div>
-                <Snackbar
-                    open={isError}
-                    color={"danger"}
-                    variant={"solid"}
-                    startDecorator={<ExclamationTriangleIcon className={"h-6 w-6 text-white"}/>}
-                    endDecorator={<IconButton variant={"solid"} color={"danger"} onClick={handleErrorDismiss}><XMarkIcon
-                        className={"h-6 w-6 text-white"}/></IconButton>}
-                >
-                    {errorMessage}
-                </Snackbar>
             </Sheet>
         </>
     );
