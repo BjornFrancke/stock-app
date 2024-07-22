@@ -59,12 +59,6 @@ export function Orders() {
         })
     }
 
-    /*  interface Iaddress {
-          street: string,
-          zip: number,
-          city: string,
-          country: string
-      }*/
     const handleMessageClose = () => {
         setAlert({...alert, open: false});
     }
