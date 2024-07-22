@@ -1,25 +1,21 @@
-import Button from "@mui/joy/Button";
 import Modal from "@mui/joy/Modal";
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
 import React, {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
-import Chip from "@mui/joy/Chip";
 import {
-    CheckBadgeIcon,
     EllipsisVerticalIcon,
     ExclamationTriangleIcon,
     PlusIcon,
     PrinterIcon,
     XMarkIcon
 } from "@heroicons/react/16/solid";
-import ChipDelete from "@mui/joy/ChipDelete";
 import {CircularProgress, Snackbar} from "@mui/joy";
 import IconButton from "@mui/joy/IconButton";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
-import {OrderCreationModal} from "../components/Orders";
+import {OrderCreationModal, OrdersTable} from "../components/Orders";
 
 export function Orders() {
     const [orders, setOrders] = useState<Iorder[]>([])
@@ -321,60 +317,12 @@ export function Orders() {
                 )}
                 <h1 className="text-xl">Orders</h1>
                 <div className="flex w-full justify-center mt-12">
-
-                    <Table borderAxis="both" className={""}>
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Customer</th>
-                            <th>Due date</th>
-                            <th>Status</th>
-                            <th>
-                                <Button variant={"outlined"}
-                                        onClick={() => setIsCreationModalOpen(true)}>
-                                    Add Order
-                                </Button>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {orders.map((order: Iorder) => (
-                            <tr key={order._id}>
-                                <td className=" underline cursor-pointer select-none"
-                                    onClick={() => handleOrderClick(order)}>
-                                    {order.orderNumber}
-                                </td>
-                                <td>{order.receptian}</td>
-                                <td>{new Date(order.dueDate).toLocaleDateString()}</td>
-                                <td>
-                                    {order.isDone ? <Chip color="success">Done!</Chip> : <Chip
-                                        onClick={() => handleMarkAsDone(order || null)}
-                                        endDecorator={
-                                            <CheckBadgeIcon className="h-3 w-3 text-black"/>
-                                        }
-                                    >
-                                        Not done!
-                                    </Chip>
-                                    }
-                                </td>
-                                <td>
-                                    {" "}
-                                    <Chip
-                                        variant="soft"
-                                        color="danger"
-                                        size="sm"
-                                        className={"select-none"}
-                                        endDecorator={
-                                            <ChipDelete onClick={() => handleDelete(order._id)}/>
-                                        }
-                                    >
-                                        Delete
-                                    </Chip>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
+                    <OrdersTable
+                        onAddOrderClick={() => setIsCreationModalOpen(true)}
+                        onClickOrder={handleOrderClick}
+                        onDelete={handleDelete}
+                        onMarkAsDone={handleMarkAsDone}
+                        orders={orders}/>
                     <OrderCreationModal
                         open={isCreationModalOpen}
                         onClose={() => setIsCreationModalOpen(false)}
