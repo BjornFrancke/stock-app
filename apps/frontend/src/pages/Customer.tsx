@@ -139,7 +139,7 @@ export function Customer() {
                         >
                             <Sheet
                                 variant="outlined"
-                                className="space-y-4"
+                                className="space-y-4 focus:outline-none"
                                 sx={{
                                     maxWidth: 800,
                                     minWidth: 800,
@@ -185,6 +185,7 @@ export function Customer() {
                         >
                             <Sheet
                                 variant="outlined"
+                                className="focus:outline-none"
                                 sx={{
                                     width: 'auto',
                                     maxWidth: '500px',
