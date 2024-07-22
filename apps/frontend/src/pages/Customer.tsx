@@ -185,8 +185,9 @@ export function Customer() {
                         >
                             <Sheet
                                 variant="outlined"
-                                className="focus:outline-none"
+                                className="focus:outline-none space-y-4"
                                 sx={{
+                                    minWidth: "300px",
                                     width: 'auto',
                                     maxWidth: '500px',
                                     borderRadius: 'md',
