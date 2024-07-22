@@ -219,10 +219,10 @@ export function Orders() {
             })
             return;
         }
-        instance.delete(`/orders/${id}`).then(results => {
+        instance.delete(`/orders/${id}`).then(() => {
             setAlert({
-                severity: "warning",
-                text: results.data.message,
+                severity: "success",
+                text: "The order was successfully deleted",
                 open: true
             })
         }).catch(error => {
