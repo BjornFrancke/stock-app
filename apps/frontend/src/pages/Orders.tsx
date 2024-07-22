@@ -1,26 +1,14 @@
-import Button from "@mui/joy/Button";
-import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import Sheet from "@mui/joy/Sheet";
 import Table from "@mui/joy/Table";
 import React, {useEffect, useState} from "react";
 import {Iitems, Iorder} from "../types";
-import Chip from "@mui/joy/Chip";
-import {
-    CheckBadgeIcon,
-    EllipsisVerticalIcon,
-    ExclamationTriangleIcon,
-    PlusIcon,
-    PrinterIcon,
-    XMarkIcon
-} from "@heroicons/react/16/solid";
-import ChipDelete from "@mui/joy/ChipDelete";
-import {CircularProgress, Snackbar} from "@mui/joy";
-import IconButton from "@mui/joy/IconButton";
+import {EllipsisVerticalIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/react/16/solid";
+import {CircularProgress} from "@mui/joy";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
-
+import {OrderCreationModal, OrdersTable} from "../components/Orders";
 
 export function Orders() {
     const [orders, setOrders] = useState<Iorder[]>([])
@@ -32,8 +20,6 @@ export function Orders() {
     const [availableItems, setAvailableItems] = useState<Iitems[]>([]);
     const [availableCustomers, setAvailableCustomers] = useState([]);
     const [isAddItemForm, setIsAddItemForm] = useState(false)
-    const [errorMessage, setErrorMessage] = useState("Unknown error")
-    const [isError, setIsError] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
     const [loading, setLoading] = useState(true)
     const [newItemVat, setNewItemVat] = useState(0)
@@ -62,21 +48,6 @@ export function Orders() {
             ...updatedItemData,
             [e.target.name]: e.target.valueAsNumber
         })
-    }
-
-    interface Iaddress {
-        street: string,
-        zip: number,
-        city: string,
-        country: string
-    }
-
-    interface Icustomer {
-        _id?: string,
-        name: string,
-        mailAdress: string,
-        phoneNr?: string,
-        address: Iaddress
     }
 
     const handleMessageClose = () => {
@@ -110,7 +81,11 @@ export function Orders() {
 
     const handleAddNewItem = async (orderId: string | undefined) => {
         if (!selectedOrder) {
-            handleErrorMessage(400, "Please fill in all fields")
+            setAlert({
+                open: true,
+                severity: "warning",
+                text: "Please fill in all fields"
+            })
             return;
         }
 
@@ -128,14 +103,18 @@ export function Orders() {
 
         try {
             await instance.post(`/orders/${orderId}/item`, newItemDataToSubmit);
-            fetchOrders();
+            await fetchOrders();
             setNewItemData(newItemData)
             setIsOrdersModalOpen(false);
             setIsAddItemForm(false)
             setNewItemVat(0)
         } catch (error) {
+            setAlert({
+                open: true,
+                severity: "warning",
+                text: "Failed to add item"
+            })
             console.error("Failed to add item:", error);
-            handleErrorMessage(500, "Failed to add item")
         }
     };
 
@@ -176,12 +155,16 @@ export function Orders() {
 
         }
         if (orderData.receptian === "" || !orderData.dueDate) {
-            handleErrorMessage(400, "Please fill in all fields")
+            setAlert({
+                severity: "danger",
+                text: "Please fill in all fields",
+                open: true
+            })
             return
         }
         await instance.post('/orders', orderData)
 
-        fetchOrders()
+        await fetchOrders()
         setIsCreationModalOpen(false)
         setNewOrderDueDate(null)
         setNewOrderRecipient("")
@@ -200,15 +183,6 @@ export function Orders() {
         }
     }
 
-    const handleErrorMessage = (code: number, message: string) => {
-        setIsError(true)
-        setErrorMessage(`${code}: ${message}`)
-    }
-
-    const handleErrorDismiss = () => {
-        setIsError(false)
-        setErrorMessage("")
-    }
     const handleMarkAsDone = async (orderToMark: Iorder | null) => {
         if (!orderToMark) {
             setAlert({
@@ -238,13 +212,17 @@ export function Orders() {
     const handleDelete = async (id: string | undefined) => {
         if (typeof id === 'undefined') {
             console.warn('Cannot delete an item without an id');
-            handleErrorMessage(400, 'Cannot delete an item without an id')
+            setAlert({
+                severity: "danger",
+                text: "Cannot delete an item with an ID",
+                open: true
+            })
             return;
         }
-        instance.delete(`/orders/${id}`).then(results => {
+        instance.delete(`/orders/${id}`).then(() => {
             setAlert({
-                severity: "warning",
-                text: results.data.message,
+                severity: "success",
+                text: "The order was successfully deleted",
                 open: true
             })
         }).catch(error => {
@@ -255,7 +233,7 @@ export function Orders() {
                 }
             )
         })
-        fetchOrders();
+        await fetchOrders();
     };
 
     useEffect(() => {
@@ -327,133 +305,25 @@ export function Orders() {
                 <AlertMessage alertContent={alert} onClose={() => handleMessageClose()}/>
                 {loading && (
                     <CircularProgress/>
-
                 )}
                 <h1 className="text-xl">Orders</h1>
                 <div className="flex w-full justify-center mt-12">
-
-                    <Table borderAxis="both" className={""}>
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Customer</th>
-                            <th>Due date</th>
-                            <th>Status</th>
-                            <th>
-                                <Button variant={"outlined"}
-                                        onClick={() => setIsCreationModalOpen(true)}>
-                                    Add Order
-                                </Button>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {orders.map((order: Iorder) => (
-                            <tr key={order._id}>
-                                <td className=" underline cursor-pointer select-none"
-                                    onClick={() => handleOrderClick(order)}>
-                                    {order.orderNumber}
-                                </td>
-                                <td>{order.receptian}</td>
-                                <td>{new Date(order.dueDate).toLocaleDateString()}</td>
-                                <td>
-                                    {order.isDone ? <Chip color="success">Done!</Chip> : <Chip
-                                        onClick={() => handleMarkAsDone(order || null)}
-                                        endDecorator={
-                                            <CheckBadgeIcon className="h-3 w-3 text-black"/>
-                                        }
-                                    >
-                                        Not done!
-                                    </Chip>
-                                    }
-                                </td>
-                                <td>
-                                    {" "}
-                                    <Chip
-                                        variant="soft"
-                                        color="danger"
-                                        size="sm"
-                                        className={"select-none"}
-                                        endDecorator={
-                                            <ChipDelete onClick={() => handleDelete(order._id)}/>
-                                        }
-                                    >
-                                        Delete
-                                    </Chip>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-
-                    <Modal
-                        aria-labelledby="modal-title"
-                        aria-describedby="modal-desc"
+                    <OrdersTable
+                        onAddOrderClick={() => setIsCreationModalOpen(true)}
+                        onClickOrder={handleOrderClick}
+                        onDelete={handleDelete}
+                        onMarkAsDone={handleMarkAsDone}
+                        orders={orders}/>
+                    <OrderCreationModal
                         open={isCreationModalOpen}
                         onClose={() => setIsCreationModalOpen(false)}
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        className={"focus:outline-none"}
-                    >
-                        <Sheet
-                            variant="outlined"
-                            sx={{
-                                maxWidth: 800,
-                                minWidth: 800,
-                                minHeight: 400,
-                                borderRadius: "md",
-                                p: 6,
-                                boxShadow: "lg",
-                            }}
-                        >
-                            <div className={"w-48 space-y-8"}>
-                                <h1 className={"text-[#50A6A1] text-xl"}>New order</h1>
-                                <form className={"mb-4 flex flex-col justify-between w-fit"}>
-                                    <div className={"flex space-x-2"}>
-                                        <div className={"flex mb-4 space-x-2"}>
-                                            <h2 className={"my-auto"}>Customer:</h2>
-                                            <select
-                                                value={newOrderRecipient}
-                                                onChange={(e) => setNewOrderRecipient(e.target.value)}
-                                                className="border border-gray-300 rounded-md p-2"
-                                            >
-                                                <option value="">Select a Customer</option>
-                                                {availableCustomers.map((customer: Icustomer) => (
-                                                    <option key={customer.name} value={customer.name}>
-                                                        {customer.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className={"flex space-x-2 min-w-full mb-4"}>
-                                        <h2 className={"my-auto text-nowrap"}>Due date:</h2>
-                                        <div className={"w-48"}>
-                                            <Input
-                                                type="date"
-                                                placeholder="Date"
-                                                onChange={(e) => setNewOrderDueDate(e.target.valueAsDate)}
-                                                className="px-2 border border-gray-300  w-48"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className={"space-x-2"}>
-                                        <Button onClick={handleSubmitNewOrder}>Submit</Button>
-                                        <Button
-                                            onClick={() => setIsCreationModalOpen(false)}
-                                            color="danger"
-                                            variant="outlined"
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </div>
-                                </form>
-                            </div>
-                        </Sheet>
-                    </Modal>
+                        recipient={newOrderRecipient}
+                        onRecipientChange={setNewOrderRecipient}
+                        availableCustomers={availableCustomers}
+                        onSubmit={handleSubmitNewOrder}
+                        onChangeDate={setNewOrderDueDate}
+                    />
+
                     <Modal
                         aria-labelledby="modal-title"
                         aria-describedby="modal-desc"
@@ -467,7 +337,7 @@ export function Orders() {
                     >
                         <Sheet
                             variant="outlined"
-                            className="space-y-10 bg-[#D7D7D7]"
+                            className="space-y-10 bg-[#D7D7D7] focus:outline-none"
                             sx={{
                                 width: "80%",
                                 borderRadius: "sm",
@@ -483,9 +353,9 @@ export function Orders() {
                                     <h1 className={"text-2xl text-gray-500"}>#{selectedOrder?.orderNumber}</h1>
                                 </div>
                                 <div className={"flex"}>
-                                   <a onClick={() => setIsOrdersModalOpen(false)}>
-                                    <XMarkIcon className={"h-6 w-6 text-gray-500"} />
-                                   </a>
+                                    <a onClick={() => setIsOrdersModalOpen(false)}>
+                                        <XMarkIcon className={"h-6 w-6 text-gray-500"}/>
+                                    </a>
 
                                 </div>
                             </div>
@@ -619,8 +489,10 @@ export function Orders() {
                                                         /></td>
                                                         <td>{item.salesPrice.amount * item.amount}</td>
                                                         <td className={"flex justify-between p-0"}>
-                                                            <a className={"bg-green-500 text-black text-opacity-40 rounded-bl rounded-tl w-1/2 p-1 select-none hover:cursor-pointer"} onClick={() => handleUpdateItemData(item._id || "")}>Y</a>
-                                                            <a className={"bg-red-500 text-black text-opacity-40 rounded-br rounded-tr w-1/2 p-1 select-none hover:cursor-pointer"} onClick={() => setSelectedItemIndex(-1)}>X</a>
+                                                            <a className={"bg-green-500 text-black text-opacity-40 rounded-bl rounded-tl w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                               onClick={() => handleUpdateItemData(item._id || "")}>Y</a>
+                                                            <a className={"bg-red-500 text-black text-opacity-40 rounded-br rounded-tr w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                               onClick={() => setSelectedItemIndex(-1)}>X</a>
                                                         </td>
                                                     </tr>
                                                 ) : (
@@ -667,7 +539,7 @@ export function Orders() {
                                                     value={newItemData.itemId}
 
                                                     onChange={(e) => handleNewItemChange(e)}
-                                                    className="border p-2 pl-1 border-gray-300 rounded-md"
+                                                    className="border p-2 py-1 pl-1 border-gray-300 rounded-md"
                                                 >
                                                     <option value="">Select a Component</option>
                                                     {availableItems.map((item: Iitems) => (
@@ -680,7 +552,7 @@ export function Orders() {
                                             <td>
                                                 <input
                                                     type="number"
-                                                    className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                    className="p-1 py-1 border max-w-16 border-gray-300 rounded-md"
                                                     name={"amount"}
                                                     value={newItemData.amount}
                                                     onChange={(e) => setNewItemData({
@@ -693,24 +565,26 @@ export function Orders() {
                                                 <input type={"number"} value={newItemVat}
                                                        step={0.05}
                                                        max={1}
-                                                       className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                       className="p-1 py-1 border max-w-16 border-gray-300 rounded-md"
 
 
                                                        onChange={(e) => setNewItemVat(e.target.valueAsNumber)}/>
                                             </td>
                                             <td>{newItemData.salesPrice.amount}</td>
                                             <td><input type={"number"} value={newItemDiscount}
-                                                       className="p-1 py-2 border max-w-16 border-gray-300 rounded-md"
+                                                       className="p-1 py-1 border max-w-16 border-gray-300 rounded-md"
                                                        onChange={(e) => setNewItemDiscount(e.target.valueAsNumber)}/>
                                             </td>
                                             <td>
                                                 {newItemData.salesPrice.amount * newItemData.amount}
                                             </td>
                                             <td>
-                                                <Button
-                                                    onClick={() => handleAddNewItem(selectedOrder?._id)}>Add</Button>
-                                                <Button variant={"plain"}
-                                                        onClick={() => setIsAddItemForm(false)}>X</Button>
+                                                <a role={"button"}
+                                                   className={"bg-green-500 text-black text-opacity-40 rounded-bl rounded-tl w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                   onClick={() => handleAddNewItem(selectedOrder?._id)}>Y</a>
+                                                <a role={"button"}
+                                                   className={"bg-red-500 text-black text-opacity-40 rounded-tr rounded-br w-1/2 p-1 select-none hover:cursor-pointer"}
+                                                   onClick={() => setIsAddItemForm(false)}>X</a>
                                             </td>
 
                                         </tr>
@@ -734,11 +608,15 @@ export function Orders() {
                                             <td style={{
                                                 width: '20%',
                                                 textAlign: "right"
-                                            }}>{selectedOrder?.subTotal?.discount}</td>
+                                            }}>{selectedOrder?.subTotal?.discount + " kr."}</td>
                                         </tr>
                                         <tr>
                                             <td>Vat</td>
-                                            <td style={{width: '20%', textAlign: "right"}}>{selectedOrder?.subTotal?.vat} kr.</td>
+                                            <td style={{
+                                                width: '20%',
+                                                textAlign: "right"
+                                            }}>{selectedOrder?.subTotal?.vat} kr.
+                                            </td>
                                         </tr>
                                         <tr className={"font-bold"}>
                                             <td>Total</td>
@@ -759,16 +637,6 @@ export function Orders() {
 
 
                 </div>
-                <Snackbar
-                    open={isError}
-                    color={"danger"}
-                    variant={"solid"}
-                    startDecorator={<ExclamationTriangleIcon className={"h-6 w-6 text-white"}/>}
-                    endDecorator={<IconButton variant={"solid"} color={"danger"} onClick={handleErrorDismiss}><XMarkIcon
-                        className={"h-6 w-6 text-white"}/></IconButton>}
-                >
-                    {errorMessage}
-                </Snackbar>
             </Sheet>
         </>
     );
