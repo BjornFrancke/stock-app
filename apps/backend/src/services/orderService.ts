@@ -117,3 +117,32 @@ export async function orderMarkedAsDone(orderId: string): Promise<{ statusCode: 
     return {statusCode: 200, message: "Success"}
 
 }
+
+export async function getPendingOrderStatus() {
+    const orders = await Order.find()
+    const value = await getPendingOrdersValue(orders)
+    const pendingOrders = []
+    for (let i = 0; orders.length > i; i++) {
+        if (orders[i].isDone != true) {
+            pendingOrders.push(orders[i]._id)
+        }
+    }
+    const percentage = pendingOrders.length / orders.length * 100
+    return {"pendingOrders": pendingOrders.length, "TotalOrders": orders.length, "Percentage": percentage, "Value": value};
+}
+
+async function getPendingOrdersValue(orders: Iorder[]) {
+    if (!orders) {
+        return
+    }
+    let value = 0
+    for (let i = 0; orders.length > i; i++) {
+        if (orders[i] && !orders[i].isDone && orders[i]?.subTotal?.total) {
+            const subtotal  = orders[i]?.subTotal?.amount
+            if (subtotal) {
+            value += subtotal | 0
+            }
+        }
+    }
+    return value
+}

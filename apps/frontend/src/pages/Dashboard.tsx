@@ -2,11 +2,20 @@ import Sheet from "@mui/joy/Sheet";
 import Card from "@mui/joy/Card";
 import {CardActions, CardContent, CircularProgress, SvgIcon, Typography} from "@mui/joy";
 import Button from "@mui/joy/Button";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {instance} from "../services/backend-api/axiosConfig.ts";
 
 export function Dashboard() {
+    const [pendingOrder, setPendingOrders] = useState<{
+        percentage: number,
+        value: number
+    }>({
+        percentage: 0,
+        value: 0
+    });
 const navigate = useNavigate()
+
 
     const checkLoginStatus = () => {
         const token = localStorage.getItem("token")
@@ -19,7 +28,20 @@ const navigate = useNavigate()
 
     useEffect(() => {
         checkLoginStatus()
+        getPendingOrderPercentage()
     }, []);
+
+
+const getPendingOrderPercentage = async () => {
+    instance.get('/orders/status').then((response) => {
+setPendingOrders({
+    percentage: Number(response.data.Percentage),
+    value: Number(response.data.Value)
+})
+    }).catch((error) => {
+        console.log(error)
+    })
+}
 
     return (
         <>
@@ -38,8 +60,7 @@ const navigate = useNavigate()
                 <div className={"grid grid-cols-2 space-x-4 mt-12"}>
                     <Card variant="solid" color={"primary"} invertedColors >
                         <CardContent orientation="horizontal">
-                            {/*TODO Check for percentage of orders marked as done*/}
-                            <CircularProgress size="lg" determinate value={20}>
+                            <CircularProgress size="lg" determinate value={pendingOrder.percentage}>
                                 <SvgIcon>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +79,7 @@ const navigate = useNavigate()
                             </CircularProgress>
                             <CardContent>
                                 <Typography level="body-md">Pending sale</Typography>
-                                <Typography level="h2">$ 432.6M</Typography>
+                                <Typography level="h2">{pendingOrder.value} kr.</Typography>
                             </CardContent>
                         </CardContent>
                         <CardActions>
@@ -66,7 +87,7 @@ const navigate = useNavigate()
                                 Add to Watchlist
                             </Button>
                             <Button variant="solid" size="sm">
-                                See breakdown
+                                Go to orders
                             </Button>
                         </CardActions>
                     </Card>

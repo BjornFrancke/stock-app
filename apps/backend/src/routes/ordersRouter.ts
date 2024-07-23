@@ -5,7 +5,7 @@ import {
     calculateOrderSubTotal,
     createOrder,
     deleteOrder,
-    getOrders,
+    getOrders, getPendingOrders,
     markOrderAsDone, updatedItemInOrder
 } from "../controllers";
 
@@ -15,6 +15,9 @@ export const ordersRouter = express.Router()
 ordersRouter.route('/')
     .get(protect, getOrders)
     .post(protect, createOrder)
+
+ordersRouter.route('/status')
+    .get(getPendingOrders)
 
 ordersRouter.route('/:orderId')
     .delete(protect, deleteOrder)

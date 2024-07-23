@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import {Item, Order} from "../models";
 import {ObjectId} from "mongodb";
-import {getNewOrderNumber, getOrderSubTotal, orderMarkedAsDone} from "../services/orderService";
+import {getNewOrderNumber, getOrderSubTotal, getPendingOrderStatus, orderMarkedAsDone} from "../services/orderService";
 
 export const getOrders = asyncHandler(async (req, res) => {
     try {
@@ -10,6 +10,13 @@ export const getOrders = asyncHandler(async (req, res) => {
     } catch {
         res.status(500).send("Internal Server Error");
     }
+})
+
+export const getPendingOrders = asyncHandler(async (req, res) => {
+    const pendingOrder = await getPendingOrderStatus()
+
+    console.log(pendingOrder)
+    res.status(200).json(pendingOrder)
 })
 
 export const createOrder = asyncHandler(async (req, res) => {
