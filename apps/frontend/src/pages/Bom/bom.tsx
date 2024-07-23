@@ -75,11 +75,7 @@ export const Bom = () => {
 
     const findProductsName = (bom: Ibom) => {
         const item = availableComponents.find(availableComponents => availableComponents._id === bom.product)
-        if (item !== undefined) {
-            return item.name
-        } else {
-            return bom.product
-        }
+        return item !== undefined ? item.name : bom.product;
     }
 
     const fetchComponentNameById = async (componentId: string | undefined) => {
