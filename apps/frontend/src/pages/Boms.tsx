@@ -302,7 +302,7 @@ export const Boms = () => {
                         isOpen={isModalOpen}
                         onRequestClose={() => handleCloseModal()}
                         contentLabel="BOM Details"
-                        className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-28 space-y-6"}
+                        className={"bg-gray-200 w-fit p-12 mx-auto h-fit rounded-2xl mt-28 space-y-6 focus:outline-none"}
                     >
                         <div className={"flex justify-between"}>
                             <div className={"flex space-x-2"}>
