@@ -236,11 +236,10 @@ export const Boms = () => {
             if (!componentId) {
                 console.error('No component id provided')
             }
-            const componentName = instance.get(`/item/${componentId}`).then(response => {
+            return instance.get(`/item/${componentId}`).then(response => {
                 console.log(response.data.name)
                 return response.data.name
             }).catch(error => setError(error))
-            return componentName
         } catch {
             console.error("Failed to fetch component name:");
             return "";
