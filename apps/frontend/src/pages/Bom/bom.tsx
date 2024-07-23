@@ -22,7 +22,7 @@ export const Bom = () => {
     };
 
     return (
-        <>
+        <div className={"mx-auto w-fit mt-6 space-y-6"}>
             <div className={"flex space-x-2"}>
 
                 <h1 className={"text-[#50A6A1] text-2xl"}>BOM</h1>
@@ -114,6 +114,6 @@ export const Bom = () => {
                 )}
             </Sheet>
 
-        </>
+        </div>
     )
 }
