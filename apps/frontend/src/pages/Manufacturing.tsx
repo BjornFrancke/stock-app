@@ -184,7 +184,7 @@ export function Manufacturing() {
                             {manuOrder?.dueDate != undefined && !isModalOpen && !isCreationModalOpen && (
                                 <td>
                                     {
-                                        (new Date(manuOrder.dueDate).valueOf()) < Date.now() && !isModalOpen ?
+                                        (new Date(manuOrder.dueDate).valueOf()) < Date.now() && !manuOrder.isDone && !isModalOpen ?
                                             <Chip color={"danger"} endDecorator={<BellAlertIcon
                                                 className={"h-3 w-3 text-red-400"}/>}>{new Date(manuOrder.dueDate).toLocaleDateString()}</Chip> :
                                             <Chip color={"success"} endDecorator={<CalendarDaysIcon
