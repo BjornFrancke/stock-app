@@ -350,7 +350,6 @@ export const Items = () => {
                                     </tr>
                                     <tr>
                                         <td>Price</td>
-
                                         {newPrice >= 0 ? (
                                                 <td>
                                                     <form className={"flex space-x-1"}>
@@ -360,6 +359,7 @@ export const Items = () => {
                                                             value={newPrice}
                                                             onChange={(e) => setNewPrice(e.target.valueAsNumber)}
                                                         />
+
                                                         <Button size={"sm"} onClick={() => handleSubmitNewPrice()}>
                                                             Change
                                                         </Button>
@@ -368,14 +368,19 @@ export const Items = () => {
                                                             X
                                                         </Button>
                                                     </form>
-
                                                 </td>
                                             ) :
-                                            <td onClick={() => setNewPrice(selectedItem.salePrice.amount)}>{selectedItem.salePrice?.amount} {selectedItem.salePrice?.currency === "DKK" ? (<>kr.</>) : (<></>)}</td>
+                                            <td onClick={() => setNewPrice(selectedItem.salePrice.amount)}>
+                                                <Chip
+                                                    endDecorator={<PencilSquareIcon
+                                                        className='h-4 w-4 text-black select-none'/>}>
+                                                    {selectedItem.salePrice?.amount} {selectedItem.salePrice?.currency === "DKK"
+                                                    ? (<>kr.</>)
+                                                    : (<></>)}
+                                                </Chip>
+                                            </td>
                                         }
                                     </tr>
-
-
                                     <tr>
                                         <td>ID</td>
                                         <td>{selectedItem._id}</td>
