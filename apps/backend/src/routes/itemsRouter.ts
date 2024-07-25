@@ -1,6 +1,14 @@
 import express from "express";
 import {protect} from "../middleware/authMiddleware";
-import {createItem, deleteItem, getItems, getItemsById, setItemPrice, setItemStock} from "../controllers";
+import {
+    createItem,
+    deleteItem,
+    getItems,
+    getItemsById,
+    setItemPrice,
+    setItemStock,
+    updateItemDescription
+} from "../controllers";
 import {Item} from "../models";
 
 
@@ -18,8 +26,10 @@ itemRouter.route('/:itemId/stock/:newStock')
     .patch(protect, setItemStock)
 
 itemRouter.route('/:itemId/price')
-    .patch(setItemPrice)
+    .patch(protect, setItemPrice)
 
+itemRouter.route('/:itemId/description')
+    .patch(protect, updateItemDescription)
 
 itemRouter.route('/getNameById/:itemId')
     .get(async (req, res) => {

@@ -90,3 +90,18 @@ export const createItem = asyncHandler(async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
+export const updateItemDescription = asyncHandler(async (req, res) => {
+    const itemData = await Item.findById(req.params.itemId)
+    if (!itemData) {
+        res.status(404).json({message: "Item not found"});
+        return
+    }
+    if (!req.body.description) {
+        res.status(406).json({message: "No description was provided"});
+    }
+    itemData.description = req.body.description;
+    await itemData.save()
+    res.status(202).json({message: "Item was updated"})
+
+})
