@@ -19,6 +19,7 @@ export const Items = () => {
     const [showChangeStockForm, setShowChangeStockForm] = useState(false)
     const [newItemName, setNewItemName] = useState('');
     const [newItemStock, setNewItemStock] = useState(0);
+    const [newItemDescription, setNewItemDescription] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState<Iitems | null>(null)
     const [newPrice, setNewPrice] = useState(-1)
@@ -65,6 +66,33 @@ export const Items = () => {
             }
         }
 
+    }
+
+    const handleDescriptionChange = async (id: string | undefined) => {
+        if (typeof id === undefined) {
+            console.warn('Cannot set stock of an item without an id')
+            return
+        }
+
+        const description = {
+            description: newItemDescription
+        };
+
+        instance.patch(`/item/${id}/description`, description).then(response => {
+            setAlert({
+                severity: 'success',
+                text: response.data.message,
+                open: true,
+            })
+            fetchItems();
+            setNewItemDescription(null)
+        }).catch(error => {
+            setAlert({
+                severity: 'danger',
+                text: error.message,
+                open: true,
+            })
+        });
     }
 
     const handleStockChange = async (id: string | undefined) => {
@@ -309,10 +337,29 @@ export const Items = () => {
                                     </tr>
                                     <tr>
                                         <td>Description</td>
-                                        <td>{selectedItem.description}</td>
+                                        {newItemDescription === null ? (
+                                            <td onClick={() => setNewItemDescription(selectedItem?.description || "")}>{selectedItem.description}</td> )
+                                            : (<td>
+                                                <form className={"flex"}>
+                                                    <Input
+                                                    type="text"
+                                                    placeholder="Description"
+                                                    size="sm"
+                                                    color="neutral"
+                                                    variant="outlined"
+                                                    value={newItemDescription}
+                                                    onChange={(e) => setNewItemDescription(e.target.value)}
+                                                    />
+                                                    <Button variant='solid' size="sm" type='button'
+                                                            onClick={() => handleDescriptionChange(selectedItem._id)}>Change</Button>
+                                                    <Button variant='outlined' color='danger' size="sm" type='button'
+                                                            onClick={() => setNewItemDescription(null)}>Cancel</Button>
+                                                </form>
+                                            </td>)
+                                        }
                                     </tr>
                                     <tr>
-                                        <td>Stock</td>
+                                    <td>Stock</td>
                                         {!showChangeStockForm && (
                                             <td onClick={() => setShowChangeStockForm(true)}
                                                 className=' select-none cursor-pointer'
