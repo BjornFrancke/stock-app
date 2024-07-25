@@ -213,7 +213,8 @@ export function Manufacturing() {
                     </div>
                     <div className={"flex space-x-2"}>
                         <ProduceBtn produceState={produceState} onClick={() => handleManuOrderProduce()}/>
-                        <Button onClick={() => handleManuOrderCheck()} color={"neutral"} size={"sm"}>Check
+                        <Button onClick={() => handleManuOrderCheck()} color={"neutral"}
+                                disabled={selectedOrder?.isDone} size={"sm"}>Check
                             availability</Button>
                         <Button color={"neutral"} size={"sm"}>Unreserve</Button>
                         <Button color={"neutral"} size={"sm"}>Scrap</Button>
