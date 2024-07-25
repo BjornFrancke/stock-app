@@ -13,6 +13,7 @@ import {Link, useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
 import {BomCreationModal} from "../components/BomCreationModal.tsx";
 import {ArrowsPointingOutIcon} from "@heroicons/react/16/solid";
+import {BodySheet} from "../components/BodySheet.tsx";
 
 
 export const Boms = () => {
@@ -248,15 +249,7 @@ export const Boms = () => {
 
     return (
         <>
-            <Sheet
-                className={"mx-auto mt-6 space-y-4"}
-                sx={{
-                    maxWidth: 800,
-                    borderRadius: "md",
-                    p: 3,
-                    boxShadow: "lg",
-                }}
-            >
+            <BodySheet>
                 <AlertMessage alertContent={alert} onClose={() => handleMessageClose()}/>
                 <h1 className="text-xl mb-12">BOMs</h1>
                 {error && <Alert color={"danger"} variant={"solid"}>{error}</Alert>}
@@ -311,7 +304,7 @@ export const Boms = () => {
 
                             </div>
                             <div>
-                                <Link to={`http://localhost:5173/bom/${selectedBom?._id}`}><ArrowsPointingOutIcon
+                                <Link to={`/bom/${selectedBom?._id}`}><ArrowsPointingOutIcon
                                     className={"h-6 w-6 text-gray-500 my-auto"}/></Link>
                             </div>
                         </div>
@@ -472,7 +465,7 @@ export const Boms = () => {
                                       onClick={handleSubmitNewBom} availableComponents={availableComponents}
                     />
                 </div>
-            </Sheet>
+            </BodySheet>
 
         </>
     )
