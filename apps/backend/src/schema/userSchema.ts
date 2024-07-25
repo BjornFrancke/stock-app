@@ -6,4 +6,5 @@ export const UserSchema = new Schema<Iuser, UserModel>({
     email: String,
     token: String,
     password: String,
+    organisation: String,
 })
