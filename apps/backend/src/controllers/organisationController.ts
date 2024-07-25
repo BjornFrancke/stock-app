@@ -39,5 +39,26 @@ export const addUserToOrganisation = asyncHandler(async (req, res) => {
     }
 })
 
+export const checkIfUserDataHasOrganisation = asyncHandler (async (req, res) => {
+    const listOfOrganisations = await Organisation.find()
+    if (!listOfOrganisations) {
+res.status(404).json({message: "No organisations found"});
+    return
+    }
+
+    for (let i = 0; listOfOrganisations.length > 0; i++) {
+        const organisation = listOfOrganisations[i]
+        const users = listOfOrganisations[i].users
+        for (let j = 0; j < users.length; j++) {
+            const user = await User.findById(users[j])
+            if (user && user?.organisation != organisation._id) {
+                user.organisation = organisation._id
+                console.log(user.name + " now has organisation" + organisation.name)
+                await user.save()
+            }
+        }
+    }
+    res.status(200)
+})
 
 
