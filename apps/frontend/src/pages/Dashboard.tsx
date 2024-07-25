@@ -14,7 +14,23 @@ export function Dashboard() {
         percentage: 0,
         value: 0
     });
-const navigate = useNavigate()
+
+    const [profileInfo, setProfileInfo] = useState({
+        name: "",
+        email: ""
+    })
+
+    const navigate = useNavigate()
+
+
+    const fetchProfile = async () => {
+        const profileData = await instance.get('/user/me')
+        setProfileInfo({
+            name: profileData.data.name || "username",
+            email: profileData.data.email || "Email Address",
+        })
+
+    }
 
 
     const checkLoginStatus = () => {
@@ -28,20 +44,22 @@ const navigate = useNavigate()
 
     useEffect(() => {
         checkLoginStatus()
+        fetchProfile()
+
         getPendingOrderPercentage()
     }, []);
 
 
-const getPendingOrderPercentage = async () => {
-    instance.get('/orders/status').then((response) => {
-setPendingOrders({
-    percentage: Number(response.data.Percentage),
-    value: Number(response.data.Value)
-})
-    }).catch((error) => {
-        console.log(error)
-    })
-}
+    const getPendingOrderPercentage = async () => {
+        instance.get('/orders/status').then((response) => {
+            setPendingOrders({
+                percentage: Number(response.data.Percentage),
+                value: Number(response.data.Value)
+            })
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     return (
         <>
@@ -55,10 +73,10 @@ setPendingOrders({
                 }}
             >
                 <div>
-                    <h1 className={"text-xl"}>Welcome user!</h1>
+                    <h1 className={"text-xl"}>Welcome {profileInfo.name}!</h1>
                 </div>
                 <div className={"grid grid-cols-2 space-x-4 mt-12"}>
-                    <Card variant="solid" color={"primary"} invertedColors >
+                    <Card variant="solid" color={"primary"} invertedColors>
                         <CardContent orientation="horizontal">
                             <CircularProgress size="lg" determinate value={pendingOrder.percentage}>
                                 <SvgIcon>
@@ -93,10 +111,11 @@ setPendingOrders({
                     </Card>
                     <Card variant="soft">
                         <CardContent>
-                            <Typography level="title-md">Plain card</Typography>
+                            <Typography level="title-md">Low stock</Typography>
                             <Typography>Description of the card.</Typography>
                         </CardContent>
                     </Card>
+
                 </div>
 
             </Sheet>
