@@ -3,14 +3,17 @@ import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import Modal from "react-modal";
 import Button from "@mui/joy/Button";
-import Input from "@mui/joy/Input";
 import Chip from "@mui/joy/Chip";
 import {BellAlertIcon, CalendarDaysIcon} from "@heroicons/react/16/solid";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {ProduceBtn} from "../components/manufacturing/ProduceBtn.tsx";
 import {CircularProgress} from "@mui/joy";
-import {ManufacturingCreationModal} from "../components/manufacturing/ManufacturingCreationModal.tsx";
+import {
+    ManufacturingComponentSheet,
+    ManufacturingCreationModal,
+    ManufacturingInfoSheet,
+    ProduceBtn
+} from "../components/manufacturing";
 
 
 export interface ImanufacturingOrder {
@@ -137,6 +140,7 @@ export function Manufacturing() {
         console.log(productId)
         navigate(`/item/${productId}`)
     }
+
     function handleNavigateToBom(bomId: string) {
         console.log(bomId)
         navigate(`/bom/${bomId}`)
@@ -215,78 +219,17 @@ export function Manufacturing() {
                         <Button color={"neutral"} size={"sm"}>Scrap</Button>
                         <Button onClick={() => handleManuOrderDelete()} color={"danger"} size={"sm"}>Delete</Button>
                     </div>
-                    <Sheet
-                        variant="outlined"
-                        sx={{
-                            maxWidth: 800,
-                            minWidth: 800,
-                            borderRadius: "md",
-                            p: 6,
-                            boxShadow: "lg",
-                        }}>
-                        <div className={"flex space-x-2 mb-4"}>
-                            <h1 className={"text-[#50A6A1] my-auto"}>Quantity</h1>
-                            <div className={"max-w-24"}>
-                                {selectedOrder?.isDone ?
-                                    <Input variant={"outlined"} disabled type={"number"} size={"sm"}
-                                           endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
-                                           value={selectedOrderProduced}
-                                           onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
-                                    /> : <Input variant={"outlined"} type={"number"} size={"sm"}
-                                                endDecorator={<p>/ {selectedOrder?.quantity?.toProduce}</p>}
-                                                value={selectedOrderProduced}
-                                                onChange={(e) => setSelectedOrderProduced(e.target.valueAsNumber)}
-                                    />}
+                    {selectedOrder && (
+                        <>
+                            <ManufacturingInfoSheet selectedOrder={selectedOrder}
+                                                    selectedOrderProduced={selectedOrderProduced}
+                                                    setSelectedOrderProduced={(e) => setSelectedOrderProduced(e)}
+                                                    handleNavigateToBom={handleNavigateToBom}
+                                                    handleNavigateToProduct={handleNavigateToProduct}/>
+                            <ManufacturingComponentSheet selectedOrder={selectedOrder}/>
+                        </>
+                    )}
 
-                            </div>
-                            <h1 className={" text-gray-500 my-auto"}>To Produce</h1>
-                        </div>
-                        <Table borderAxis={"x"}>
-                            <tbody>
-                            <tr>
-                                <td>BOM</td>
-                                <td onClick={() => handleNavigateToBom(selectedOrder?.bom.bomId || "")} className={"underline select-none cursor-pointer"}>{selectedOrder?.bom.name}</td>
-                            </tr>
-                            <tr>
-                                <td>Product</td>
-                                <td onClick={() => handleNavigateToProduct(selectedOrder?.product.productId || "")}
-                                    className={"underline select-none cursor-pointer"}>{selectedOrder?.product.name}</td>
-
-                            </tr>
-                            </tbody>
-                        </Table>
-
-                    </Sheet>
-                    <Sheet
-                        variant="outlined"
-                        sx={{
-                            maxWidth: 800,
-                            minWidth: 800,
-                            borderRadius: "md",
-                            p: 6,
-                            boxShadow: "lg",
-                        }}>
-                        <Table borderAxis={"both"}>
-                            <thead>
-                            <tr>
-                                <th>Component Name</th>
-                                <th>Required Quantity</th>
-                                <th>Consumed</th>
-                                <th>Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {selectedOrder?.componentStatus?.map((component, index) => (
-                                <tr key={index}>
-                                    <td>{component.name || "Unnamed"}</td>
-                                    <td>{component.required * (selectedOrder?.quantity?.toProduce || 0)}</td>
-                                    <td>{component.required * (selectedOrder?.quantity?.produced || 0)}</td>
-                                    <td>{component.status ? "Available" : "Not Sufficient"}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                    </Sheet>
                 </Modal>
                 <Modal
                     isOpen={isCreationModalOpen}
