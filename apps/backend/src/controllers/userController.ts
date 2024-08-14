@@ -78,11 +78,12 @@ export const getLoggedInUser = asyncHandler(async (req: ExtendedRequest, res) =>
         res.status(404).send("User not found");
         return;
     }
-    const {_id, name, email} = userData;
+    const {_id, name, email, organisation} = userData;
     res.status(200).json({
         id: _id,
         name,
-        email
+        email,
+        organisation
 
     })
 

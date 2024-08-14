@@ -5,7 +5,8 @@ import Sheet from "@mui/joy/Sheet";
 export function Profile() {
     const [profileInfo, setProfileInfo] = useState({
         name: "",
-        email: ""
+        email: "",
+        organisation: ""
     })
 
     const fetchProfile = async () => {
@@ -13,6 +14,7 @@ export function Profile() {
         setProfileInfo({
             name: profileData.data.name || "username",
             email: profileData.data.email || "Email Address",
+            organisation: profileData.data.organisation || "Organisation",
         })
 
     }
@@ -41,6 +43,10 @@ export function Profile() {
                 <div className={"flex space-x-1"}>
                     <p>Email</p>
                     <p>{profileInfo.email}</p>
+                </div>
+                <div className={"flex space-x-1"}>
+                    <p>Organisation</p>
+                    <p>{profileInfo.organisation}</p>
                 </div>
 
             </Sheet>
