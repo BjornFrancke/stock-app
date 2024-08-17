@@ -5,7 +5,7 @@ import {DebugBtn} from "../components/organisation/debugBtn.tsx";
 
 
 
-export const Organisation = () => {
+export const Organisations = () => {
     return (
       <BodySheet>
           <CreateOrganisation/>

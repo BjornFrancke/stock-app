@@ -2,6 +2,7 @@ import {Iorganisation, Iuser} from "../../types.ts";
 import {instance} from "../../services/backend-api/axiosConfig.ts";
 import { useEffect, useState } from "react";
 import Button from "@mui/joy/Button";
+import {Link} from "react-router-dom";
 
 export const OrganisationList = () => {
     const [organisations, setOrganisations] = useState<Iorganisation[] | null>([])
@@ -46,13 +47,14 @@ export const OrganisationList = () => {
 
     return (
         <>
-            <ul>
             {organisations?.map((organisation) => (
+            <ul>
                 <li key={organisation._id} className={"flex flex-col space-x-1"}>
                     <a onClick={() => setSelectedOrganisatioId(organisation._id)}>{organisation.name}</a>
                     {selectedOrganisationId === organisation._id && (
                         <div className={"bg-gray-200 rounded-lg border-gray-300 p-4"}>
                             <Button onClick={() => setSelectedOrganisatioId("")}>X</Button>
+                           <Link to={`/organisation/${selectedOrganisationId}`}>Open</Link>
                             <p>users</p>
                             <ul>
                                 {organisation.users?.map((user) => (
@@ -78,8 +80,8 @@ export const OrganisationList = () => {
                         </div>
                     )}
                 </li>
-            ))}
             </ul>
+            ))}
         </>
     )
 }
