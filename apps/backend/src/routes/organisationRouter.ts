@@ -3,7 +3,7 @@ import {protect} from "../middleware/authMiddleware";
 import {
     addUserToOrganisation,
     checkIfUserDataHasOrganisation,
-    createOrganisation,
+    createOrganisation, getOrganisationById,
     getOrganisations
 } from "../controllers";
 
@@ -15,6 +15,7 @@ organisationRouter.route('/')
     .post(protect, createOrganisation)
 organisationRouter.route('/:organisationId')
     .patch(protect, addUserToOrganisation)
+    .get(protect, getOrganisationById)
 
 organisationRouter.route("/checkIfUserDataHasOrganisation")
     .post(protect, checkIfUserDataHasOrganisation)
