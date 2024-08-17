@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import {Organisation} from "../models/organisation";
 import {User} from "../models";
-
+import {addEntryToOrganisation} from "../services/organisationService";
 
 export const getOrganisations = asyncHandler(async (req, res) => {
     const organisations = await Organisation.find();
@@ -65,6 +65,13 @@ res.status(404).json({message: "No organisations found"});
         }
     }
     res.status(200)
+})
+
+
+export const addEntryToOrganisationController = asyncHandler(async (req, res) => {
+    const {orgId, typeOfEntry, idOfEntry} = req.body;
+    await addEntryToOrganisation(orgId, typeOfEntry, idOfEntry);
+    res.status(201).json({message: "Item was updated"});
 })
 
 

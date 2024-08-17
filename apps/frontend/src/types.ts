@@ -10,7 +10,7 @@ export interface Iitems {
 }
 
 export interface Ibom {
-    _id?: string | undefined
+    _id: string
     name: string,
     product: string,
     components: Icomponent[]

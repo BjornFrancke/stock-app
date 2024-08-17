@@ -1,6 +1,7 @@
 import express from "express";
 import {protect} from "../middleware/authMiddleware";
 import {
+    addEntryToOrganisationController,
     addUserToOrganisation,
     checkIfUserDataHasOrganisation,
     createOrganisation, getOrganisationById,
@@ -19,3 +20,6 @@ organisationRouter.route('/:organisationId')
 
 organisationRouter.route("/checkIfUserDataHasOrganisation")
     .post(protect, checkIfUserDataHasOrganisation)
+
+organisationRouter.route("/addEntry")
+    .post(addEntryToOrganisationController)
