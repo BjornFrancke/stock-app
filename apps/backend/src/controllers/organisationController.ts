@@ -8,8 +8,14 @@ export const getOrganisations = asyncHandler(async (req, res) => {
     res.status(200).json(organisations);
 })
 
+
+export const getOrganisationById = asyncHandler(async (req, res) => {
+    const organisation = await Organisation.findById(req.params.organisationId)
+    res.status(200).json(organisation)
+})
+
 export const createOrganisation = asyncHandler(async (req, res) => {
-   // const organisation = await Organisation.create(req.body);
+   // const organisation = await Organisations.create(req.body);
     const organisation = new Organisation({
         name: req.body.name,
         users: [],
