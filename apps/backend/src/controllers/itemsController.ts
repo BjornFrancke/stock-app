@@ -1,17 +1,7 @@
-import {Iitems} from "../types";
 import asyncHandler from "express-async-handler"
-import {Item, Bom} from "../models";
-import {setStock} from "../services/itemService";
+import {Bom, Item} from "../models";
+import {fetchAllItems, setStock} from "../services/itemService";
 
-
-
-const fetchAllItems = async (): Promise<Iitems[]> => {
-    try {
-        return await Item.find();
-    } catch (error) {
-        throw new Error("Failed to fetch items: " + error);
-    }
-};
 
 export const getItems = asyncHandler(async (req, res) => {
     try {
