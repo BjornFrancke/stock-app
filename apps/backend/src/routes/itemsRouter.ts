@@ -31,10 +31,3 @@ itemRouter.route('/:itemId/price')
 itemRouter.route('/:itemId/description')
     .patch(protect, updateItemDescription)
 
-itemRouter.route('/getNameById/:itemId')
-    .get(protect, getItemNameById)
-
-itemRouter.route('/update/:itemId')
-    .patch(protect, updateItemById)
-
-
