@@ -20,6 +20,7 @@ itemRouter.route('/')
 itemRouter.route('/:itemId')
     .get(protect, getItemsById)
     .delete(protect, deleteItem)
+    .patch(protect, updateItemById)
 
 itemRouter.route('/:itemId/stock/:newStock')
     .patch(protect, setItemStock)
