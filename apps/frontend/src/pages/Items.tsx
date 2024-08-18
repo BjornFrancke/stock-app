@@ -11,6 +11,7 @@ import Sheet from "@mui/joy/Sheet";
 import {Link, useSearchParams} from "react-router-dom";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
+import {BodySheet} from "../components/BodySheet.tsx";
 
 
 export const Items = () => {
@@ -211,15 +212,7 @@ export const Items = () => {
 
     return (
         <>
-            <Sheet
-                className={"mx-auto mt-6 space-y-4"}
-                sx={{
-                    maxWidth: 800,
-                    borderRadius: "md",
-                    p: 3,
-                    boxShadow: "lg",
-                }}
-            >
+            <BodySheet>
                 <AlertMessage alertContent={alert} onClose={() => handleMessageClose()}/>
                 <h1 className="text-xl mb-12">Items</h1>
                 {error && <Alert color={"danger"} variant={"solid"}>{error}</Alert>}
@@ -327,33 +320,28 @@ export const Items = () => {
                             }}
                         >
 
-                            <Button variant={"solid"} onClick={handleCloseModal}> Close</Button>
                             {selectedItem && (
                                 <Table className={"z-30 max-w-[50vw]"}>
                                     <tbody>
                                     <tr>
-                                        <td>Name</td>
-                                        <td>{selectedItem.name}</td>
-                                    </tr>
-                                    <tr>
                                         <td>Description</td>
                                         {newItemDescription === null ? (
-                                            <td onClick={() => setNewItemDescription(selectedItem?.description || "")}>
-                                                <Chip
-                                                    endDecorator={<PencilSquareIcon
-                                                        className='h-4 w-4 text-black select-none'/>}
-                                                >{selectedItem.description}</Chip>
-                                            </td> )
+                                                <td onClick={() => setNewItemDescription(selectedItem?.description || "")}>
+                                                    <Chip
+                                                        endDecorator={<PencilSquareIcon
+                                                            className='h-4 w-4 text-black select-none'/>}
+                                                    >{selectedItem.description}</Chip>
+                                                </td>)
                                             : (<td>
                                                 <form className={"flex"}>
                                                     <Input
-                                                    type="text"
-                                                    placeholder="Description"
-                                                    size="sm"
-                                                    color="neutral"
-                                                    variant="outlined"
-                                                    value={newItemDescription}
-                                                    onChange={(e) => setNewItemDescription(e.target.value)}
+                                                        type="text"
+                                                        placeholder="Description"
+                                                        size="sm"
+                                                        color="neutral"
+                                                        variant="outlined"
+                                                        value={newItemDescription}
+                                                        onChange={(e) => setNewItemDescription(e.target.value)}
                                                     />
                                                     <Button variant='solid' size="sm" type='button'
                                                             onClick={() => handleDescriptionChange(selectedItem._id)}>Change</Button>
@@ -364,7 +352,7 @@ export const Items = () => {
                                         }
                                     </tr>
                                     <tr>
-                                    <td>Stock</td>
+                                        <td>Stock</td>
                                         {!showChangeStockForm && (
                                             <td onClick={() => setShowChangeStockForm(true)}
                                                 className=' select-none cursor-pointer'
@@ -434,6 +422,14 @@ export const Items = () => {
                                         }
                                     </tr>
                                     <tr>
+                                        <td>
+                                            Currency
+                                        </td>
+                                        <td>
+                                            {selectedItem.salePrice.currency}
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>ID</td>
                                         <td>{selectedItem._id}</td>
                                     </tr>
@@ -445,7 +441,7 @@ export const Items = () => {
 
 
                 </div>
-            </Sheet>
+            </BodySheet>
         </>
     );
 };
