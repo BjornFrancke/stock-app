@@ -9,8 +9,6 @@ customerRouter.route('/')
     .get(protect, getCustomers)
     .post(protect, createCustomer)
 
-
-
 customerRouter.route('/:customerId')
     .get(protect, getCustomerById)
     .delete(protect, deleteCustomer)

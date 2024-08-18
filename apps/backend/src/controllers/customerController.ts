@@ -36,16 +36,13 @@ export const deleteCustomer = asyncHandler(async (req, res) => {
 
 export const createCustomer = asyncHandler(async (req, res) => {
     try {
+        const {phoneNr, name, mailAdress, address} = req.body;
         const newCustomer = new Customer( {
-            name: req.body.name,
-            mailAdress: req.body.mailAdress,
-            phoneNr: req.body.phoneNr,
-            address: {
-                street: req.body.address.street,
-                zip: req.body.address.zip,
-                city: req.body.address.city,
-                country: req.body.address.country
-            }
+            name,
+            mailAdress,
+            phoneNr,
+            address
+
         })
         const savedCustomer = await newCustomer.save()
         res.json(savedCustomer)
