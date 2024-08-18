@@ -96,18 +96,6 @@ export const updateItemDescription = asyncHandler(async (req, res) => {
 
 })
 
-export const getItemNameById = asyncHandler(async (req, res) => {
-    try {
-        const itemData = await Item.findById(req.params.itemId)
-        if (!itemData) {
-            res.status(404).send("Item was not found")
-        }
-        const itemName = itemData?.name
-        res.json(itemName)
-    } catch {
-        res.status(500).send("Internal Server Error")
-    }
-})
 
 export const updateItemById = asyncHandler(async (req, res) => {
     try {
