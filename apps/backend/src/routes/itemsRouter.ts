@@ -2,8 +2,7 @@ import express from "express";
 import {protect} from "../middleware/authMiddleware";
 import {
     createItem,
-    deleteItem, getItemNameById,
-    getItems,
+    deleteItem, getItems,
     getItemsById,
     setItemPrice,
     setItemStock, updateItemById,
