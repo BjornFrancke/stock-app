@@ -4,6 +4,8 @@ import {Ibom, Iorganisation} from "../../types.ts";
 import {instance} from "../../services/backend-api/axiosConfig.ts";
 import {BodySheet} from "../../components/BodySheet.tsx";
 import Button from "@mui/joy/Button";
+import Card from "@mui/joy/Card";
+import {CardContent, List, ListItem} from "@mui/joy";
 
 interface entryToAdd {
     orgId: string;
@@ -71,39 +73,65 @@ export const OrganisationPage = () => {
     return (
         <>
             <BodySheet>
-                <h1>Organisation</h1>
                 <div className={"mx-auto"}>
+                    <div className={"flex space-x-2"}>
+                    <h1 className={"text-2xl text-[#50A6A1]"}>Organisation</h1>
+                    <h1 className={"text-2xl text-gray-500"}>{organisationData?.name}</h1>
+                    </div>
                     <ul>
-                        <li>{organisationData?.name}</li>
                         <li>
                             Users:
                             {organisationData?.users?.map((user) => (
-                                <p>{user.name} - {user.admin ? "Admin" : "Not admin"}</p>
+                                <Card key={user._id}>
+                                    <CardContent>
+                                        <p>{user.name} - {user.admin ? "Admin" : "Not admin"}</p>
+                                    </CardContent>
+
+                                </Card>
                             ))}
                         </li>
                         <li>
-                            <a onClick={() => handleBomClick()}>Boms:</a>
-                            {organisationData?.boms?.map((bom) => (
-                                <p>{bom}</p>
-                            ))}
-                            {selectorShown === "BOM" && (
-                                <>
-                                    <p>Add boms</p>
-                                    <select
-                                        onChange={(e) => (setEntryToAdd({
-                                            ...entryToAdd,
-                                            idOfEntry: e.target.value,
-                                        }))}
-                                        value={entryToAdd.idOfEntry}
-                                    >
-                                        {entryToAddData.map((bom: Ibom) => (
-                                            <option value={bom._id} key={bom._id}>{bom.name}</option>
+                            <List>
 
-                                        ))}
-                                    </select>
-                                    <Button onClick={() => handleSubmitEntry()}>Submit</Button>
-                                </>
-                            )}
+                                <a onClick={() => handleBomClick()}>Boms:</a>
+                                {organisationData?.boms?.map((bom) => (
+                                    <ListItem>{bom}</ListItem>
+                                ))}
+                                {selectorShown === "BOM" && (
+                                    <>
+                                        <p>Add boms</p>
+                                        <select
+                                            onChange={(e) => (setEntryToAdd({
+                                                ...entryToAdd,
+                                                idOfEntry: e.target.value,
+                                            }))}
+                                            value={entryToAdd.idOfEntry}
+                                        >
+                                            {entryToAddData.map((bom: Ibom) => (
+                                                <option value={bom._id} key={bom._id}>{bom.name}</option>
+
+                                            ))}
+                                        </select>
+                                        <Button onClick={() => handleSubmitEntry()}>Submit</Button>
+                                    </>
+                                )}
+                            </List>
+                        </li>
+                        <li>
+                            <List>
+                                <a>Items:</a>
+                                {organisationData?.items?.map((item) => (
+                                    <ListItem>{item}</ListItem>
+                                ))}
+                            </List>
+                        </li>
+                        <li>
+                            <List>
+                                <a>Customers:</a>
+                                {organisationData?.customers?.map((customer) => (
+                                    <ListItem>{customer}</ListItem>
+                                ))}
+                            </List>
                         </li>
                     </ul>
                 </div>
