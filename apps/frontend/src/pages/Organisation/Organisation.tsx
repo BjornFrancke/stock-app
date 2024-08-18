@@ -16,7 +16,7 @@ export const OrganisationPage = () => {
     const {organisation} = useParams()
     const [organisationData, setOrganisationData] = useState<Iorganisation | null>(null)
     const [entryToAddData, setEntryToAddData] = useState<Ibom[]>([])
-    const [selectorShown, setSelectorShown] = useState<"BOM" | "Item" | "Order" | "">("")
+    const [selectorShown, setSelectorShown] = useState<"BOM" | "Item" | "Order" | null>(null)
     const [entryToAdd, setEntryToAdd] = useState<entryToAdd>({
         orgId: "",
         typeOfEntry: "",
@@ -44,7 +44,7 @@ export const OrganisationPage = () => {
 
     const handleSubmitEntry = async () => {
         await instance.post("/organisation/addEntry", entryToAdd)
-        setSelectorShown("")
+        setSelectorShown(null)
         window.document.location.reload()
     }
 
