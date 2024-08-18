@@ -2,14 +2,13 @@ import express from "express";
 import {protect} from "../middleware/authMiddleware";
 import {
     createItem,
-    deleteItem,
+    deleteItem, getItemNameById,
     getItems,
     getItemsById,
     setItemPrice,
-    setItemStock,
+    setItemStock, updateItemById,
     updateItemDescription
 } from "../controllers";
-import {Item} from "../models";
 
 
 export const itemRouter = express.Router()
@@ -32,33 +31,9 @@ itemRouter.route('/:itemId/description')
     .patch(protect, updateItemDescription)
 
 itemRouter.route('/getNameById/:itemId')
-    .get(async (req, res) => {
-        try {
-            const itemData = await Item.findById(req.params.itemId)
-            if (!itemData) {
-                res.status(404).send("Item was not found")
-            }
-            const itemName = itemData?.name
-            res.json(itemName)
-        } catch {
-            res.status(500).send("Internal Server Error")
-        }
-    })
+    .get(protect, getItemNameById)
 
 itemRouter.route('/update/:itemId')
-    .patch(async (req, res) => {
-        try {
-            const id = req.params.itemId
-            const updatedData = req.body
-            const options = {new: true}
-
-            const results = await Item.findByIdAndUpdate(
-                id, updatedData, options
-            )
-            res.send(results)
-        } catch (error) {
-            res.status(400).json({message: error})
-        }
-    })
+    .patch(protect, updateItemById)
 
 
