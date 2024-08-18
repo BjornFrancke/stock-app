@@ -3,7 +3,7 @@ import {Bom, Item} from "../models";
 import {fetchAllItems, setStock} from "../services/itemService";
 
 
-export const getItems = asyncHandler(async (req, res) => {
+export const getItems = asyncHandler(async (_req, res) => {
     try {
         const items = await fetchAllItems();
         res.status(200).json(items);
