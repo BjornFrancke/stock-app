@@ -338,7 +338,12 @@ export const Items = () => {
                                     <tr>
                                         <td>Description</td>
                                         {newItemDescription === null ? (
-                                            <td onClick={() => setNewItemDescription(selectedItem?.description || "")}>{selectedItem.description}</td> )
+                                            <td onClick={() => setNewItemDescription(selectedItem?.description || "")}>
+                                                <Chip
+                                                    endDecorator={<PencilSquareIcon
+                                                        className='h-4 w-4 text-black select-none'/>}
+                                                >{selectedItem.description}</Chip>
+                                            </td> )
                                             : (<td>
                                                 <form className={"flex"}>
                                                     <Input
