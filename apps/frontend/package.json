@@ -18,7 +18,7 @@
     "@mui/joy": "^5.0.0-beta.32",
     "@types/axios": "^0.14.0",
     "@types/react-modal": "^3.16.3",
-    "axios": "^1.6.8",
+    "axios": "^1.7.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
