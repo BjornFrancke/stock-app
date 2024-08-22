@@ -11,7 +11,7 @@ import {instance} from "../services/backend-api/axiosConfig.ts";
 import {Alert, CircularProgress} from "@mui/joy";
 import {Link, useSearchParams} from "react-router-dom";
 import {AlertMessage, Ialert} from "../components/AlertMessage.tsx";
-import {BomCreationModal} from "../components/BomCreationModal.tsx";
+import {BomCreationModal} from "../components/Bom/BomCreationModal.tsx";
 import {ArrowsPointingOutIcon} from "@heroicons/react/16/solid";
 import {BodySheet} from "../components/BodySheet.tsx";
 
