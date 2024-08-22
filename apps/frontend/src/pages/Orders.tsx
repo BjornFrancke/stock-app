@@ -88,16 +88,17 @@ export function Orders() {
             })
             return;
         }
+        const {itemId, name, amount, salesPrice} = newItemData
 
         const newItemDataToSubmit = {
-            itemId: newItemData.itemId,
-            name: newItemData.name,
-            amount: newItemData.amount,
+            itemId,
+            name,
+            amount,
             salesPrice: {
-                amount: newItemData.salesPrice.amount,
+                amount: salesPrice.amount,
                 vat: newItemVat,
                 discount: newItemDiscount,
-                currency: newItemData.salesPrice.currency
+                currency: salesPrice.currency
             }
         };
 
@@ -119,11 +120,12 @@ export function Orders() {
     };
 
     const handleUpdateItemData = async (itemId: string) => {
+        const {amount, salesPriceAmount, vat, discount} = updatedItemData
         const itemDataToUpdate = {
-            amount: updatedItemData.amount,
-            salesPriceAmount: updatedItemData.salesPriceAmount,
-            vat: updatedItemData.vat,
-            discount: updatedItemData.discount
+            amount,
+            salesPriceAmount,
+            vat,
+            discount
         }
         instance.patch(`/orders/${selectedOrder?._id}/item/${itemId}`, itemDataToUpdate).then(results => {
             setAlert({
