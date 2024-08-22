@@ -1,4 +1,4 @@
-import {Iitems} from "../types.ts";
+import {Iitems} from "../../types.ts";
 import Modal from "react-modal";
 import FormLabel from "@mui/joy/FormLabel";
 import Input from "@mui/joy/Input";
