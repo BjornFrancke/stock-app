@@ -3,7 +3,7 @@ import Card from "@mui/joy/Card";
 import {CardActions, CardContent, CircularProgress, SvgIcon, Typography} from "@mui/joy";
 import Button from "@mui/joy/Button";
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {instance} from "../services/backend-api/axiosConfig.ts";
 
 export function Dashboard() {
@@ -104,9 +104,11 @@ export function Dashboard() {
                             <Button variant="soft" size="sm">
                                 Add to Watchlist
                             </Button>
+                            <Link to={"/orders"}>
                             <Button variant="solid" size="sm">
                                 Go to orders
                             </Button>
+                            </Link>
                         </CardActions>
                     </Card>
                     <Card variant="soft">
