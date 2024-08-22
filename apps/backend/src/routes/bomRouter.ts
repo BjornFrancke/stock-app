@@ -19,7 +19,6 @@ bomRouter.route('/')
     .get(protect, getBoms)
     .post(protect, createBom)
 
-
 bomRouter.route('/:bomId')
     .get(protect, getBomById)
     .delete(protect, deleteBom)
@@ -32,8 +31,6 @@ bomRouter.route('/:bomId/component/:componentId')
 
 bomRouter.route('/bomDetailsById/:bomId')
     .get(protect, getBomDetails);
-
-
 
 bomRouter.route('/setComponentAmount/:bomId/:componentId/:amount')
     .patch(protect, setComponentAmount)

@@ -138,9 +138,8 @@ export const removeComponent = asyncHandler(async (req, res) => {
 })
 
 export const setComponentAmount = asyncHandler(async (req, res) => {
-    const bomId = req.params.bomId
-    const componentId = req.params.componentId
-    const newAmount = Number(req.params.amount);
+    const {bomId, componentId, amount} = req.params
+    const newAmount = Number(amount);
     try {
         const bom = await Bom.findById(bomId)
         if (!bom) {
@@ -165,9 +164,10 @@ export const setComponentAmount = asyncHandler(async (req, res) => {
 
 export const createBom = asyncHandler(async (req, res) => {
     try {
+        const {product, name} = req.body;
         const newBom = new Bom({
-            name: req.body.name,
-            product: req.body.product,
+            name,
+            product,
             components: []
         })
         const bomAdded = await newBom.save()
