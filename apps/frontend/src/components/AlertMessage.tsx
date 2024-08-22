@@ -7,7 +7,15 @@ export interface Ialert {
 }
 
 export function AlertMessage(props: { alertContent: Ialert, onClose: () => void }) {
-    return <Snackbar open={props.alertContent.open} color={props.alertContent.severity} variant={"solid"}
-                     autoHideDuration={2000}
-                     onClose={props.onClose}>{props.alertContent.text}</Snackbar>;
+    const {onClose, alertContent} = props;
+    const {open, text, severity} = alertContent;
+
+    return <Snackbar
+        open={open}
+        color={severity}
+        variant={"solid"}
+        autoHideDuration={2000}
+        onClose={onClose}>
+        {text}
+    </Snackbar>;
 }
