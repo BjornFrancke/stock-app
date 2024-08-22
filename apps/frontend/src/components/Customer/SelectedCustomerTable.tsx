@@ -10,6 +10,7 @@ export function SelectedCustomerTable(props: {
         address: Iaddress
     }
 }) {
+    const {_id, mailAdress, phoneNr, address} = props.selectedCustomer;
     return <>
         <Table>
             <thead>
@@ -18,15 +19,15 @@ export function SelectedCustomerTable(props: {
             <tbody>
             <tr>
                 <td>Mail</td>
-                <td>{props.selectedCustomer?.mailAdress}</td>
+                <td>{mailAdress}</td>
             </tr>
             <tr>
                 <td>Phone nr.</td>
-                <td>{props.selectedCustomer?.phoneNr}</td>
+                <td>{phoneNr}</td>
             </tr>
             <tr>
                 <td>ID</td>
-                <td>{props.selectedCustomer?._id}</td>
+                <td>{_id}</td>
             </tr>
 
             </tbody>
@@ -38,19 +39,19 @@ export function SelectedCustomerTable(props: {
             <tbody>
             <tr>
                 <td>Street</td>
-                <td>{props.selectedCustomer?.address.street}</td>
+                <td>{address.street}</td>
             </tr>
             <tr>
                 <td>Zip</td>
-                <td>{props.selectedCustomer?.address.zip}</td>
+                <td>{address.zip}</td>
             </tr>
             <tr>
                 <td>City</td>
-                <td>{props.selectedCustomer?.address.city}</td>
+                <td>{address.city}</td>
             </tr>
             <tr>
                 <td>Country</td>
-                <td>{props.selectedCustomer?.address.country}</td>
+                <td>{address.country}</td>
             </tr>
             </tbody>
         </Table>
