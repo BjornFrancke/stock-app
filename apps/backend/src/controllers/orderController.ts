@@ -14,8 +14,6 @@ export const getOrders = asyncHandler(async (req, res) => {
 
 export const getPendingOrders = asyncHandler(async (req, res) => {
     const pendingOrder = await getPendingOrderStatus()
-
-    console.log(pendingOrder)
     res.status(200).json(pendingOrder)
 })
 
@@ -23,13 +21,14 @@ export const createOrder = asyncHandler(async (req, res) => {
     const creationDate = Date.now()
     const newOrderNumber = await getNewOrderNumber()
     try {
+        const {receptian, dueDate} = req.body;
         const newOrder = new Order(
             {
                 orderNumber: newOrderNumber,
                 items: [],
                 createtionDate: creationDate,
-                dueDate: req.body.dueDate,
-                receptian: req.body.receptian,
+                dueDate: dueDate,
+                receptian: receptian,
                 isDone: false,
                 subTotal: {
                     amount: 0,
@@ -41,7 +40,7 @@ export const createOrder = asyncHandler(async (req, res) => {
             }
         );
         const savedOrder = await newOrder.save();
-        res.json(savedOrder);
+        res.status(201).json(savedOrder);
     } catch {
         res.status(500).send("Internal Server Error");
     }
@@ -68,12 +67,9 @@ export const markOrderAsDone = asyncHandler(async (req, res) => {
 
 export const updatedItemInOrder = asyncHandler(async (req, res) => {
    console.log("function called")
-    const orderId = req.params.orderId
-    const itemData = await Item.findById(req.params.itemId)
-    const amount = req.body.amount
-    const salesPriceAmount = req.body.salesPriceAmount
-    const vat = req.body.vat
-    const discount = req.body.discount
+    const {orderId, itemId} = req.params
+    const itemData = await Item.findById(itemId)
+    const {amount, salesPriceAmount, vat, discount} = req.body
     const orderData = await Order.findById(orderId)
     if (!orderData || !itemData) {
         res.status(404).json({error: "Not found"})
@@ -98,14 +94,14 @@ export const updatedItemInOrder = asyncHandler(async (req, res) => {
 
 export const addItemToOrder = asyncHandler(async (req, res) => {
     const orderId = req.params.orderId;
-    const itemId: ObjectId = req.body.itemId
-    const name = req.body.name
+    const {itemId, name} = req.body
     const amount = Number(req.body.amount);
+    const {discount, vat, currency} = req.body.salesPrice;
     const salesPrice: {amount: number, vat: number, discount: number, currency: string} = {
         amount: Number(req.body.salesPrice.amount),
-        vat: req.body.salesPrice.vat,
-        discount: req.body.salesPrice.discount,
-        currency: req.body.salesPrice.currency
+        vat,
+        discount,
+        currency,
     }
 
     if (!amount) {
@@ -145,8 +141,7 @@ export const deleteOrder = asyncHandler(async (req, res) => {
 })
 
 export const removeItemFromOrder = asyncHandler(async (req, res) => {
-    const orderId = req.params.orderId;
-    const itemId = req.params.itemId;
+    const {orderId, itemId} = req.params;
     try {
         const order = await Order.findById(orderId);
         if (!order) {

@@ -18,8 +18,7 @@ export const getAllManufacturingOrders = asyncHandler(async (req, res) => {
 
 export const createManuOrder = asyncHandler(async (req, res) => {
     try {
-        const bomId = req.body.bomId
-        const quantity = req.body.quantity
+        const {bomId, quantity} = req.body
         const dueDate = new Date(req.body.dueDate)
         const savedManuOrder = await createManufacturingOrder(bomId, quantity, dueDate)
         res.json(savedManuOrder)
