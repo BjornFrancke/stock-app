@@ -1,12 +1,22 @@
 import asyncHandler from "express-async-handler"
 import {Bom, Item} from "../models";
-import {fetchAllItems, setStock} from "../services/itemService";
+import {fetchAllItems, setStock, sortItemsByPrice, sortItemsByStock} from "../services/itemService";
 
 
-export const getItems = asyncHandler(async (_req, res) => {
+export const getItems = asyncHandler(async (req, res) => {
     try {
-        const items = await fetchAllItems();
-        res.status(200).json(items);
+        const {sortMethod, ascending} = req.query;
+        console.log(ascending)
+        if (sortMethod === "STOCK") {
+            const items = ascending === "true" ? await sortItemsByStock(true) : await sortItemsByStock(false)
+            res.status(200).json(items)
+        } else if (sortMethod === "PRICE") {
+            const items = ascending === "true" ? await sortItemsByPrice(true) : await sortItemsByPrice(false)
+            res.status(200).json(items)
+        } else {
+            const items = await fetchAllItems()
+            res.status(200).json(items);
+        }
     } catch (error) {
         res.status(500).json({message: "Failed to get items"});
     }

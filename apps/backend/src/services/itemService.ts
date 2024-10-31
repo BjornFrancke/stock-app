@@ -19,11 +19,8 @@ export function isStockSufficient(itemData: any, requiredAmount: number) {
     return itemData && itemData.stock >= requiredAmount;
 }
 
-export const fetchAllItems = async ({ascending, method}: { method: "STOCK" | "PRICE", ascending?: boolean }): Promise<Iitems[]> => {
+export const fetchAllItems = async (): Promise<Iitems[]> => {
     try {
-        if (method === "STOCK") {
-            return await sortItemsByStock(ascending)
-        }
         return await Item.find();
     } catch (error) {
         throw new Error("Failed to fetch items: " + error);
@@ -34,10 +31,20 @@ export const fetchAllItems = async ({ascending, method}: { method: "STOCK" | "PR
 export async function sortItemsByStock(ascending?: boolean) {
     const items = await Item.find()
     let sorted: Iitems[]
+        sorted = items.sort((a, b) => b.stock - a.stock);
     if (ascending) {
-        sorted = items.sort((a, b) => b.stock - a.stock);
-    } else {
-        sorted = items.sort((a, b) => b.stock - a.stock);
+        sorted = sorted.reverse()
     }
     return sorted;
+}
+
+
+export async function sortItemsByPrice(ascending?: boolean) {
+    const items = await Item.find()
+    let sorted: Iitems[]
+    sorted = items.sort((a, b) => (b.salePrice.amount | 0) - (a.salePrice.amount | 0));
+    if (ascending) {
+        sorted = sorted.reverse()
+    }
+    return sorted
 }

@@ -12,6 +12,7 @@ import {
     userRouter
 } from "./routes";
 import pc from "picocolors"
+import {sortItemsByStock} from "./services/itemService";
 
 
 mongoose.connect(DATABASE_URL)
@@ -47,6 +48,8 @@ app.use('/customer', customerRouter)
 app.use("/manuOrder", manufacturingRouter)
 app.use("/user", userRouter)
 app.use("/organisation", organisationRouter)
+
+console.log(sortItemsByStock())
 
 app.listen(port, () => {
     console.clear()

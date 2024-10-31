@@ -15,6 +15,10 @@ import {SelectedItemModal} from "../components/Items/SelectedItemModal.tsx";
 export const Items = () => {
     const [items, setItems] = useState<Iitems[]>([]);
     const [showForm, setShowForm] = useState(false);
+    const [searchQuery, setSearchQuery] = useState({
+        sortMethod: "STOCK",
+        ascending: true
+    });
     const [newItemData, setNewItemData] = useState<{
         name: string,
         stock: number
@@ -36,7 +40,7 @@ export const Items = () => {
 
     useEffect(() => {
         fetchItems();
-    }, []);
+    }, [searchQuery]);
 
     useEffect(() => {
         handleSearchParams();
@@ -47,7 +51,8 @@ export const Items = () => {
     }
 
     const fetchItems = async () => {
-        instance.get('/item').then(response => {
+        console.log(searchQuery.ascending)
+        instance.get('/item',  {params: {sortMethod: searchQuery.sortMethod, ascending: searchQuery.ascending}}).then(response => {
             setItems(response.data);
             setLoading(false);
         }).catch(error => {
@@ -129,6 +134,14 @@ export const Items = () => {
 
     };
 
+    const handleSetSortDirection = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        if (event.target.value === "Down") {
+            setSearchQuery({...searchQuery, ascending: true})
+        } else {
+            setSearchQuery({...searchQuery, ascending: false})
+        }
+    }
+
     const handleMessageClose = () => {
         setAlert({...alert, open: false});
     }
@@ -150,6 +163,18 @@ export const Items = () => {
 
                 )}
                 <div>
+                    <div>
+                        <p>{searchQuery.sortMethod} - {searchQuery.ascending.toString()}</p>
+                        <select value={searchQuery.sortMethod} onChange={(e) => setSearchQuery({...searchQuery, sortMethod: e.target.value})}>
+                            <option value={"CREATION"}>Creation</option>
+                            <option value={"STOCK"}>Stock</option>
+                            <option value={"PRICE"}>Price</option>
+                        </select>
+                        <select onChange={(e) => handleSetSortDirection(e)}>
+                            <option>Down</option>
+                            <option value={"Up"}>Ascending</option>
+                        </select>
+                    </div>
                     <Table borderAxis={"both"}>
                         <thead>
                         <tr>

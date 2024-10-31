@@ -13,4 +13,5 @@ if (!MONGO.host || !MONGO.user || !MONGO.password) {
 }
 
 
-export const DATABASE_URL = `mongodb+srv://${MONGO.user}:${MONGO.password}@${MONGO.host}?retryWrites=true&w=majority&appName=$stock-app`
+//export const DATABASE_URL = `mongodb+srv://${MONGO.user}:${MONGO.password}@${MONGO.host}?retryWrites=true&w=majority&appName=$stock-app`
+export const DATABASE_URL = "mongodb://root:password@0.0.0.0:27017/";
